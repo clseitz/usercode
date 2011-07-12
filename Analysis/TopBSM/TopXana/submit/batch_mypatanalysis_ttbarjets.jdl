@@ -1,0 +1,9 @@
+universe = vanilla
+Requirements = (Arch == "X86_64")
+Executable = run_mypatanalysis_ttbarjets.sh
+should_transfer_files = NO
+Output = /cms/data21/clseitz/CMS_leptons/TTbarJets/log/mypatanalysis_$(cluster)_$(process).stdout
+Error  = /cms/data21/clseitz/CMS_leptons/TTbarJets/log/mypatanalysis_$(cluster)_$(process).stderr
+Log    = /cms/data21/clseitz/CMS_leptons/TTbarJets/log/mypatanalysis_$(cluster)_$(process).condor
+Arguments = $(cluster) $(process) 
+Queue 8

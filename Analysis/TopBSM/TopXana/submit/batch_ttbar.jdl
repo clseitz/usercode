@@ -1,0 +1,9 @@
+universe = vanilla
+Requirements = (Arch == "X86_64")
+Executable = run_ttbar.sh
+should_transfer_files = NO
+Output =/cms/data24/clseitz/MC_4_2_4/TTbarJets_pileup/log/mypatanalysis_$(cluster)_$(process).stdout
+Error  =/cms/data24/clseitz/MC_4_2_4/TTbarJets_pileup/log/mypatanalysis_$(cluster)_$(process).stderr
+Log    =/cms/data24/clseitz/MC_4_2_4/TTbarJets_pileup/log/mypatanalysis_$(cluster)_$(process).condor
+Arguments = $(cluster) $(process) 
+Queue 17
