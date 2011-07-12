@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id$
+// $Id: TopXana.cc,v 1.1.1.1 2011/07/12 15:21:48 clseitz Exp $
 //
 //
 
@@ -142,7 +142,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //std::cout<<"--------------run: "<<run<<"--event: "<<event<<"--lumi: "<<lumis<<"--entry: "<<entry<<"-----------"<<endl;
   
  
- if(GoodRun){
+  if(GoodRun){
 
    //////////////////////
    ///// check triggers
