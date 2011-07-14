@@ -149,43 +149,65 @@ namelist.push_back("Zprime_M500_W5");
       //TCanvas* c1 = new TCanvas((sOP1.str()).c_str(),(sOP1.str()).c_str(),800,600);
       
       for (int a=0; a<3; a++){
-	std::stringstream sOP2;
+	std::stringstream sOP2,sOP3;
 	sOP2<<"Btag/jet_pt_"<<op_name[i]<<"_"<<flavors[a];
+	sOP3<<"Btag/jet_eta_"<<op_name[i]<<"_"<<flavors[a];
 	cout<<"Btag/jet_pt"<<op_name[i]<<"_"<<flavors[a]<<endl;
-	std::stringstream sNoBtag;
+	std::stringstream sNoBtag,sNoBtagEta;
 	sNoBtag<<"Btag/jet_pt_none_"<<flavors[a];
-	TH1F* tBtag;TH1F* tNoBtag;	TH1F* temp_helpBtag;TH1F* temp_helpNoBtag;	TH1F *temp_Btag;TH1F *temp_NoBtag;
-	tBtag = (TH1F*) filelist[file]->Get((sOP2.str()).c_str());
-	tNoBtag = (TH1F*) filelist[file]->Get((sNoBtag.str()).c_str());
-	temp_helpBtag=  (TH1F*)tBtag->Clone();
-	temp_helpNoBtag=  (TH1F*)tNoBtag->Clone();
-	temp_helpBtag->Sumw2();
-	temp_helpNoBtag->Sumw2();
-		temp_Btag =(TH1F*) temp_helpBtag->Rebin(26,"temp_Btag",xbins);
-		temp_NoBtag=(TH1F*) temp_helpNoBtag->Rebin(26,"temp_NoBtag",xbins);
-		//TH1F *temp_Btag =temp_helpBtag->Rebin(20,"temp_Btag");
-		//TH1F *temp_NoBtag=temp_helpNoBtag->Rebin(20,"temp_NoBtag");
-	//	hnew->Draw();
-	//hnew->Write();
-	//temp_Btag->Rebin(20);
-	//temp_NoBtag->Rebin(20);
+	sNoBtagEta<<"Btag/jet_eta_none_"<<flavors[a];
+	TH1F* tempBtag;
+	TH1F* tempNoBtag;
+	TH1F *h_Btag;
+	TH1F *h_NoBtag;
+	
+	TH1F* tempBtagEta;
+	TH1F* tempNoBtagEta;
+	TH1F *h_BtagEta;
+	TH1F *h_NoBtagEta;
 
-		temp_Btag->SetName((sOP2.str()).c_str());
-	temp_NoBtag->SetName((sOP2.str()).c_str());
+	tempBtag = (TH1F*) filelist[file]->Get((sOP2.str()).c_str());
+	tempNoBtag = (TH1F*) filelist[file]->Get((sNoBtag.str()).c_str());
+	tempBtagEta = (TH1F*) filelist[file]->Get((sOP3.str()).c_str());
+	cout<<(sNoBtagEta.str()).c_str()<<endl;
+	tempNoBtagEta = (TH1F*) filelist[file]->Get((sNoBtagEta.str()).c_str());
+
+	tempBtag->Sumw2();
+	tempNoBtag->Sumw2();
+	tempBtagEta->Sumw2();
+	tempNoBtagEta->Sumw2();
+	
+		h_Btag =(TH1F*) tempBtag->Rebin(26,"h_Btag",xbins);
+		h_NoBtag=(TH1F*) tempNoBtag->Rebin(26,"h_NoBtag",xbins);
+
+		h_BtagEta =(TH1F*) tempBtagEta->Rebin(3,"h_Btag");
+		h_NoBtagEta=(TH1F*) tempNoBtagEta->Rebin(3,"h_Btag");
+
+		h_Btag->SetName((sOP2.str()).c_str());
+	h_NoBtag->SetName((sOP2.str()).c_str());
+	h_BtagEta->SetName((sOP3.str()).c_str());
+	h_NoBtagEta->SetName((sOP3.str()).c_str());
 	fnew1.cd(dir);
 	//temp_Btag->Write();
 	//temp_NoBtag->Write();
 	std::stringstream seff;
 	seff<<"BTagEff_"<<op_name[i]<<"_"<<flavors[a];
+		std::stringstream seffEta;
+	seffEta<<"BTagEffEta_"<<op_name[i]<<"_"<<flavors[a];
 	//TH1F* BTagEff= new TH1F((seff.str()).c_str(),(seff.str()).c_str(),500,0,1000);
 	TH1F* BTagEff;
-	BTagEff=(TH1F*) temp_Btag->Clone();
-	BTagEff->Divide(temp_NoBtag);
+	TH1F* BTagEffEta;
+	BTagEff=(TH1F*) h_Btag->Clone();
+	BTagEff->Divide(h_NoBtag);
 	BTagEff->SetName((seff.str()).c_str());
 	BTagEff->SetTitle((seff.str()).c_str());
+	BTagEffEta=(TH1F*) h_BtagEta->Clone();
+	BTagEffEta->Divide(h_NoBtagEta);
+	BTagEffEta->SetName((seffEta.str()).c_str());
+	BTagEffEta->SetTitle((seffEta.str()).c_str());
 	fnew1.cd(dir);
 	BTagEff->Write();
-	
+	BTagEffEta->Write();
 	float scalef=1;
 
       }
