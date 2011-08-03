@@ -7,7 +7,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.maxEvents = cms.untracked.PSet(
     #input = cms.untracked.int32(-1)
-    input = cms.untracked.int32(20000)
+    input = cms.untracked.int32(9000)
     )
 
 process.source = cms.Source("PoolSource",
@@ -15,19 +15,22 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     #'file:/cms/dan/Data/Collisions11/PDs/ReReco/42X/SingleElv1v2May10/trigVal_patTuple_100_0_OwZ.root'
     #'file:/cms/dan/Data/Collisions11/PDs/ReReco/42X/SingleElv1v2May10/trigVal_patTuple_121_0_SjW.root'
-#'file:/cms/dan/Data/Collisions11/PDs/ReReco/42X/SingleElv1v2May10/trigVal_patTuple_143_0_W4u.root',
-#'file:/cms/data21/clseitz/MCgeneration/Wprime/Wprime_42X_PAT.root'
+    #'file:/cms/dan/Data/Collisions11/PDs/ReReco/42X/SingleElv1v2May10/trigVal_patTuple_143_0_W4u.root',
+    #'file:/cms/data21/clseitz/MCgeneration/Wprime/Wprime_42X_PAT.root'
     #'file:/cms/data22/ssirisky/MCGen_Summer11/113/200/RPVM200Fastsim42x_6_15_11_0.root'
-    'file:/cms/data24/clseitz/MC_4_2_4/TTbarJets/TTbarJets_0.root'
+  #'file:/cms/data24/clseitz/MC_4_2_4/TTbarJets/TTbarJets_0.root'
+    '/store/user/lpctlbsm/srappocc/TTJets_TuneZ2_7TeV-madgraph-tauola/ttbsm_v8_Summer11-PU_S4_START42_V11-v1/5c91b0700768331a44f51c8a9892d391/ttbsm_42x_mc_9_1_59c.root'
+
+    
     )
 )
 
 process.demo = cms.EDAnalyzer('TopXana',
                      sumPtMin       = cms.untracked.double(0.0), 
 debug          = cms.untracked.bool(False), 
-outputFilename = cms.untracked.string('/cms/data21/clseitz/CMS_leptons/TTbarJets/NewCode3/TTbarJets0_20000_a.root'),
-outputFilename2= cms.untracked.string('debug4.root'),
-PatJetType     = cms.untracked.string('selectedPatJetsAK5PF'),
+outputFilename = cms.untracked.string('test.root'),
+outputFilename2= cms.untracked.string('test2.root'),
+PatJetType     = cms.untracked.string('goodPatJetsPFlow'),
 htTrigger      = cms.untracked.string('HLT_HT360_v2'),
 NjetsMin       = cms.untracked.int32(3),
 NjetsMax       = cms.untracked.int32(1000),
