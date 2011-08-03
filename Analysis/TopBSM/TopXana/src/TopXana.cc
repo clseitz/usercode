@@ -1,4 +1,4 @@
-  // -*- C++ -*-
+ // -*- C++ -*-
 //
 // Package:    TopXana
 // Class:      TopXana
@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.3 2011/07/25 22:56:24 clseitz Exp $
+// $Id: TopXana.cc,v 1.4 2011/07/29 14:19:53 clseitz Exp $
 //
 //
 
@@ -55,6 +55,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
+#include "TopBSM/TopXana/interface/EgammaTowerIsolation.h"
+
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -200,7 +202,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    DoVertexID(iEvent);
    DoElectronID(iEvent);
    DoMuonID(iEvent);
-   DoPhotonID(iEvent);
+   //DoPhotonID(iEvent);
    DoMETID(iEvent);
 
    //make some plots before cleanup 
@@ -683,7 +685,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }*/
    
    //fill the tree use golden JSON file
-   GetMCTruth(iEvent);
+   //GetMCTruth(iEvent);
    MyTree->Fill();
    entry++;
    
@@ -1091,7 +1093,7 @@ TopXana::endJob()
    h_SumptSig4SecondHighestMinus_5jet2b->Write();
 
 
-  outputFile->cd();
+   /*  outputFile->cd();
   TDirectory* now=outputFile->mkdir("Triplets");
   outputFile->cd("Triplets");
  h_LeptonPt->Write();
@@ -1123,7 +1125,7 @@ for (int i=0; i<7; i++){
       }
     }
   }
-
+   */
 
 }
 
@@ -1262,7 +1264,7 @@ void
 TopXana::DoVertexID(const edm::Event& iEvent){
 
   edm::Handle<reco::VertexCollection>  recVtxs;
-  iEvent.getByLabel("offlinePrimaryVertices", recVtxs);
+  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
   
  
   
@@ -1288,33 +1290,68 @@ TopXana::DoElectronID(const edm::Event& iEvent){
   Handle< vector<Electron> > PatElectrons;
   iEvent.getByLabel("selectedPatElectrons", PatElectrons);
 
-// begin electron loop                                                                                                                                               
+// begin electron loop                                                                                                                                   
+  cout<<"------------new event --------------"<<endl;        
   for (unsigned int j=0; j<PatElectrons->size(); j++) {
-    //Fill all electrons                                                                                                                                               
-  
-    bool passconv=false;
+    //Fill all electrons  
+    //continue actually skips all the rest and moves on to the next loop entry
+    //eta cuts
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 2.5) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.442 && fabs((*PatElectrons)[j].superCluster()->eta())< 1.566) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.442 && (*PatElectrons)[j].scSigmaIEtaIEta()<0.001) continue;
+   
+    // Spike clean: kTime || kWeird || kBad  
+    if((*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==3 || (*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==4 
+       || (*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==5) continue;
+   
+    //coversion
+    const reco::Track *eleTrk = (const reco::Track*)( (*PatElectrons)[j].gsfTrack().get());  
+    const reco::HitPattern& p_inner = eleTrk->trackerExpectedHitsInner(); 
+    int NumberOfExpectedInnerHits = p_inner.numberOfHits();
+    //DOUBLE CHECK YURI HAS !=0 but twiki says
+    //If NumberOfExpectedInnerHits is greater than 1, then the electron is 
+    //vetoed as from a converted photon and should be rejected in an analysis looking for prompt photons.
+    if (NumberOfExpectedInnerHits != 0) continue;
+   
+    // H2WW WP80 for barrel   
+    edm::Handle<double> rhoH;
+    iEvent.getByLabel(edm::InputTag("kt6PFJets","rho"),rhoH);
+    double rho = *(rhoH.product());
 
-    int eleid = (*PatElectrons)[j].electronID("simpleEleId80relIso");
-    if (eleid ==7) passconv=true; // passes conversion rejection and everything else                                                                                   
-    //        0: fails                                                                                                                                                 
-    //        1: passes electron ID only                                                                                                                               
-    //        2: passes electron Isolation only                                                                                                                        
-    //        3: passes electron ID and Isolation only                                                                                                                 
-    //        4: passes conversion rejection                                                                                                                           
-    //        5: passes conversion rejection and ID                                                                                                                    
-    //        6: passes conversion rejection and Isolation                                                                                                             
-    //        7: passes the whole selection                                                                                                                            
+    //NEED TO FIX ISOLATION -> RIGHT NOW LIK IN YURIS CODE
+    //cout<<j<<" "<<(*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03")<<endl;  
+    /*edm::Handle<CaloTowerCollection> towerHandle;
+      iEvent.getByLabel("towerMaker", towerHandle);
+     const CaloTowerCollection* towers = towerHandle.product();
+     EgammaTowerIsolation myHcalIsoDR03(0.3, 0., 0, -1, towers);
+    */                                               
+    //BARREL
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 &&
+	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) +  (*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03") + 
+	 (*PatElectrons)[j].dr03TkSumPt()  - rho*3.1415927*0.3*0.3)/(*PatElectrons)[j].pt() > 0.04) continue;
+   
+    
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 &&  (*PatElectrons)[j].scSigmaIEtaIEta() > 0.01) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 && fabs((*PatElectrons)[j].deltaPhiSuperClusterTrackAtVtx()) > 0.027) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 && fabs((*PatElectrons)[j].deltaEtaSuperClusterTrackAtVtx()) > 0.005) continue;
+    
+    //ENDCAP
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.566 &&
+	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) +  (*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03") + 
+	 (*PatElectrons)[j].dr03TkSumPt()  - rho*3.1415927*0.3*0.3)/(*PatElectrons)[j].pt() > 0.033) continue;
+    
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  (*PatElectrons)[j].scSigmaIEtaIEta() > 0.031) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  fabs((*PatElectrons)[j].deltaPhiSuperClusterTrackAtVtx()) > 0.021) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 && fabs((*PatElectrons)[j].deltaEtaSuperClusterTrackAtVtx())  > 0.006) continue;
 
 
-    // Electron ID in Barrel                                                                                                                                           
-    if ((*PatElectrons)[j].pt()>20.0 && fabs((*PatElectrons)[j].eta())<2.1) {
-      if (passconv==true) {
+
+ if ((*PatElectrons)[j].pt()>20.0 && fabs((*PatElectrons)[j].eta())<2.1) {
         //passes electron Id                                                                                                                                           
           fGoodElectrons.push_back((*PatElectrons)[j]);
 	  nGoodElectrons++;
-          
-        } // eleid in eb                                                                                                                                               
-    } // pt eta cuts in eb                                                                                                                                             
+ }
+
 
   } // pat electron loop     
  
@@ -1325,26 +1362,32 @@ void
 TopXana::DoMuonID(const edm::Event& iEvent){
 
   Handle< vector<Muon> > PatMuons; 
-  iEvent.getByLabel("selectedPatMuons", PatMuons); 
-  
-   for (unsigned int j=0; j<PatMuons->size(); j++) {
-  
+  iEvent.getByLabel("selectedPatMuons", PatMuons);
+  //also get the vertices for some cuts
+   edm::Handle<reco::VertexCollection>  recVtxs;
+  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
+  //Get rho for isolations 
+  edm::Handle<double> rhoH;
+  iEvent.getByLabel(edm::InputTag("kt6PFJets","rho"),rhoH);
+  double rho = *(rhoH.product());
+  for (unsigned int j=0; j<PatMuons->size(); j++) {
+    
     double relIso = ((*PatMuons)[j].trackIso()  +
                      (*PatMuons)[j].ecalIso()   +
-                     (*PatMuons)[j].hcalIso()) / (*PatMuons)[j].pt();
+                     (*PatMuons)[j].hcalIso()- rho*3.1415927*0.3*0.3) / (*PatMuons)[j].pt();
 
     int    nValidHits        = -1;
     int    nValidTrackerHits = -1;
     int    nValidPixelHits   = -1;
     ////EVA ORIGINAL
-    /*
+    
     if ((*PatMuons)[j].globalTrack().isNonnull()) {
       nValidHits        = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidMuonHits();
       nValidTrackerHits = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidTrackerHits();
       nValidPixelHits   = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidPixelHits();
-      }*/
+      }
     ///////DEAN
-    if ((*PatMuons)[j].globalTrack().isNonnull()) {
+    /*if ((*PatMuons)[j].globalTrack().isNonnull()) {
       nValidHits = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidMuonHits();
     }
 
@@ -1352,7 +1395,7 @@ TopXana::DoMuonID(const edm::Event& iEvent){
       nValidTrackerHits = (*PatMuons)[j].innerTrack()->numberOfValidHits();
       nValidPixelHits   = (*PatMuons)[j].innerTrack()->hitPattern().pixelLayersWithMeasurement();
     }
-
+    */
     int stations = 0;
     unsigned stationMask((*PatMuons)[j].stationMask());
     for(unsigned i=0; i < 8; ++i)
@@ -1360,23 +1403,18 @@ TopXana::DoMuonID(const edm::Event& iEvent){
 
     if ((*PatMuons)[j].pt()>20.0 && fabs((*PatMuons)[j].eta())<2.1) {
      
-      if((*PatMuons)[j].isGlobalMuon()  &&
+       if((*PatMuons)[j].isGlobalMuon()  &&
 	 (*PatMuons)[j].isTrackerMuon() && 
 	 nValidHits                >  0 && 
 	 nValidTrackerHits         > 10 &&
 	 nValidPixelHits           >  0 &&
-	 (*PatMuons)[j].dB()       <  0.02 &&
+	 (*PatMuons)[j].globalTrack()->dxy((*recVtxs)[0].position())<0.02 &&
+	 (*PatMuons)[j].globalTrack()->dz((*recVtxs)[0].position())<0.1 &&
+	 //(*PatMuons)[j].dB()       <  0.02 &&
 	 (*PatMuons)[j].globalTrack()->normalizedChi2() < 10 && 
 	 stations                > 1) {
 
-	//	 stations                > 0) {
-
-	if( (relIso  >  0.15) && (relIso < 0.25) ) {
-	  fFakeMuons.push_back((*PatMuons)[j]);
-	  
-	}
-
-	if( relIso  <  0.15) { // is good muon
+	if( relIso  <  0.1) { // is good muon
 	  //fill cut muon for all good muons that pass reliso
 
 	 fGoodMuons.push_back((*PatMuons)[j]);
@@ -1384,7 +1422,7 @@ TopXana::DoMuonID(const edm::Event& iEvent){
 
 	  
 	} // reliso
-      } // global, tracker muons
+	} // global, tracker muons
     } // eta pt of muon
   } // muon loop 
   
@@ -1419,7 +1457,7 @@ TopXana::DoPhotonID(const edm::Event& iEvent){
 void
 TopXana::DoMETID(const edm::Event& iEvent){
   Handle< vector<MET> >      MetColl;
-  iEvent.getByLabel("patMETsPF",  MetColl);
+  iEvent.getByLabel("patMETsPFlow",  MetColl);
   fMET=(*MetColl)[0];
   
   
@@ -1497,12 +1535,12 @@ TopXana::DoCleanUp(vector<Muon >fGoodMuons,vector<Electron >fGoodElectrons,vecto
 
   return;
 }
-void 
+/*void 
 TopXana::GetMCTruth(const edm::Event& iEvent){
   if(!_isData){
     
     Handle< vector<reco::GenParticle> > GenParticles; 
-    iEvent.getByLabel("genParticles", GenParticles);  
+    iEvent.getByLabel("GenParticles", GenParticles);  
     for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
       //cout<<p<<endl; 
       //use only that hard process
@@ -1521,7 +1559,7 @@ TopXana::GetMCTruth(const edm::Event& iEvent){
   }
   return;
 }
- 
+*/
 void
 TopXana::MakeTriplets(vector<Jet >fCleanJets){
    const int nCombs = TMath::Factorial(nCleanJets)/(TMath::Factorial(nCleanJets - 3)*TMath::Factorial(3));

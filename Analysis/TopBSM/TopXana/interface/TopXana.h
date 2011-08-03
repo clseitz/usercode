@@ -29,6 +29,17 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include <fstream>
+#include <vector>
+#include <functional>
+
+//CMSSW includes
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "DataFormats/RecoCandidate/interface/RecoCandidate.h"
+#include "DataFormats/CaloTowers/interface/CaloTowerCollection.h"
+#include "DataFormats/EgammaReco/interface/SuperCluster.h"
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
+#include "DataFormats/CaloTowers/interface/CaloTowerDetId.h"
+
 
 using namespace std;
 using namespace edm;
@@ -40,7 +51,6 @@ class TopXana : public edm::EDAnalyzer {
   ~TopXana();
   
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-  
   
  private:
   virtual void beginJob();
