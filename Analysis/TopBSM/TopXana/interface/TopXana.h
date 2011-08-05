@@ -180,6 +180,12 @@ class TopXana : public edm::EDAnalyzer {
   TH1F* h_TransMassLepMET4JetMinus_5jet2b;
   TH1F* h_TransMassLepMET4JetMinus_4jet2b;
 
+
+  TH1F* h_TransMassLepMET5JetPlus_5jet1b;
+  TH1F* h_TransMassLepMET5JetPlus_5jet2b;
+  TH1F* h_TransMassLepMET5JetMinus_5jet1b;
+  TH1F* h_TransMassLepMET5JetMinus_5jet2b;
+
   //define variables that we need for the triplets
   std::vector <std::vector<pat::Jet > > Triplet;
   std::vector<double> nMCBtagTriplet;
@@ -255,25 +261,36 @@ class TopXana : public edm::EDAnalyzer {
   float  jetpz[500];
   float  jete[500];
   float  jetpt[500];
-  
+  float bdiscTCHE[500];
+  float bdiscTCHP[500];
+  float bdiscSSVHE[500];
+  float bdiscSSSVHP[500];
+
   int nElectrons;
   float  epx[500];
   float  epy[500];
   float  epz[500];
   float  ee[500];
   float  ept[500];
+  int    echarge[500];
+
   int nMuons;
   float  mpx[500];
   float  mpy[500];
   float  mpz[500];
   float  me[500];
   float  mpt[500];
+  float mcharge[500];
+
   int nPhotons;
   float  phpx[500];
   float phpy[500];
   float  phpz[500];
   float  phe[500];
   float  phpt[500];
+  float pfMET;
+  float pfMETphi;
+
   //the triplets here could handle 30 jets  with combinaotriz
   
   float triplet_jet1pt[5000];

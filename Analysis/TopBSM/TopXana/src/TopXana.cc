@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.4 2011/07/29 14:19:53 clseitz Exp $
+// $Id: TopXana.cc,v 1.5 2011/08/03 04:46:13 clseitz Exp $
 //
 //
 
@@ -55,7 +55,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "TopBSM/TopXana/interface/EgammaTowerIsolation.h"
+//#include "TopBSM/TopXana/interface/EgammaTowerIsolation.h"
+#include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
 
 #include <iostream>
 #include <algorithm>
@@ -240,7 +241,11 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      jetpy[i]=fCleanJets[i].py();
      jetpz[i]=fCleanJets[i].pz();
      jete[i]=fCleanJets[i].energy();	 
-     
+     bdiscTCHE[i]=fCleanJets[i].bDiscriminator("trackCountingHighEffBJetTags");
+     bdiscTCHP[i]=fCleanJets[i].bDiscriminator("trackCountingHighPurBJetTags");
+     bdiscSSVHE[i]=fCleanJets[i].bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
+     bdiscSSSVHP[i]=fCleanJets[i].bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
+
      
    }
    nElectrons=nCleanElectrons;
@@ -255,7 +260,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      epy[i]=fCleanElectrons[i].py();
      epz[i]=fCleanElectrons[i].pz();
      ee[i]=fCleanElectrons[i].energy();	 
-     
+     echarge[i]=fCleanElectrons[i].charge();
      
    }
    nMuons=nCleanMuons;
@@ -269,7 +274,8 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      mpx[i]=fCleanMuons[i].px();
      mpy[i]=fCleanMuons[i].py();
      mpz[i]=fCleanMuons[i].pz();
-     me[i]=fCleanMuons[i].energy();	 
+     me[i]=fCleanMuons[i].energy();
+     mcharge[i]=fCleanMuons[i].charge();
      
      
    }
@@ -288,6 +294,8 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      
    }
    h_MET->Fill(fMET.et());
+   pfMET= fMET.et();
+   pfMETphi=fMET.phi();
    ///////////////////////////
    ////////EVENT SELECTION FOR PLOTS -> TREE HAS EVERYTHING
    /////////////////////////
@@ -383,12 +391,22 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     float SumptSig4SecondHighest=0;
 		     SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
 		       /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
+		     TLorentzVector v_TransMassLepMET5Jet;
+		     v_TransMassLepMET4Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px()+fCleanJets[4].px());
+		     v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py()+fCleanJets[4].py());
+		     v_TransMassLepMET4Jet.SetPz(0);
+		     v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et()+fCleanJets[4].et());
 
 		     h_NumEvtCut->Fill(9);
 		     if(fLepton.charge()==+1 && nBJet35>=1) h_TransMassLepMET4JetPlus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
 		     if(fLepton.charge()==+1 && nBJet35>=2) h_TransMassLepMET4JetPlus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
 		     if(fLepton.charge()==-1 && nBJet35>=1) h_TransMassLepMET4JetMinus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
 		     if(fLepton.charge()==-1 && nBJet35>=2) h_TransMassLepMET4JetMinus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
+
+		     if(fLepton.charge()==+1 && nBJet35>=1) h_TransMassLepMET5JetPlus_5jet1b->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) h_TransMassLepMET5JetPlus_5jet2b->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) h_TransMassLepMET5JetMinus_5jet1b->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) h_TransMassLepMET5JetMinus_5jet2b->Fill(v_TransMassLepMET5Jet.Mag());				
 
 		     if(fLepton.charge()==+1 && nBJet35>=1) h_SumptSig4HighestPlus_5jet1b->Fill(SumptSig4Highest);
 		     if(fLepton.charge()==+1 && nBJet35>=2) h_SumptSig4HighestPlus_5jet2b->Fill(SumptSig4Highest);
@@ -399,6 +417,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     if(fLepton.charge()==+1 && nBJet35>=2) h_SumptSig4SecondHighestPlus_5jet2b->Fill(SumptSig4SecondHighest);
 		     if(fLepton.charge()==-1 && nBJet35>=1) h_SumptSig4SecondHighestMinus_5jet1b->Fill(SumptSig4SecondHighest);
 		     if(fLepton.charge()==-1 && nBJet35>=2) h_SumptSig4SecondHighestMinus_5jet2b->Fill(SumptSig4SecondHighest);
+
 		   }
 		   
 		 }
@@ -618,11 +637,13 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
     
    //call function that makes the triplets for all events that pass the minimum lepton ID but enough good jets
-   /*if(enoughCleanJets && minCleanLeptons){
+    if(enoughCleanJets){
   
-  nTriplets=0;
+      nTriplets=0;
+      
+      MakeTriplets(fCleanJets); 
+      
   
-  MakeTriplets(fCleanJets);  
   if(enoughCleanLeptons){
     h_LeptonPt->Fill(fLeptonPt);
     if (nCleanElectrons==1)    h_ElectronPt->Fill( fElectronPt);
@@ -682,7 +703,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        }//triplet loop
      
    }
-   }*/
+   }
    
    //fill the tree use golden JSON file
    //GetMCTruth(iEvent);
@@ -736,9 +757,7 @@ TopXana::beginJob()
 
 
   countE=0;
-run_evt_ee.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_ee.txt");
-run_evt_em.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_em.txt");
-run_evt_mm.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_mm.txt");
+
   //define the tree we want to write out
   outputFile2= new TFile(_outputFilename2.data(),"recreate"); 
   outputFile2->cd();
@@ -759,13 +778,18 @@ run_evt_mm.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_mm.
   MyTree->Branch("nMuons", &nMuons);
   MyTree->Branch("nPhotons", &nPhotons);
   MyTree->Branch("nTriplets", &nTriplets);
- MyTree->Branch("nGoodVtx", &nGoodVtx);
-
+  MyTree->Branch("nGoodVtx", &nGoodVtx);
+  MyTree->Branch("pfMET", &pfMET);
+  MyTree->Branch("pfMETphi", &pfMETphi);
   MyTree->Branch("jetpt[nJets]", jetpt);
   MyTree->Branch("jetpx[nJets]", jetpx);
   MyTree->Branch("jetpy[nJets]", jetpy);
   MyTree->Branch("jetpz[nJets]", jetpz);
   MyTree->Branch("jete[nJets]", jete);
+  MyTree->Branch("bdiscTCHE[nJets]", bdiscTCHE);
+  MyTree->Branch("bdiscTCHP[nJets]", bdiscTCHP);
+  MyTree->Branch("bdiscSSVHE[nJets]", bdiscSSVHE);
+  MyTree->Branch("bdiscSSSVHP[nJets]",bdiscSSSVHP);
 
  
   MyTree->Branch("ept[nElectrons]", ept);
@@ -773,20 +797,21 @@ run_evt_mm.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_mm.
   MyTree->Branch("epy[nElectrons]", epy);
   MyTree->Branch("epz[nElectrons]", epz);
   MyTree->Branch("ee[nElectrons]", ee);
-  
+   MyTree->Branch("echarge[nElectrons]", echarge);
  
   MyTree->Branch("mpt[nMuons]", mpt);
   MyTree->Branch("mpx[nMuons]", mpx);
   MyTree->Branch("mpy[nMuons]", mpy);
   MyTree->Branch("mpz[nMuons]", mpz);
   MyTree->Branch("me[nMuons]", me);
-  
+  MyTree->Branch("mcharge[nMuons]", mcharge);
  
   MyTree->Branch("phpt[nPhotons]", phpt);
   MyTree->Branch("phpx[nPhotons]", phpx);
   MyTree->Branch("phpy[nPhotons]", phpy);
   MyTree->Branch("phpz[nPhotons]", phpz);
   MyTree->Branch("phe[nPhotons]", phe);
+
   
   MyTree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
   MyTree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
@@ -876,6 +901,11 @@ run_evt_mm.open ("/cms/data21/clseitz/CMS_leptons/Electrons/NewCode3/run_evt_mm.
   h_TransMassLepMET4JetMinus_4jet2b = new TH1F("TransMassLepMET4JetMinus_4jet2b","TransMassLepMET4JetMinus_4jet2b",200,0,2000);
   h_TransMassLepMET4JetMinus = new TH1F("TransMassLepMET4JetMinus","TransMassLepMET4JetMinus",400,0,4000);
   h_TransMassLepMET4SecondJetMinus = new TH1F("TransMassLepMET4SecondJetMinus","TransMassLepMET4SecondJetMinus",400,0,4000);
+
+  h_TransMassLepMET5JetPlus_5jet1b = new TH1F("TransMassLepMET5JetPlus_5jet1b","TransMassLepMET5JetPlus_5jet1b",200,0,2000);
+  h_TransMassLepMET5JetPlus_5jet2b = new TH1F("TransMassLepMET5JetPlus_5jet2b","TransMassLepMET5JetPlus_5jet2b",200,0,2000);
+   h_TransMassLepMET5JetMinus_5jet1b = new TH1F("TransMassLepMET5JetMinus_5jet1b","TransMassLepMET5JetMinus_5jet1b",200,0,2000);
+  h_TransMassLepMET5JetMinus_5jet2b = new TH1F("TransMassLepMET5JetMinus_5jet2b","TransMassLepMET5JetMinus_5jet2b",200,0,2000);
 
   h_SumptSig4HighestPlus_5jet1b = new TH1F("SumptSig4HighestPlus_5jet1b","SumptSig4HighesPlus_5jet1b",200,0,2);
    h_SumptSig4HighestPlus_4jet1b = new TH1F("SumptSig4HighestPlus_4jet1b","SumptSig4HighesPlus_4jet1b",200,0,2);
@@ -1077,6 +1107,11 @@ TopXana::endJob()
    h_TransMassLepMET4JetMinus_5jet2b->Write();
    h_TransMassLepMET4JetMinus_4jet2b->Write();
 
+   h_TransMassLepMET5JetPlus_5jet1b->Write();
+   h_TransMassLepMET5JetPlus_5jet2b->Write();
+   h_TransMassLepMET5JetMinus_5jet1b->Write();
+   h_TransMassLepMET5JetMinus_5jet2b->Write();
+
    h_SumptSig4HighestPlus_5jet1b->Write();
    h_SumptSig4HighestPlus_4jet1b->Write();
    h_SumptSig4HighestPlus_5jet2b->Write();
@@ -1093,7 +1128,7 @@ TopXana::endJob()
    h_SumptSig4SecondHighestMinus_5jet2b->Write();
 
 
-   /*  outputFile->cd();
+     outputFile->cd();
   TDirectory* now=outputFile->mkdir("Triplets");
   outputFile->cd("Triplets");
  h_LeptonPt->Write();
@@ -1125,8 +1160,7 @@ for (int i=0; i<7; i++){
       }
     }
   }
-   */
-
+   
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -1291,7 +1325,7 @@ TopXana::DoElectronID(const edm::Event& iEvent){
   iEvent.getByLabel("selectedPatElectrons", PatElectrons);
 
 // begin electron loop                                                                                                                                   
-  cout<<"------------new event --------------"<<endl;        
+  //cout<<"------------new event --------------"<<endl;        
   for (unsigned int j=0; j<PatElectrons->size(); j++) {
     //Fill all electrons  
     //continue actually skips all the rest and moves on to the next loop entry
@@ -1312,22 +1346,24 @@ TopXana::DoElectronID(const edm::Event& iEvent){
     //If NumberOfExpectedInnerHits is greater than 1, then the electron is 
     //vetoed as from a converted photon and should be rejected in an analysis looking for prompt photons.
     if (NumberOfExpectedInnerHits != 0) continue;
-   
+
+   if (fabs((*PatElectrons)[j].convDist()) < 0.02 && fabs((*PatElectrons)[j].convDcot()) < 0.02) continue;
     // H2WW WP80 for barrel   
     edm::Handle<double> rhoH;
     iEvent.getByLabel(edm::InputTag("kt6PFJets","rho"),rhoH);
     double rho = *(rhoH.product());
 
-    //NEED TO FIX ISOLATION -> RIGHT NOW LIK IN YURIS CODE
-    //cout<<j<<" "<<(*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03")<<endl;  
-    /*edm::Handle<CaloTowerCollection> towerHandle;
-      iEvent.getByLabel("towerMaker", towerHandle);
-     const CaloTowerCollection* towers = towerHandle.product();
-     EgammaTowerIsolation myHcalIsoDR03(0.3, 0., 0, -1, towers);
-    */                                               
+
+    float hcalDepth1TowerSumEt03 = (*PatElectrons)[j].dr03HcalDepth1TowerSumEt();
+    float hcalDepth2TowerSumEt03 = (*PatElectrons)[j].dr03HcalDepth2TowerSumEt();
+     
+     float HCALFullConeSum = hcalDepth1TowerSumEt03+hcalDepth2TowerSumEt03;
+     //cout<<HCALFullConeSum<<endl;
+
+                                                
     //BARREL
     if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 &&
-	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) +  (*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03") + 
+	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) + HCALFullConeSum + 
 	 (*PatElectrons)[j].dr03TkSumPt()  - rho*3.1415927*0.3*0.3)/(*PatElectrons)[j].pt() > 0.04) continue;
    
     
@@ -1336,9 +1372,8 @@ TopXana::DoElectronID(const edm::Event& iEvent){
     if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 && fabs((*PatElectrons)[j].deltaEtaSuperClusterTrackAtVtx()) > 0.005) continue;
     
     //ENDCAP
-    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.566 &&
-	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) +  (*PatElectrons)[j].userFloat("eleHcalTowerIsoPUDR03") + 
-	 (*PatElectrons)[j].dr03TkSumPt()  - rho*3.1415927*0.3*0.3)/(*PatElectrons)[j].pt() > 0.033) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&
+	((*PatElectrons)[j].dr03TkSumPt() + (*PatElectrons)[j].dr03EcalRecHitSumEt() + HCALFullConeSum - rho*3.1415927*0.3*0.3) / (*PatElectrons)[j].pt() > 0.033) continue;
     
     if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  (*PatElectrons)[j].scSigmaIEtaIEta() > 0.031) continue;
     if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  fabs((*PatElectrons)[j].deltaPhiSuperClusterTrackAtVtx()) > 0.021) continue;
@@ -1569,6 +1604,7 @@ TopXana::MakeTriplets(vector<Jet >fCleanJets){
      for (int i=0+0; i<nCleanJets-2; ++i) {
        for (int j=i+1; j<nCleanJets-1; ++j) {
 	 for (int k=j+1; k<nCleanJets-0; ++k) {
+	   
 	   TLorentzVector Jet1a; TLorentzVector Jet2a; TLorentzVector Jet3a;
 	   //Jet1a.SetPxPyPzE(fCleanJets[i].px(),fCleanJets[i].py(), fCleanJets[i].pz(),  TMath::Sqrt( TMath::Power(fCleanJets[i].pt(), 2) + TMath::Power(fCleanJets[i].pz(), 2)+ TMath::Power(fCleanJets[i].mass(), 2))); 
 	   //Jet2a.SetPxPyPzE(fCleanJets[j].px(),fCleanJets[j].py(), fCleanJets[j].pz(),  TMath::Sqrt( TMath::Power(fCleanJets[j].pt(), 2) + TMath::Power(fCleanJets[j].pz(), 2) + TMath::Power(fCleanJets[j].mass(), 2))); 
@@ -1650,3 +1686,5 @@ TopXana::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(TopXana);
+
+
