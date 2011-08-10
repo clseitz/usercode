@@ -186,6 +186,23 @@ class TopXana : public edm::EDAnalyzer {
   TH1F* h_TransMassLepMET5JetMinus_5jet1b;
   TH1F* h_TransMassLepMET5JetMinus_5jet2b;
 
+  //redefining everything with vectors
+  vector <string > VarList;
+  vector <string > CutList;
+  std::vector<TH1F*> vh_SumptSig4Highest;
+  std::vector<TH1F*> vh_SumptSig4SecondHighest;
+  std::vector<TH1F*> vh_TransMassLepMET4Jet;
+  std::vector<TH1F*> vh_TransMassLepMET5Jet;
+ std::vector<TH1F*> vh_TransMassLepMET4JetB;
+  std::vector<TH1F*> vh_TransMassLepMET5JetB;
+
+  std::vector<TH1F*> vh_Mass3Jet2B;
+  std::vector<TH1F*> vh_MassLep1Jet;
+  std::vector<TH1F*> vh_MassLep1B;
+  std::vector<TH2F*> vh_MassLepB_vs_SumPt;
+  std::vector<TH1F*> vh_DeltaPhiLepMET;
+
+
   //define variables that we need for the triplets
   std::vector <std::vector<pat::Jet > > Triplet;
   std::vector<double> nMCBtagTriplet;
@@ -195,12 +212,14 @@ class TopXana : public edm::EDAnalyzer {
   std::vector<double> massQuad;
   pat::Jet AntiTripletHighestJet;
   pat::Jet Jet1; pat::Jet Jet2; pat::Jet Jet3; pat::Jet Jet4; 
+
   Int_t nTriplets;
   Int_t q;
   //define our own jet collection (just in case if we want to clean up also)
   std::vector<pat::Jet >      fGoodJets;
   std::vector<pat::Jet >      fCleanJets;
-  
+  std::vector<pat::Jet >      fBJets;
+  std::vector<pat::Jet >      fNoBJets;
   //electron collection
   std::vector<pat::Electron> fGoodElectrons;
   std::vector<pat::Electron> fCleanElectrons;

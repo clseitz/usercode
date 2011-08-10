@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.5 2011/08/03 04:46:13 clseitz Exp $
+// $Id: TopXana.cc,v 1.6 2011/08/05 14:21:22 clseitz Exp $
 //
 //
 
@@ -330,14 +330,25 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    float fElectronPt=0;
    float fMuonPt=0;
    //checking how many jets pass the chosen pt cut
-   int nJet35=0; int nBJet35=0;
+   int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();
    for (unsigned int i=0; i<fCleanJets.size(); i++){
      if (fCleanJets[i].pt()>35.0){
        nJet35=i+1;
-       if (fCleanJets[i].bDiscriminator("simpleSecondaryVertexHighEffBJetTags") > 1.74) nBJet35++;
-       
+       if (fCleanJets[i].bDiscriminator("simpleSecondaryVertexHighEffBJetTags") > 1.74)
+	 {
+	   nBJet35++;
+	   fBJets.push_back(fCleanJets[i]);
+	 }
+       if (fCleanJets[i].bDiscriminator("simpleSecondaryVertexHighEffBJetTags") <= 1.74)
+	 {
+	   nNoBJet35++;
+	   fNoBJets.push_back(fCleanJets[i]);
+	 }
      }
    }
+   //cout<<nJet35<<" "<<nBJet35<<" "<<nNoBJet35<<" "<<nBJet35+nNoBJet35<<endl;
+   //cout<<"------------"<<endl;
+   //cout<<fBJets.size()<<" "<<fNoBJets.size()<<endl;
    //if (nJet35>=1) cout <<nJet35<<"  "<<nBJet35<<endl;
    
    
@@ -365,6 +376,22 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
 		   v_TransMassLepMET4Jet.SetPz(0);
 		   v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
+		   TLorentzVector v_TransMassLepMET4Jet1B;
+		   if(nBJet35>=1 && nNoBJet35>=3){
+		   v_TransMassLepMET4Jet1B.SetPx(fLepton.px()+fMET.px()+fNoBJets[0].px()+fNoBJets[1].px()+fNoBJets[2].px()+fBJets[0].px());
+		   v_TransMassLepMET4Jet1B.SetPy(fLepton.py()+fMET.py()+fNoBJets[0].py()+fNoBJets[1].py()+fNoBJets[2].py()+fBJets[0].py());
+		   v_TransMassLepMET4Jet1B.SetPz(0);
+		   v_TransMassLepMET4Jet1B.SetE(fLepton.et()+fMET.et()+fNoBJets[0].et()+fNoBJets[1].et()+fNoBJets[2].et()+fBJets[0].et());
+		   }
+		   TLorentzVector v_TransMassLepMET4Jet2B;
+		   if(nBJet35>=2 && nNoBJet35>=2){
+		     v_TransMassLepMET4Jet2B.SetPx(fLepton.px()+fMET.px()+fNoBJets[0].px()+fNoBJets[1].px()+fBJets[0].px()+fBJets[1].px());
+		   v_TransMassLepMET4Jet2B.SetPy(fLepton.py()+fMET.py()+fNoBJets[0].py()+fNoBJets[1].py()+fBJets[0].py()+fBJets[1].py());
+		   v_TransMassLepMET4Jet2B.SetPz(0);
+		   v_TransMassLepMET4Jet2B.SetE(fLepton.et()+fMET.et()+fNoBJets[0].et()+fNoBJets[1].et()+fBJets[0].et()+fBJets[1].et());
+		   }
+
+
 		   float SumptSig4Highest=0;
 		   SumptSig4Highest=((fCleanJets[0].p4()+fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fLepton.p4()+fMET.p4()).pt())
 		     /(fCleanJets[0].pt()+fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fLepton.pt()+fMET.pt());
@@ -374,16 +401,58 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   v_TransMassLepMET.SetPy(fLepton.py()+fMET.py());
 		   v_TransMassLepMET.SetPz(0);
 		   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
+
 		   
-		   if(fLepton.charge()==+1 && nBJet35>=1) h_TransMassLepMET4JetPlus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-		   if(fLepton.charge()==+1 && nBJet35>=2) h_TransMassLepMET4JetPlus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-		   if(fLepton.charge()==-1 && nBJet35>=1) h_TransMassLepMET4JetMinus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-		   if(fLepton.charge()==-1 && nBJet35>=2) h_TransMassLepMET4JetMinus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
+
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet[0]->Fill(v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet[1]->Fill(v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[2]->Fill(v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[3]->Fill(v_TransMassLepMET4Jet.Mag());
+		   
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4JetB[0]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4JetB[1]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4JetB[2]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4JetB[3]->Fill(v_TransMassLepMET4Jet2B.Mag());
+
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4Highest[0]->Fill(SumptSig4Highest);
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_SumptSig4Highest[1]->Fill(SumptSig4Highest);
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_SumptSig4Highest[2]->Fill(SumptSig4Highest);
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_SumptSig4Highest[3]->Fill(SumptSig4Highest);
+
 		  
-		   if(fLepton.charge()==+1 && nBJet35>=1) h_SumptSig4HighestPlus_4jet1b->Fill(SumptSig4Highest);
-		   if(fLepton.charge()==+1 && nBJet35>=2) h_SumptSig4HighestPlus_4jet2b->Fill(SumptSig4Highest);
-		   if(fLepton.charge()==-1 && nBJet35>=1) h_SumptSig4HighestMinus_4jet1b->Fill(SumptSig4Highest);
-		   if(fLepton.charge()==-1 && nBJet35>=2) h_SumptSig4HighestMinus_4jet2b->Fill(SumptSig4Highest);
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_MassLep1Jet[0]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_MassLep1Jet[1]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_MassLep1Jet[2]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_MassLep1Jet[3]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+
+		   if(fLepton.charge()==+1 && nBJet35>=1){
+		     vh_MassLep1B[0]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[0]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		   }
+		   if(fLepton.charge()==+1 && nBJet35>=2) {
+		     vh_MassLep1B[1]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLep1B[1]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
+		     vh_MassLepB_vs_SumPt[1]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[1]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
+		   }
+		   if(fLepton.charge()==-1 && nBJet35>=1){
+		     vh_MassLep1B[2]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[2]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		   }
+		   if(fLepton.charge()==-1 && nBJet35>=2){
+		     vh_MassLep1B[3]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLep1B[3]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
+		     vh_MassLepB_vs_SumPt[3]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[3]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
+		   }
+   
+		  
+		  
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[0]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[1]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[2]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[3]->Fill(pfMETphi-fLepton.phi());
+
 		   
 		  		   
 		   if(nJet35 >=5){
@@ -392,31 +461,101 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
 		       /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
 		     TLorentzVector v_TransMassLepMET5Jet;
-		     v_TransMassLepMET4Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px()+fCleanJets[4].px());
-		     v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py()+fCleanJets[4].py());
-		     v_TransMassLepMET4Jet.SetPz(0);
-		     v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et()+fCleanJets[4].et());
+		     v_TransMassLepMET5Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px()+fCleanJets[4].px());
+		     v_TransMassLepMET5Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py()+fCleanJets[4].py());
+		     v_TransMassLepMET5Jet.SetPz(0);
+		     v_TransMassLepMET5Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et()+fCleanJets[4].et());
+
+
+		      TLorentzVector v_TransMassLepMET5Jet1B;
+		   if(nBJet35>=1 && nNoBJet35>=4){
+		   v_TransMassLepMET4Jet1B.SetPx(fLepton.px()+fMET.px()+fNoBJets[0].px()+fNoBJets[1].px()+fNoBJets[2].px()+fNoBJets[3].px()+fBJets[0].px());
+		   v_TransMassLepMET4Jet1B.SetPy(fLepton.py()+fMET.py()+fNoBJets[0].py()+fNoBJets[1].py()+fNoBJets[2].py()+fNoBJets[3].py()+fBJets[0].py());
+		   v_TransMassLepMET4Jet1B.SetPz(0);
+		   v_TransMassLepMET4Jet1B.SetE(fLepton.et()+fMET.et()+fNoBJets[0].et()+fNoBJets[1].et()+fNoBJets[2].et()+fNoBJets[3].et()+fBJets[0].et());
+		   }
+		   TLorentzVector v_TransMassLepMET5Jet2B;
+		   if(nBJet35>=2 && nNoBJet35>=3){
+		     v_TransMassLepMET4Jet2B.SetPx(fLepton.px()+fMET.px()+fNoBJets[0].px()+fNoBJets[1].px()+fNoBJets[2].px()+fBJets[0].px()+fBJets[1].px());
+		   v_TransMassLepMET4Jet2B.SetPy(fLepton.py()+fMET.py()+fNoBJets[0].py()+fNoBJets[1].py()+fNoBJets[2].py()+fBJets[0].py()+fBJets[1].py());
+		   v_TransMassLepMET4Jet2B.SetPz(0);
+		   v_TransMassLepMET4Jet2B.SetE(fLepton.et()+fMET.et()+fNoBJets[0].et()+fNoBJets[1].et()+fNoBJets[2].et()+fBJets[0].et()+fBJets[1].et());
+		   }
 
 		     h_NumEvtCut->Fill(9);
-		     if(fLepton.charge()==+1 && nBJet35>=1) h_TransMassLepMET4JetPlus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-		     if(fLepton.charge()==+1 && nBJet35>=2) h_TransMassLepMET4JetPlus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=1) h_TransMassLepMET4JetMinus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=2) h_TransMassLepMET4JetMinus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) h_TransMassLepMET5JetPlus_5jet1b->Fill(v_TransMassLepMET5Jet.Mag());
-		     if(fLepton.charge()==+1 && nBJet35>=2) h_TransMassLepMET5JetPlus_5jet2b->Fill(v_TransMassLepMET5Jet.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=1) h_TransMassLepMET5JetMinus_5jet1b->Fill(v_TransMassLepMET5Jet.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=2) h_TransMassLepMET5JetMinus_5jet2b->Fill(v_TransMassLepMET5Jet.Mag());				
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet[4]->Fill(v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet[5]->Fill(v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[6]->Fill(v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[7]->Fill(v_TransMassLepMET4Jet.Mag());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) h_SumptSig4HighestPlus_5jet1b->Fill(SumptSig4Highest);
-		     if(fLepton.charge()==+1 && nBJet35>=2) h_SumptSig4HighestPlus_5jet2b->Fill(SumptSig4Highest);
-		     if(fLepton.charge()==-1 && nBJet35>=1) h_SumptSig4HighestMinus_5jet1b->Fill(SumptSig4Highest);
-		     if(fLepton.charge()==-1 && nBJet35>=2) h_SumptSig4HighestMinus_5jet2b->Fill(SumptSig4Highest);
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET5Jet[4]->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET5Jet[5]->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET5Jet[6]->Fill(v_TransMassLepMET5Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET5Jet[7]->Fill(v_TransMassLepMET5Jet.Mag());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) h_SumptSig4SecondHighestPlus_5jet1b->Fill(SumptSig4SecondHighest);
-		     if(fLepton.charge()==+1 && nBJet35>=2) h_SumptSig4SecondHighestPlus_5jet2b->Fill(SumptSig4SecondHighest);
-		     if(fLepton.charge()==-1 && nBJet35>=1) h_SumptSig4SecondHighestMinus_5jet1b->Fill(SumptSig4SecondHighest);
-		     if(fLepton.charge()==-1 && nBJet35>=2) h_SumptSig4SecondHighestMinus_5jet2b->Fill(SumptSig4SecondHighest);
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4JetB[4]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4JetB[5]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4JetB[6]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4JetB[7]->Fill(v_TransMassLepMET4Jet2B.Mag());
+
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET5JetB[4]->Fill(v_TransMassLepMET5Jet1B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET5JetB[5]->Fill(v_TransMassLepMET5Jet2B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET5JetB[6]->Fill(v_TransMassLepMET5Jet1B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET5JetB[7]->Fill(v_TransMassLepMET5Jet2B.Mag());
+
+
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4Highest[4]->Fill(SumptSig4Highest);
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_SumptSig4Highest[5]->Fill(SumptSig4Highest);
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_SumptSig4Highest[6]->Fill(SumptSig4Highest);
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_SumptSig4Highest[7]->Fill(SumptSig4Highest);
+
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4SecondHighest[4]->Fill(SumptSig4SecondHighest);
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_SumptSig4SecondHighest[5]->Fill(SumptSig4SecondHighest);
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_SumptSig4SecondHighest[6]->Fill(SumptSig4SecondHighest);
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_SumptSig4SecondHighest[7]->Fill(SumptSig4SecondHighest);
+
+		     if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=3) vh_Mass3Jet2B[5]->
+		       Fill((fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()+fBJets[0].p4()+fBJets[1].p4()).mass());
+		     if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=3) vh_Mass3Jet2B[7]->
+		       Fill((fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()+fBJets[0].p4()+fBJets[1].p4()).mass());
+
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_MassLep1Jet[4]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_MassLep1Jet[5]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_MassLep1Jet[6]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_MassLep1Jet[7]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+
+		   if(fLepton.charge()==+1 && nBJet35>=1){
+		     vh_MassLep1B[4]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[4]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		   }
+		   if(fLepton.charge()==+1 && nBJet35>=2) {
+		     vh_MassLep1B[5]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLep1B[5]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
+		     vh_MassLepB_vs_SumPt[5]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[5]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
+		   }
+		   if(fLepton.charge()==-1 && nBJet35>=1){
+		     vh_MassLep1B[6]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[6]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		   }
+		   if(fLepton.charge()==-1 && nBJet35>=2){
+		     vh_MassLep1B[7]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLep1B[7]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
+		     vh_MassLepB_vs_SumPt[7]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		     vh_MassLepB_vs_SumPt[7]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
+		   }
+   
+		  
+		  
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[4]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[5]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[6]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[7]->Fill(pfMETphi-fLepton.phi());
+
+
+
+		    		    
 
 		   }
 		   
@@ -433,203 +572,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      
    }
    
-      
-
-
-   /* if(enoughCleanJets){
-   if ((nCleanElectrons+ nCleanMuons) == 1 && fMET.et()>30.0 && fCleanJets[nCleanJets-1].pt()>35.0){
-     minCleanLeptons=true;
-     if (nCleanElectrons==1 && fCleanElectrons[0].pt()>45.0)
-       {
-	 enoughCleanLeptons=true;
-	 fLeptonPt=fCleanElectrons[0].pt();
-	 fElectronPt=fCleanElectrons[0].pt();
-	 pat::Electron fLepton=fCleanElectrons[0];
-
-	 if(nCleanJets>=5){
-	   float SumptSig4Highest=0;
-	   SumptSig4Highest=((fCleanJets[0].p4()+fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[0].pt()+fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fLepton.pt()+fMET.pt());
-	  
-	   
-	   float SumptSig4SecondHighest=0;
-	   SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
-	   
-	   TLorentzVector v_TransMassLepMET;
-	   v_TransMassLepMET.SetPx(fLepton.px()+fMET.px());
-	   v_TransMassLepMET.SetPy(fLepton.py()+fMET.py());
-	   v_TransMassLepMET.SetPz(0);
-	   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
-	  
-
-	   TLorentzVector v_TransMassLepMET4SecondJet;
-	   v_TransMassLepMET4SecondJet.SetPx(fLepton.px()+fMET.px()+fCleanJets[4].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4SecondJet.SetPy(fLepton.py()+fMET.py()+fCleanJets[4].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4SecondJet.SetPz(0);
-	   v_TransMassLepMET4SecondJet.SetE(fLepton.et()+fMET.et()+fCleanJets[4].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-	   
-	   if(fLepton.charge()==+1){
-	     h_SumptSig4HighestPlus->Fill(SumptSig4Highest);
-	     h_SumptSig4SecondHighestPlus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETPlus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetPlus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   if(fLepton.charge()==-1){
-	     h_SumptSig4HighestMinus->Fill(SumptSig4Highest);
-	      h_SumptSig4SecondHighestMinus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETMinus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetMinus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   
-	 }
-	 if(nCleanJets>=4){
-	   TLorentzVector v_TransMassLepMET4Jet;
-	   v_TransMassLepMET4Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4Jet.SetPz(0);
-	   v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-
-	   if(fLepton.charge()==+1 && nBJets>=1 && nCleanJets>=4) h_TransMassLepMET4JetPlus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=2 && nCleanJets>=4) h_TransMassLepMET4JetPlus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=1 && nCleanJets>=5) h_TransMassLepMET4JetPlus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=2 && nCleanJets>=5) h_TransMassLepMET4JetPlus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-
-	   if(fLepton.charge()==-1 && nBJets>=1 && nCleanJets>=4) h_TransMassLepMET4JetMinus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=2 && nCleanJets>=4) h_TransMassLepMET4JetMinus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=1 && nCleanJets>=5) h_TransMassLepMET4JetMinus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=2 && nCleanJets>=5) h_TransMassLepMET4JetMinus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if (v_TransMassLepMET4Jet.Mag()>1000.0) cout<<run<<" "<<event<<endl;
-	   
-	 }   
-       }
-   */
-     /*if (nCleanMuons==1 && fCleanMuons[0].pt()>30.0){
-	 enoughCleanLeptons=true;
-	 fLeptonPt=fCleanMuons[0].pt();
-	 fMuonPt=fCleanMuons[0].pt();
-	 pat::Muon fLepton=fCleanMuons[0];
-
-	 if(nCleanJets>=5){
-	   float SumptSig4Highest=0;
-	   SumptSig4Highest=((fCleanJets[0].p4()+fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[0].pt()+fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fLepton.pt()+fMET.pt());
-	  
-	   
-	   float SumptSig4SecondHighest=0;
-	   SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
-	   
-	   TLorentzVector v_TransMassLepMET;
-	   v_TransMassLepMET.SetPx(fLepton.px()+fMET.px());
-	   v_TransMassLepMET.SetPy(fLepton.py()+fMET.py());
-	   v_TransMassLepMET.SetPz(0);
-	   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
-	  
-
-	   TLorentzVector v_TransMassLepMET4SecondJet;
-	   v_TransMassLepMET4SecondJet.SetPx(fLepton.px()+fMET.px()+fCleanJets[4].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4SecondJet.SetPy(fLepton.py()+fMET.py()+fCleanJets[4].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4SecondJet.SetPz(0);
-	   v_TransMassLepMET4SecondJet.SetE(fLepton.et()+fMET.et()+fCleanJets[4].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-	   
-	   if(fLepton.charge()==+1){
-	     h_SumptSig4HighestPlus->Fill(SumptSig4Highest);
-	     h_SumptSig4SecondHighestPlus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETPlus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetPlus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   if(fLepton.charge()==-1){
-	     h_SumptSig4HighestMinus->Fill(SumptSig4Highest);
-	      h_SumptSig4SecondHighestMinus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETMinus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetMinus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   
-	 }
-	 if(nCleanJets>=4){
-	   TLorentzVector v_TransMassLepMET4Jet;
-	   v_TransMassLepMET4Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4Jet.SetPz(0);
-	   v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-
-	   if(fLepton.charge()==+1 && nBJets>=1 && nCleanJets>=4) h_TransMassLepMET4JetPlus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=2 && nCleanJets>=4) h_TransMassLepMET4JetPlus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=1 && nCleanJets>=5) h_TransMassLepMET4JetPlus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==+1 && nBJets>=2 && nCleanJets>=5) h_TransMassLepMET4JetPlus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-
-	   if(fLepton.charge()==-1 && nBJets>=1 && nCleanJets>=4) h_TransMassLepMET4JetMinus_4jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=2 && nCleanJets>=4) h_TransMassLepMET4JetMinus_4jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=1 && nCleanJets>=5) h_TransMassLepMET4JetMinus_5jet1b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if(fLepton.charge()==-1 && nBJets>=2 && nCleanJets>=5) h_TransMassLepMET4JetMinus_5jet2b->Fill(v_TransMassLepMET4Jet.Mag());
-	   if (v_TransMassLepMET4Jet.Mag()>1000.0) cout<<run<<" "<<event<<endl;
-	   
-	 }   
-	 }*/
-     /*if (nCleanMuons==1 && fCleanMuons[0].pt()>30.0)
-       {
-	 enoughCleanLeptons=true;
-	 fLeptonPt=fCleanMuons[0].pt();
-	 fMuonPt=fCleanMuons[0].pt();
-	 
-	 pat::Muon fLepton=fCleanMuons[0];//(fCleanMuons[0].px(),fCleanMuons[0].py(),fCleanMuons[0].pz(),fCleanMuons[0].et());
-	 if(nCleanJets>=5){
-	   float SumptSig4Highest=0;
-	   SumptSig4Highest=((fCleanJets[0].p4()+fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[0].pt()+fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fLepton.pt()+fMET.pt());
-	  
-	   float SumptSig4SecondHighest=0;
-	   SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
-	     /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
-	   
-	   TLorentzVector v_TransMassLepMET;
-	   v_TransMassLepMET.SetPx(fLepton.px()+fMET.px());
-	   v_TransMassLepMET.SetPy(fLepton.py()+fMET.py());
-	   v_TransMassLepMET.SetPz(0);
-	   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
-	  
-	   TLorentzVector v_TransMassLepMET4SecondJet;
-	   v_TransMassLepMET4SecondJet.SetPx(fLepton.px()+fMET.px()+fCleanJets[4].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4SecondJet.SetPy(fLepton.py()+fMET.py()+fCleanJets[4].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4SecondJet.SetPz(0);
-	   v_TransMassLepMET4SecondJet.SetE(fLepton.et()+fMET.et()+fCleanJets[4].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-	   
-	 
-	   
-	   if(fLepton.charge()==+1){
-	     h_SumptSig4HighestPlus->Fill(SumptSig4Highest);
-	     h_SumptSig4SecondHighestPlus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETPlus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetPlus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   if(fLepton.charge()==-1){
-	     h_SumptSig4HighestMinus->Fill(SumptSig4Highest);
-	     h_SumptSig4SecondHighestMinus->Fill(SumptSig4SecondHighest);
-	     h_TransMassLepMETMinus->Fill(v_TransMassLepMET.Mag());
-	     h_TransMassLepMET4SecondJetMinus->Fill(v_TransMassLepMET4SecondJet.Mag());
-	   }
-	   
-	 }
-	 if(nCleanJets>=4){
-	   TLorentzVector v_TransMassLepMET4Jet;
-	   v_TransMassLepMET4Jet.SetPx(fLepton.px()+fMET.px()+fCleanJets[0].px()+fCleanJets[1].px()+fCleanJets[2].px()+fCleanJets[3].px());
-	   v_TransMassLepMET4Jet.SetPy(fLepton.py()+fMET.py()+fCleanJets[0].py()+fCleanJets[1].py()+fCleanJets[2].py()+fCleanJets[3].py());
-	   v_TransMassLepMET4Jet.SetPz(0);
-	   v_TransMassLepMET4Jet.SetE(fLepton.et()+fMET.et()+fCleanJets[0].et()+fCleanJets[1].et()+fCleanJets[2].et()+fCleanJets[3].et());
-	   if(fLepton.charge()==+1){
-	     h_TransMassLepMET4JetPlus->Fill(v_TransMassLepMET4Jet.Mag());
-	   }
-	   if(fLepton.charge()==-1){
-	     h_TransMassLepMET4JetMinus->Fill(v_TransMassLepMET4Jet.Mag());
-	   }
-	   
-	 }   
-       }
-   }
-    }//enoughCleanJets
-   //make some additional plots 
-   */
+     
    
    /////////////////////
    //////TRIPLETS
@@ -922,7 +865,48 @@ TopXana::beginJob()
    h_SumptSig4SecondHighestMinus_5jet1b = new TH1F("SumptSig4SecondHighestMinus_5jet1b","SumptSig4SecondHighesMinus_5jet1b",200,0,2);
    h_SumptSig4SecondHighestMinus_5jet2b = new TH1F("SumptSig4SecondHighestMinus_5jet2b","SumptSig4SecondHighesMinus_5jet2b",200,0,2);
 
+   //redefining everything with vectors
+   //different cuts
+   CutList.push_back("4Jet_1b_P");
+   CutList.push_back("4Jet_2b_P");
+   CutList.push_back("4Jet_1b_M");
+   CutList.push_back("4Jet_2b_M");
+   CutList.push_back("5Jet_1b_P");
+   CutList.push_back("5Jet_2b_P");
+   CutList.push_back("5Jet_1b_M");
+   CutList.push_back("5Jet_2b_M");
+   //different variables
+   VarList.push_back("SumptSig4Highest_");
+   VarList.push_back("SumptSig4SecondHighest_");
+   VarList.push_back("TransMassLepMET4Jet_");
+   VarList.push_back("TransMassLepMET5Jet_");
+   VarList.push_back("TransMassLepMET4JetB_");
+   VarList.push_back("TransMassLepMET5JetB_");
+   VarList.push_back("Mass3Jet2B_");
+   VarList.push_back("MassLep1Jet_");
+   VarList.push_back("MassLep1B_");
+   VarList.push_back("MassLepB_vs_SumPt_");
+   VarList.push_back("DeltaPhiLepMET_");
 
+   //cout<<CutList[0]+VarList[0]<<endl;
+   for (int f=0; f< (int) CutList.size(); f++){
+     vh_SumptSig4Highest.push_back(new TH1F((VarList[0]+CutList[f]).c_str(),(VarList[0]+CutList[f]).c_str(),200,0,2));
+     vh_SumptSig4SecondHighest.push_back(new TH1F((VarList[1]+CutList[f]).c_str(),(VarList[1]+CutList[f]).c_str(),200,0,2));
+     vh_TransMassLepMET4Jet.push_back(new TH1F((VarList[2]+CutList[f]).c_str(),(VarList[2]+CutList[f]).c_str(),200,0,2000));
+     vh_TransMassLepMET5Jet.push_back(new TH1F((VarList[3]+CutList[f]).c_str(),(VarList[3]+CutList[f]).c_str(),200,0,2000));
+
+     vh_TransMassLepMET4JetB.push_back(new TH1F((VarList[4]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,2000));
+     vh_TransMassLepMET5JetB.push_back(new TH1F((VarList[5]+CutList[f]).c_str(),(VarList[5]+CutList[f]).c_str(),200,0,2000));
+
+     vh_Mass3Jet2B.push_back(new TH1F((VarList[6]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000));
+     vh_MassLep1Jet.push_back(new TH1F((VarList[7]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000));
+     vh_MassLep1B.push_back(new TH1F((VarList[8]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,2000));
+     vh_MassLepB_vs_SumPt.push_back(new TH2F((VarList[9]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000,200,0,1000));
+     vh_DeltaPhiLepMET.push_back(new TH1F((VarList[10]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,-9,9));
+
+
+   }
+   
   for(int i=0; i<6; i++)
     {
       sprintf(hNAME, "jet_%i_pt", i);
@@ -1085,13 +1069,14 @@ TopXana::endJob()
   h_zPosGoodVtx->Write();
   h_MET->Write();
 
+  /*
   h_SumptSig4HighestPlus->Write();
   h_SumptSig4SecondHighestPlus->Write();
   h_TransMassLepMETPlus->Write();
   h_TransMassLepMET4JetPlus->Write();
   h_TransMassLepMET4SecondJetPlus->Write();
 
-  h_SumptSig4HighestMinus->Write();
+   h_SumptSig4HighestMinus->Write();
   h_SumptSig4SecondHighestMinus->Write();
   h_TransMassLepMETMinus->Write();
   h_TransMassLepMET4JetMinus->Write();
@@ -1126,8 +1111,24 @@ TopXana::endJob()
    h_SumptSig4SecondHighestPlus_5jet2b->Write();
    h_SumptSig4SecondHighestMinus_5jet1b->Write();
    h_SumptSig4SecondHighestMinus_5jet2b->Write();
-
-
+  */
+ for (int f=0; f< (int) CutList.size(); f++){\
+   outputFile->cd();
+   outputFile->mkdir(CutList[f].c_str());
+   outputFile->cd(CutList[f].c_str());
+   vh_SumptSig4Highest[f]->Write();
+   vh_SumptSig4SecondHighest[f]->Write();
+   vh_TransMassLepMET4Jet[f]->Write();
+   vh_TransMassLepMET5Jet[f]->Write();
+   vh_TransMassLepMET4JetB[f]->Write();
+   vh_TransMassLepMET5JetB[f]->Write();
+   vh_Mass3Jet2B[f]->Write();
+   vh_MassLep1Jet[f]->Write();
+   vh_MassLep1B[f]->Write();
+   vh_MassLepB_vs_SumPt[f]->Write();
+   vh_DeltaPhiLepMET[f]->Write();
+   
+   }
      outputFile->cd();
   TDirectory* now=outputFile->mkdir("Triplets");
   outputFile->cd("Triplets");
