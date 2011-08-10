@@ -1,4 +1,4 @@
- // -*- C++ -*-
+// -*- C++ -*-
 //
 // Package:    TopXana
 // Class:      TopXana
@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.7 2011/08/10 02:09:29 clseitz Exp $
+// $Id: TopXana.cc,v 1.8 2011/08/10 15:26:15 clseitz Exp $
 //
 //
 
@@ -346,7 +346,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 }
      }
    }
-   //cout<<nJet35<<" "<<nBJet35<<" "<<nNoBJet35<<" "<<nBJet35+nNoBJet35<<endl;
+   // cout<<nJet35<<" "<<nBJet35<<" "<<nNoBJet35<<" "<<nBJet35+nNoBJet35<<endl;
    //cout<<"------------"<<endl;
    //cout<<fBJets.size()<<" "<<fNoBJets.size()<<endl;
    //if (nJet35>=1) cout <<nJet35<<"  "<<nBJet35<<endl;
@@ -354,21 +354,21 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    h_NumEvtCut->Fill(0);
    if ((nCleanElectrons+ nCleanMuons) == 1){//asking for exactly one clean muon or electron > 20GeV
-     h_NumEvtCut->Fill(1);
+     h_NumEvtCut->Fill(1); //cout<<"1------------"<<endl;
      if (nCleanElectrons==1 && fCleanElectrons[0].pt()>25.0){//one electron with pt > 45 GeV
-       h_NumEvtCut->Fill(2); 
+       h_NumEvtCut->Fill(2); // cout<<"2------------"<<endl;
        if( fMET.et()>30.0){//MET above 30
-	 h_NumEvtCut->Fill(3);
+	 h_NumEvtCut->Fill(3); //cout<<"3------------"<<endl;
 	 if(nJet35 >=1){//at least one jet with pt >35
-	   h_NumEvtCut->Fill(4);
+	   h_NumEvtCut->Fill(4); //cout<<"4------------"<<endl;
 	   if(nJet35 >=2){//at least two jet with pt >35
-	     h_NumEvtCut->Fill(5);
-	     if(nJet35 >=1 && nBJet35>=1){
+	     h_NumEvtCut->Fill(5); //cout<<"5------------"<<endl;
+	     if(nJet35 >=1 && nBJet35>=1){ //cout<<"6------------"<<endl;
 	       h_NumEvtCut->Fill(6);
 	       if(nJet35 >=3){
-		 h_NumEvtCut->Fill(7);
+		 h_NumEvtCut->Fill(7); //cout<<"7------------"<<endl;
 		 
-		 if(nJet35 >=4){
+		 if(nJet35 >=4){ //cout<<"8------------"<<endl;
 		   pat::Electron fLepton=fCleanElectrons[0];
 		   h_NumEvtCut->Fill(8);
 		   TLorentzVector v_TransMassLepMET4Jet;
@@ -402,44 +402,48 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   v_TransMassLepMET.SetPz(0);
 		   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
 
-		   
-		   cout<<v_TransMassLepMET4Jet1B.Mag()<<" "<<v_TransMassLepMET4Jet2B.Mag()<<endl;
-
+		   if(v_TransMassLepMET4Jet1B.Mag()==0 && v_TransMassLepMET4Jet2B.Mag()==0)
+		     //cout<<v_TransMassLepMET4Jet1B.Mag()<<" "<<v_TransMassLepMET4Jet2B.Mag()<<endl;
+		   //cout<<"1"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet[0]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet[1]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[2]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[3]->Fill(v_TransMassLepMET4Jet.Mag());
-		   
+		   //cout<<"2"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=3) vh_TransMassLepMET4JetB[0]->Fill(v_TransMassLepMET4Jet1B.Mag());
 		   if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=2) vh_TransMassLepMET4JetB[1]->Fill(v_TransMassLepMET4Jet2B.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=1 && nNoBJet35>=3) vh_TransMassLepMET4JetB[2]->Fill(v_TransMassLepMET4Jet1B.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=2) vh_TransMassLepMET4JetB[3]->Fill(v_TransMassLepMET4Jet2B.Mag());
-
+		   //cout<<"3"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4Highest[0]->Fill(SumptSig4Highest);
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_SumptSig4Highest[1]->Fill(SumptSig4Highest);
 		   if(fLepton.charge()==-1 && nBJet35>=1) vh_SumptSig4Highest[2]->Fill(SumptSig4Highest);
 		   if(fLepton.charge()==-1 && nBJet35>=2) vh_SumptSig4Highest[3]->Fill(SumptSig4Highest);
 
-		  
-		   if(fLepton.charge()==+1 && nBJet35>=1) vh_MassLep1Jet[0]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		   if(fLepton.charge()==+1 && nBJet35>=2) vh_MassLep1Jet[1]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		   if(fLepton.charge()==-1 && nBJet35>=1) vh_MassLep1Jet[2]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		   if(fLepton.charge()==-1 && nBJet35>=2) vh_MassLep1Jet[3]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-
+		   //cout<<"4"<<endl;
+		   //cout<<nBJet35<<" "<<nNoBJet35<<endl;
+		   if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=3) vh_MassLep1Jet[0]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=2) vh_MassLep1Jet[1]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==-1 && nBJet35>=1 && nNoBJet35>=3) vh_MassLep1Jet[2]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=2) vh_MassLep1Jet[3]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		   //cout<<"5"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1){
 		     vh_MassLep1B[0]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLepB_vs_SumPt[0]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
 		   }
+		   //cout<<"6"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=2) {
 		     vh_MassLep1B[1]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLep1B[1]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
 		     vh_MassLepB_vs_SumPt[1]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLepB_vs_SumPt[1]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
 		   }
+		   // cout<<"7"<<endl;
 		   if(fLepton.charge()==-1 && nBJet35>=1){
 		     vh_MassLep1B[2]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLepB_vs_SumPt[2]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
 		   }
+		   //cout<<"8"<<endl;
 		   if(fLepton.charge()==-1 && nBJet35>=2){
 		     vh_MassLep1B[3]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLep1B[3]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
@@ -448,7 +452,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   }
    
 		  
-		  
+		   //cout<<"9"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[0]->Fill(pfMETphi-fLepton.phi());
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[1]->Fill(pfMETphi-fLepton.phi());
 		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[2]->Fill(pfMETphi-fLepton.phi());
@@ -457,7 +461,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   
 		  		   
 		   if(nJet35 >=5){
-
+		     //cout<<"9------------"<<endl;
 		     float SumptSig4SecondHighest=0;
 		     SumptSig4SecondHighest=((fCleanJets[1].p4()+fCleanJets[2].p4()+fCleanJets[3].p4()+fCleanJets[4].p4()+fLepton.p4()+fMET.p4()).pt())
 		       /(fCleanJets[1].pt()+fCleanJets[2].pt()+fCleanJets[3].pt()+fCleanJets[4].pt()+fLepton.pt()+fMET.pt());
@@ -521,10 +525,10 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=3) vh_Mass3Jet2B[7]->
 		       Fill((fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()+fBJets[0].p4()+fBJets[1].p4()).mass());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) vh_MassLep1Jet[4]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		     if(fLepton.charge()==+1 && nBJet35>=2) vh_MassLep1Jet[5]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		     if(fLepton.charge()==-1 && nBJet35>=1) vh_MassLep1Jet[6]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
-		     if(fLepton.charge()==-1 && nBJet35>=2) vh_MassLep1Jet[7]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=4) vh_MassLep1Jet[4]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=3) vh_MassLep1Jet[5]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==-1 && nBJet35>=1&& nNoBJet35>=4 ) vh_MassLep1Jet[6]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
+		     if(fLepton.charge()==-1 && nBJet35>=2&& nNoBJet35>=3 ) vh_MassLep1Jet[7]->Fill((fLepton.p4()+fNoBJets[0].p4()).mass());
 
 		   if(fLepton.charge()==+1 && nBJet35>=1){
 		     vh_MassLep1B[4]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
