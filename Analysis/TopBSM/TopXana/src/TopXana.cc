@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.6 2011/08/05 14:21:22 clseitz Exp $
+// $Id: TopXana.cc,v 1.7 2011/08/10 02:09:29 clseitz Exp $
 //
 //
 
@@ -403,16 +403,17 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
 
 		   
+		   cout<<v_TransMassLepMET4Jet1B.Mag()<<" "<<v_TransMassLepMET4Jet2B.Mag()<<endl;
 
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet[0]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet[1]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[2]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[3]->Fill(v_TransMassLepMET4Jet.Mag());
 		   
-		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4JetB[0]->Fill(v_TransMassLepMET4Jet1B.Mag());
-		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4JetB[1]->Fill(v_TransMassLepMET4Jet2B.Mag());
-		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4JetB[2]->Fill(v_TransMassLepMET4Jet1B.Mag());
-		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4JetB[3]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		   if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=3) vh_TransMassLepMET4JetB[0]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		   if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=2) vh_TransMassLepMET4JetB[1]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=1 && nNoBJet35>=3) vh_TransMassLepMET4JetB[2]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=2) vh_TransMassLepMET4JetB[3]->Fill(v_TransMassLepMET4Jet2B.Mag());
 
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4Highest[0]->Fill(SumptSig4Highest);
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_SumptSig4Highest[1]->Fill(SumptSig4Highest);
