@@ -193,7 +193,7 @@ class TopXana : public edm::EDAnalyzer {
   std::vector<TH1F*> vh_SumptSig4SecondHighest;
   std::vector<TH1F*> vh_TransMassLepMET4Jet;
   std::vector<TH1F*> vh_TransMassLepMET5Jet;
- std::vector<TH1F*> vh_TransMassLepMET4JetB;
+  std::vector<TH1F*> vh_TransMassLepMET4JetB;
   std::vector<TH1F*> vh_TransMassLepMET5JetB;
 
   std::vector<TH1F*> vh_Mass3Jet2B;
@@ -202,6 +202,10 @@ class TopXana : public edm::EDAnalyzer {
   std::vector<TH2F*> vh_MassLepB_vs_SumPt;
   std::vector<TH1F*> vh_DeltaPhiLepMET;
 
+  std::vector<TH1F*> vh_LepBDiag50_Upper160_4Jet;
+  std::vector<TH1F*> vh_LepBDiag50_Upper160_3Jet1B;
+  std::vector<TH1F*> vh_LeadingJetPt;
+  std::vector<TH2F*> vh_TransMassLepMET4Jet_vs_LeadingJetPt;
 
   //define variables that we need for the triplets
   std::vector <std::vector<pat::Jet > > Triplet;

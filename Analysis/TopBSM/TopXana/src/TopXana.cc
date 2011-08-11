@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.8 2011/08/10 15:26:15 clseitz Exp $
+// $Id: TopXana.cc,v 1.9 2011/08/10 19:09:29 clseitz Exp $
 //
 //
 
@@ -402,13 +402,19 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   v_TransMassLepMET.SetPz(0);
 		   v_TransMassLepMET.SetE(fLepton.et()+fMET.et());
 
-		   if(v_TransMassLepMET4Jet1B.Mag()==0 && v_TransMassLepMET4Jet2B.Mag()==0)
+		   //if(v_TransMassLepMET4Jet1B.Mag()==0 && v_TransMassLepMET4Jet2B.Mag()==0)
 		     //cout<<v_TransMassLepMET4Jet1B.Mag()<<" "<<v_TransMassLepMET4Jet2B.Mag()<<endl;
 		   //cout<<"1"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet[0]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet[1]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[2]->Fill(v_TransMassLepMET4Jet.Mag());
 		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[3]->Fill(v_TransMassLepMET4Jet.Mag());
+
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet_vs_LeadingJetPt[0]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet_vs_LeadingJetPt[1]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet_vs_LeadingJetPt[2]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet_vs_LeadingJetPt[3]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+
 		   //cout<<"2"<<endl;
 		   if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=3) vh_TransMassLepMET4JetB[0]->Fill(v_TransMassLepMET4Jet1B.Mag());
 		   if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=2) vh_TransMassLepMET4JetB[1]->Fill(v_TransMassLepMET4Jet2B.Mag());
@@ -453,13 +459,18 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
 		  
 		   //cout<<"9"<<endl;
-		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[0]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[1]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[2]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[3]->Fill(pfMETphi-fLepton.phi());
-
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[0]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[1]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[2]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[3]->Fill(fabs(pfMETphi-fLepton.phi()));
 		   
-		  		   
+		   //leading jet pt
+		   
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_LeadingJetPt[0]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_LeadingJetPt[1]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_LeadingJetPt[2]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_LeadingJetPt[3]->Fill(fCleanJets[0].pt());
+		   
 		   if(nJet35 >=5){
 		     //cout<<"9------------"<<endl;
 		     float SumptSig4SecondHighest=0;
@@ -494,20 +505,27 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet[6]->Fill(v_TransMassLepMET4Jet.Mag());
 		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet[7]->Fill(v_TransMassLepMET4Jet.Mag());
 
+		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4Jet_vs_LeadingJetPt[4]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4Jet_vs_LeadingJetPt[5]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4Jet_vs_LeadingJetPt[6]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4Jet_vs_LeadingJetPt[7]->Fill(fCleanJets[0].pt(),v_TransMassLepMET4Jet.Mag());
+		     
+
+
 		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET5Jet[4]->Fill(v_TransMassLepMET5Jet.Mag());
 		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET5Jet[5]->Fill(v_TransMassLepMET5Jet.Mag());
 		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET5Jet[6]->Fill(v_TransMassLepMET5Jet.Mag());
 		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET5Jet[7]->Fill(v_TransMassLepMET5Jet.Mag());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET4JetB[4]->Fill(v_TransMassLepMET4Jet1B.Mag());
-		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET4JetB[5]->Fill(v_TransMassLepMET4Jet2B.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET4JetB[6]->Fill(v_TransMassLepMET4Jet1B.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET4JetB[7]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=4) vh_TransMassLepMET4JetB[4]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=3) vh_TransMassLepMET4JetB[5]->Fill(v_TransMassLepMET4Jet2B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1 && nNoBJet35>=4) vh_TransMassLepMET4JetB[6]->Fill(v_TransMassLepMET4Jet1B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=3) vh_TransMassLepMET4JetB[7]->Fill(v_TransMassLepMET4Jet2B.Mag());
 
-		     if(fLepton.charge()==+1 && nBJet35>=1) vh_TransMassLepMET5JetB[4]->Fill(v_TransMassLepMET5Jet1B.Mag());
-		     if(fLepton.charge()==+1 && nBJet35>=2) vh_TransMassLepMET5JetB[5]->Fill(v_TransMassLepMET5Jet2B.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=1) vh_TransMassLepMET5JetB[6]->Fill(v_TransMassLepMET5Jet1B.Mag());
-		     if(fLepton.charge()==-1 && nBJet35>=2) vh_TransMassLepMET5JetB[7]->Fill(v_TransMassLepMET5Jet2B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=1 && nNoBJet35>=4) vh_TransMassLepMET5JetB[4]->Fill(v_TransMassLepMET5Jet1B.Mag());
+		     if(fLepton.charge()==+1 && nBJet35>=2 && nNoBJet35>=3) vh_TransMassLepMET5JetB[5]->Fill(v_TransMassLepMET5Jet2B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=1 && nNoBJet35>=4) vh_TransMassLepMET5JetB[6]->Fill(v_TransMassLepMET5Jet1B.Mag());
+		     if(fLepton.charge()==-1 && nBJet35>=2 && nNoBJet35>=3) vh_TransMassLepMET5JetB[7]->Fill(v_TransMassLepMET5Jet2B.Mag());
 
 
 		     if(fLepton.charge()==+1 && nBJet35>=1) vh_SumptSig4Highest[4]->Fill(SumptSig4Highest);
@@ -532,14 +550,33 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		   if(fLepton.charge()==+1 && nBJet35>=1){
 		     vh_MassLep1B[4]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
-		     vh_MassLepB_vs_SumPt[4]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
+		     float f_MassLep1B=(fLepton.p4()+fBJets[0].p4()).mass();
+		     float f_SumptLep1B=(fLepton.pt()+fBJets[0].pt());
+		     vh_MassLepB_vs_SumPt[4]->Fill(f_SumptLep1B,f_MassLep1B);
+		     if(nBJet35==1 && nNoBJet35>=4 && (f_MassLep1B<f_SumptLep1B-50) && f_MassLep1B < 160)
+		       vh_LepBDiag50_Upper160_4Jet[4]->Fill((fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()+fNoBJets[3].p4()).mass());
 		   }
+
+
 		   if(fLepton.charge()==+1 && nBJet35>=2) {
 		     vh_MassLep1B[5]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLep1B[5]->Fill((fLepton.p4()+fBJets[1].p4()).mass());
 		     vh_MassLepB_vs_SumPt[5]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLepB_vs_SumPt[5]->Fill(fLepton.pt()+fBJets[1].pt(),(fLepton.p4()+fBJets[1].p4()).mass());
+
+		     float f_MassLep1Ba=(fLepton.p4()+fBJets[0].p4()).mass();
+		     float f_SumptLep1Ba=(fLepton.pt()+fBJets[0].pt());
+
+		     float f_MassLep1Bb=(fLepton.p4()+fBJets[1].p4()).mass();
+		     float f_SumptLep1Bb=(fLepton.pt()+fBJets[1].pt());
+
+		     if(nBJet35==2 && nNoBJet35>=3){
+		       if(f_MassLep1Ba<f_SumptLep1Ba-50 && f_MassLep1Ba < 160) vh_LepBDiag50_Upper160_3Jet1B[5]->Fill((fBJets[1].p4()+fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()).mass());
+		     if(f_MassLep1Bb<f_SumptLep1Bb-50 && f_MassLep1Ba < 160) vh_LepBDiag50_Upper160_3Jet1B[5]->Fill((fBJets[0].p4()+fNoBJets[0].p4()+fNoBJets[1].p4()+fNoBJets[2].p4()).mass());
 		   }
+		   }
+
+
 		   if(fLepton.charge()==-1 && nBJet35>=1){
 		     vh_MassLep1B[6]->Fill((fLepton.p4()+fBJets[0].p4()).mass());
 		     vh_MassLepB_vs_SumPt[6]->Fill(fLepton.pt()+fBJets[0].pt(),(fLepton.p4()+fBJets[0].p4()).mass());
@@ -553,13 +590,17 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
 		  
 		  
-		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[4]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[5]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[6]->Fill(pfMETphi-fLepton.phi());
-		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[7]->Fill(pfMETphi-fLepton.phi());
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_DeltaPhiLepMET[4]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_DeltaPhiLepMET[5]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_DeltaPhiLepMET[6]->Fill(fabs(pfMETphi-fLepton.phi()));
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_DeltaPhiLepMET[7]->Fill(fabs(pfMETphi-fLepton.phi()));
 
-
-
+		   
+ 
+		   if(fLepton.charge()==+1 && nBJet35>=1) vh_LeadingJetPt[4]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==+1 && nBJet35>=2) vh_LeadingJetPt[5]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==-1 && nBJet35>=1) vh_LeadingJetPt[6]->Fill(fCleanJets[0].pt());
+		   if(fLepton.charge()==-1 && nBJet35>=2) vh_LeadingJetPt[7]->Fill(fCleanJets[0].pt());
 		    		    
 
 		   }
@@ -753,14 +794,15 @@ TopXana::beginJob()
   MyTree->Branch("mpz[nMuons]", mpz);
   MyTree->Branch("me[nMuons]", me);
   MyTree->Branch("mcharge[nMuons]", mcharge);
- 
+
+  /*
   MyTree->Branch("phpt[nPhotons]", phpt);
   MyTree->Branch("phpx[nPhotons]", phpx);
   MyTree->Branch("phpy[nPhotons]", phpy);
   MyTree->Branch("phpz[nPhotons]", phpz);
   MyTree->Branch("phe[nPhotons]", phe);
-
-  
+  */
+  /*
   MyTree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
   MyTree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
   MyTree->Branch("triplet_jet3pt[nTriplets]", triplet_jet3pt);
@@ -784,7 +826,7 @@ TopXana::beginJob()
   MyTree->Branch("triplet_jet3py[nTriplets]", triplet_jet3py);
   MyTree->Branch("triplet_jet3pz[nTriplets]", triplet_jet3pz);
   MyTree->Branch("triplet_jet3e[nTriplets]", triplet_jet3e);
-  
+  */
  
 
   char hTITLE[99];
@@ -892,7 +934,11 @@ TopXana::beginJob()
    VarList.push_back("MassLep1B_");
    VarList.push_back("MassLepB_vs_SumPt_");
    VarList.push_back("DeltaPhiLepMET_");
-
+   VarList.push_back("LepBJet_Diag50_Upper160_4Jet");
+   VarList.push_back("LepB_Diag50_Upper160_3Jet1B");
+   VarList.push_back("LeadingJetPt");
+   VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt");
+   
    //cout<<CutList[0]+VarList[0]<<endl;
    for (int f=0; f< (int) CutList.size(); f++){
      vh_SumptSig4Highest.push_back(new TH1F((VarList[0]+CutList[f]).c_str(),(VarList[0]+CutList[f]).c_str(),200,0,2));
@@ -903,13 +949,17 @@ TopXana::beginJob()
      vh_TransMassLepMET4JetB.push_back(new TH1F((VarList[4]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,2000));
      vh_TransMassLepMET5JetB.push_back(new TH1F((VarList[5]+CutList[f]).c_str(),(VarList[5]+CutList[f]).c_str(),200,0,2000));
 
-     vh_Mass3Jet2B.push_back(new TH1F((VarList[6]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000));
-     vh_MassLep1Jet.push_back(new TH1F((VarList[7]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000));
-     vh_MassLep1B.push_back(new TH1F((VarList[8]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,2000));
-     vh_MassLepB_vs_SumPt.push_back(new TH2F((VarList[9]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,0,1000,200,0,1000));
-     vh_DeltaPhiLepMET.push_back(new TH1F((VarList[10]+CutList[f]).c_str(),(VarList[4]+CutList[f]).c_str(),200,-9,9));
+     vh_Mass3Jet2B.push_back(new TH1F((VarList[6]+CutList[f]).c_str(),(VarList[6]+CutList[f]).c_str(),200,0,2000));
+     vh_MassLep1Jet.push_back(new TH1F((VarList[7]+CutList[f]).c_str(),(VarList[7]+CutList[f]).c_str(),200,0,1000));
+     vh_MassLep1B.push_back(new TH1F((VarList[8]+CutList[f]).c_str(),(VarList[8]+CutList[f]).c_str(),200,0,2000));
+     vh_MassLepB_vs_SumPt.push_back(new TH2F((VarList[9]+CutList[f]).c_str(),(VarList[9]+CutList[f]).c_str(),200,0,1000,200,0,1000));
+     vh_DeltaPhiLepMET.push_back(new TH1F((VarList[10]+CutList[f]).c_str(),(VarList[10]+CutList[f]).c_str(),200,0,7));
 
+     vh_LepBDiag50_Upper160_4Jet.push_back(new TH1F((VarList[11]+CutList[f]).c_str(),(VarList[11]+CutList[f]).c_str(),200,0,2000));
+     vh_LepBDiag50_Upper160_3Jet1B.push_back(new TH1F((VarList[12]+CutList[f]).c_str(),(VarList[12]+CutList[f]).c_str(),200,0,2000));
 
+     vh_LeadingJetPt.push_back(new TH1F((VarList[13]+CutList[f]).c_str(),(VarList[13]+CutList[f]).c_str(),200,0,600));
+     vh_TransMassLepMET4Jet_vs_LeadingJetPt.push_back(new TH2F((VarList[14]+CutList[f]).c_str(),(VarList[14]+CutList[f]).c_str(),200,0,2000,200,0,2000));
    }
    
   for(int i=0; i<6; i++)
@@ -1117,7 +1167,7 @@ TopXana::endJob()
    h_SumptSig4SecondHighestMinus_5jet1b->Write();
    h_SumptSig4SecondHighestMinus_5jet2b->Write();
   */
- for (int f=0; f< (int) CutList.size(); f++){\
+ for (int f=0; f< (int) CutList.size(); f++){
    outputFile->cd();
    outputFile->mkdir(CutList[f].c_str());
    outputFile->cd(CutList[f].c_str());
@@ -1132,8 +1182,14 @@ TopXana::endJob()
    vh_MassLep1B[f]->Write();
    vh_MassLepB_vs_SumPt[f]->Write();
    vh_DeltaPhiLepMET[f]->Write();
-   
+   vh_LepBDiag50_Upper160_4Jet[f]->Write();
+   vh_LepBDiag50_Upper160_3Jet1B[f]->Write();
+   vh_LeadingJetPt[f]->Write();
+   vh_TransMassLepMET4Jet_vs_LeadingJetPt[f]->Write();
    }
+   
+   
+   
      outputFile->cd();
   TDirectory* now=outputFile->mkdir("Triplets");
   outputFile->cd("Triplets");
