@@ -1,0 +1,11 @@
+<library   name="TopBSMRUTopXAnaPlugins" file="*.cc">
+<use   name="root"/>
+<use   name="FWCore/Framework"/>
+<use   name="FWCore/PluginManager"/>
+<use   name="FWCore/ParameterSet"/>
+<use   name="DataFormats/Common"/>
+<use   name="DataFormats/PatCandidates"/>
+<use   name="TopBSM/RUTopXAna" />
+<flags   EDM_PLUGIN="1"/>
+</library>
+

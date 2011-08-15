@@ -1,0 +1,4 @@
+<bin name="RunTopXana" file="RunTopXana.cc">
+  <use name="root" />
+  <use name="TopBSM/RUTopXAna" />
+</bin>
