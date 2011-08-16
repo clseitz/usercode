@@ -19,7 +19,7 @@ NtpReader::NtpReader (std::vector<TString>& InFiles, bool const IsData)
   fIsData = IsData;
 
   // Construct the chain
-  fChain.SetName("Events");
+  fChain.SetName("EvTree");
   for (std::vector<TString>::iterator it = InFiles.begin(); it != InFiles.end(); ++it) {
     fChain.Add(*it);
   }

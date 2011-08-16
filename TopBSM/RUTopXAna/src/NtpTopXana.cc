@@ -6,12 +6,22 @@
 #include <fstream>
 #include <vector>
 
-NtpTopXana::NtpTopXana (std::vector<TString>& InFileNames, bool const IsData) : NtpReader(InFileNames, IsData)
+NtpTopXana::NtpTopXana (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName) : NtpReader(InFileNames, IsData)
 {
+  fOutFile = new TFile(OutFileName, "recreate");
+  if (!fOutFile->IsOpen()) {
+    std::cerr << "ERROR: cannot open output root file " << OutFileName << std::endl;
+    throw;
+  }
 }
 
 NtpTopXana::~NtpTopXana ()
 {
+  if (fOutFile) {
+    fOutFile->Write();
+    fOutFile->Close();
+    delete fOutFile;
+  }
 }
 
 
@@ -73,13 +83,12 @@ void NtpTopXana::BookHistograms()
  
 void NtpTopXana::WriteHistograms()
 {
-  TFile* outputFile = new TFile("test_plots.root","recreate");
-  outputFile->cd();
+  fOutFile->cd();
   h_NumEvtCut->Write();
   for (int f=0; f< (int) CutList.size(); f++){
-    outputFile->cd();
-    outputFile->mkdir(CutList[f].c_str());
-    outputFile->cd(CutList[f].c_str());
+    fOutFile->cd();
+    fOutFile->mkdir(CutList[f].c_str());
+    fOutFile->cd(CutList[f].c_str());
     
     vh_SumptSig4Highest[f]->Write();
     vh_SumptSig4SecondHighest[f]->Write();

@@ -2,17 +2,19 @@
 #define GUARD_NtpRUTopXAna_h
 
 #include "TopBSM/RUTopXAna/interface/NtpReader.h"
-#include "TLorentzVector.h"
+
 #include <iostream>
-#include <TH1F.h>
-#include <TH2F.h>
 #include <vector>
 #include <fstream>
+
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TLorentzVector.h"
 
 class NtpTopXana : public NtpReader
 {
   public:
-    NtpTopXana (std::vector<TString>&, bool const);
+    NtpTopXana (std::vector<TString>&, bool const, TString const);
     ~NtpTopXana ();
 
     void Loop ();
@@ -44,6 +46,9 @@ class NtpTopXana : public NtpReader
     std::vector<TH1F*> vh_LepBDiag50_Upper160_3Jet1B;
     std::vector<TH1F*> vh_LeadingJetPt;
     std::vector<TH2F*> vh_TransMassLepMET4Jet_vs_LeadingJetPt;
+
+  private:
+    TFile* fOutFile;
 
 };
 

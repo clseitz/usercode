@@ -14,7 +14,7 @@ class NtpReader
   public:
     NtpReader ();
     NtpReader (TTree*);
-    NtpReader (std::vector<TString>&, bool);
+    NtpReader (std::vector<TString>&, bool const);
     ~NtpReader ();
 
     bool IsData ();
