@@ -17,9 +17,14 @@
 int RunTopXana (std::vector<TString>& InFileNames, bool const IsData)
 {
   NtpTopXana Ana(InFileNames, IsData);
+  //std::cout<<"Book Histograms"<<std::endl;
+ Ana.BookHistograms();
+ // std::cout<<"Loop through Events"<<std::endl;
 
   Ana.Loop();
+  // std::cout<<"Write Histograms"<<std::endl;
 
+  Ana.WriteHistograms();
   return 0;
 }
 
