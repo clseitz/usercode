@@ -13,28 +13,25 @@ class NtpReader
 {
   public:
     NtpReader ();
-    NtpReader (TString const);
+    NtpReader (TTree*);
     NtpReader (std::vector<TString>&, bool);
     ~NtpReader ();
 
     bool IsData ();
 
-    void SetBranches ();
+    void SetBranches (TTree*);
     void SetBranchAddresses ();
     int  GetEntry (int const);
 
-    void FillTree ();
 
   private:
     TChain fChain;
     bool   fIsData;
-    TFile* fOutFile;
-    TTree* fOutTree;
 
 
 
   // These members are in the ntuple
-  protected:
+  public:
     int   run;
     int   event;
     int   lumis;
@@ -43,45 +40,45 @@ class NtpReader
     int   nGoodVtx;
 
     int   mcsize;
-    int   pdgID[200];
-    float MCpx[200];
-    float MCpy[200];
-    float MCpz[200];
-    float MCe[200];
+    int   pdgID[500];
+    float MCpx[500];
+    float MCpy[500];
+    float MCpz[500];
+    float MCe[500];
     // int MaxSize=500;
     int   nJets; 
-    float jetpx[500];
-    float jetpy[500];
-    float jetpz[500];
-    float jete[500];
-    float jetpt[500];
-    float bdiscTCHE[500];
-    float bdiscTCHP[500];
-    float bdiscSSVHE[500];
-    float bdiscSSSVHP[500];
+    float jetpx[200];
+    float jetpy[200];
+    float jetpz[200];
+    float jete[200];
+    float jetpt[200];
+    float bdiscTCHE[200];
+    float bdiscTCHP[200];
+    float bdiscSSVHE[200];
+    float bdiscSSSVHP[200];
 
     int   nElectrons;
-    float epx[500];
-    float epy[500];
-    float epz[500];
-    float ee[500];
-    float ept[500];
-    int   echarge[500];
+    float epx[200];
+    float epy[200];
+    float epz[200];
+    float ee[200];
+    float ept[200];
+    int   echarge[200];
 
     int   nMuons;
-    float mpx[500];
-    float mpy[500];
-    float mpz[500];
-    float me[500];
-    float mpt[500];
-    float mcharge[500];
+    float mpx[200];
+    float mpy[200];
+    float mpz[200];
+    float me[200];
+    float mpt[200];
+    float mcharge[200];
 
     int   nPhotons;
-    float phpx[500];
-    float phpy[500];
-    float phpz[500];
-    float phe[500];
-    float phpt[500];
+    float phpx[200];
+    float phpy[200];
+    float phpz[200];
+    float phe[200];
+    float phpt[200];
 
     float pfMET;
     float pfMETphi;

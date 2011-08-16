@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: RUTopXAna.cc,v 1.11 2011/08/12 19:00:51 clseitz Exp $
+// $Id: TopXana.cc,v 1.1.1.1 2011/08/15 15:08:24 dhidas Exp $
 //
 //
 
@@ -69,7 +69,7 @@ using namespace std;
 // class declaration
 
 
-TopXana::TopXana(const edm::ParameterSet& iConfig) : NtpReader(iConfig.getUntrackedParameter<string>("outputFilename2", "PatJets_testTree.root"))
+TopXana::TopXana(const edm::ParameterSet& iConfig)
 
 {
   _sumPtMin        = iConfig.getUntrackedParameter<double>("sumPtMin",         300.0);
@@ -108,7 +108,6 @@ TopXana::TopXana(const edm::ParameterSet& iConfig) : NtpReader(iConfig.getUntrac
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
    //now do what ever initialization is needed
 
-  std::cout << "Begin job finishing" << std::endl;
 }
 
 
@@ -712,7 +711,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
       nTriplets=0;
       
-      MakeTriplets(fCleanJets); 
+      //MakeTriplets(fCleanJets); 
       
   
   if(enoughCleanLeptons){
@@ -778,8 +777,9 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    //fill the tree use golden JSON file
    //GetMCTruth(iEvent);
-   FillTree();
-   entry++;
+
+    MyTree->Fill();
+    entry++;
    
     }
  }
@@ -833,8 +833,14 @@ TopXana::beginJob()
 
   char hTITLE[99];
   char hNAME[99];
+  outputFile2 = new TFile(_outputFilename2.data(),"recreate");
+  outputFile2->cd();
+  MyTree = new TTree("EvTree", "EvTree");
+  SetBranches(MyTree);
   //create output file
   outputFile = new TFile(_outputFilename.data(),"recreate");
+
+
   //initialize event counter
   entry = 0;
   h_NumEvtCut = new TH1F("NumEvtCut", "NumEvtCut",20,0,20);
@@ -1058,6 +1064,7 @@ TopXana::beginJob()
   }
 
 
+  std::cout << "Begin job finishing" << std::endl;
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -1224,6 +1231,9 @@ TopXana::endJob()
       }
     }
   }
+
+  MyTree->GetCurrentFile()->Write();
+  MyTree->GetCurrentFile()->Close();
 
 }
 

@@ -97,10 +97,6 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   
   TFile* outputFile; 
   TFile* outputFile2; 
-  Int_t   entry;
-  int  run;
-  int   event;
-  int   lumis;
   //varibales to test for the JSON file                                                                                            
   bool isdata;
   string JSONFilename;
@@ -219,7 +215,6 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   pat::Jet AntiTripletHighestJet;
   pat::Jet Jet1; pat::Jet Jet2; pat::Jet Jet3; pat::Jet Jet4; 
 
-  Int_t nTriplets;
   Int_t q;
   //define our own jet collection (just in case if we want to clean up also)
   std::vector<pat::Jet >      fGoodJets;

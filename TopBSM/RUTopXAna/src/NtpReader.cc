@@ -6,18 +6,9 @@ NtpReader::NtpReader ()
   // Construct
 }
 
-NtpReader::NtpReader (TString const OutFileName)
+NtpReader::NtpReader (TTree* InTree)
 {
-  fOutFile = new TFile(OutFileName, "recreate");
-
-  if (!fOutFile->IsOpen()) {
-    std::cerr << "ERROR: cannot open output file named: " << OutFileName << std::endl;
-    throw;
-  }
-
-  fOutTree = new TTree("Events", "");
-  fOutTree->SetDirectory(fOutFile);
-  SetBranches();
+  SetBranches(InTree);
 }
 
 NtpReader::NtpReader (std::vector<TString>& InFiles, bool const IsData)
@@ -39,15 +30,6 @@ NtpReader::NtpReader (std::vector<TString>& InFiles, bool const IsData)
 
 NtpReader::~NtpReader ()
 {
-  // destructor
-  if (fOutTree) {
-    fOutTree->GetCurrentFile()->Write();
-    fOutTree->GetCurrentFile()->Close();
-  }
-
-  if (fOutFile) {
-    delete fOutFile;
-  }
 }
 
 
@@ -58,87 +40,87 @@ bool NtpReader::IsData ()
 
 
 
-void NtpReader::SetBranches ()
+void NtpReader::SetBranches (TTree* Tree)
 {
   // Set the branches for writing
 
-  fOutTree->Branch("run", &run);
-  fOutTree->Branch("event", &event);
-  fOutTree->Branch("lumis", &lumis);
-  fOutTree->Branch("entry", &entry);
+  Tree->Branch("run", &run);
+  Tree->Branch("event", &event);
+  Tree->Branch("lumis", &lumis);
+  Tree->Branch("entry", &entry);
   if(!IsData()){
-    fOutTree->Branch("pdgID",pdgID,"pdgID[200]/I");
-    fOutTree->Branch("MCpx", MCpx, "MCpx[200]/F");
-    fOutTree->Branch("MCpy", MCpy, "MCpy[200]/F");
-    fOutTree->Branch("MCpz", MCpz, "MCpz[200]/F");
-    fOutTree->Branch("MCe", MCe, "MCe[200]/F");
+    Tree->Branch("pdgID",pdgID,"pdgID[200]/I");
+    Tree->Branch("MCpx", MCpx, "MCpx[200]/F");
+    Tree->Branch("MCpy", MCpy, "MCpy[200]/F");
+    Tree->Branch("MCpz", MCpz, "MCpz[200]/F");
+    Tree->Branch("MCe", MCe, "MCe[200]/F");
   }
-  fOutTree->Branch("nJets", &nJets);
-  fOutTree->Branch("nElectrons", &nElectrons);
-  fOutTree->Branch("nMuons", &nMuons);
-  fOutTree->Branch("nPhotons", &nPhotons);
-  fOutTree->Branch("nTriplets", &nTriplets);
-  fOutTree->Branch("nGoodVtx", &nGoodVtx);
+  Tree->Branch("nJets", &nJets);
+  Tree->Branch("nElectrons", &nElectrons);
+  Tree->Branch("nMuons", &nMuons);
+  Tree->Branch("nPhotons", &nPhotons);
+  Tree->Branch("nTriplets", &nTriplets);
+  Tree->Branch("nGoodVtx", &nGoodVtx);
 
-  fOutTree->Branch("jetpt[nJets]", jetpt);
-  fOutTree->Branch("jetpx[nJets]", jetpx);
-  fOutTree->Branch("jetpy[nJets]", jetpy);
-  fOutTree->Branch("jetpz[nJets]", jetpz);
-  fOutTree->Branch("jete[nJets]", jete);
-  fOutTree->Branch("bdiscTCHE[nJets]", bdiscTCHE);
-  fOutTree->Branch("bdiscTCHP[nJets]", bdiscTCHP);
-  fOutTree->Branch("bdiscSSVHE[nJets]", bdiscSSVHE);
-  fOutTree->Branch("bdiscSSSVHP[nJets]", bdiscSSSVHP);
-
-
-  fOutTree->Branch("epx[nElectrons]", epx);
-  fOutTree->Branch("epy[nElectrons]", epy);
-  fOutTree->Branch("epz[nElectrons]", epz);
-  fOutTree->Branch("ee[nElectrons]", ee);
-  fOutTree->Branch("ept[nElectrons]", ept);
-  fOutTree->Branch("echarge[nElectrons]", echarge);
+  Tree->Branch("jetpt[nJets]", jetpt);
+  Tree->Branch("jetpx[nJets]", jetpx);
+  Tree->Branch("jetpy[nJets]", jetpy);
+  Tree->Branch("jetpz[nJets]", jetpz);
+  Tree->Branch("jete[nJets]", jete);
+  Tree->Branch("bdiscTCHE[nJets]", bdiscTCHE);
+  Tree->Branch("bdiscTCHP[nJets]", bdiscTCHP);
+  Tree->Branch("bdiscSSVHE[nJets]", bdiscSSVHE);
+  Tree->Branch("bdiscSSSVHP[nJets]", bdiscSSSVHP);
 
 
-  fOutTree->Branch("mpx[nMuons]", mpx);
-  fOutTree->Branch("mpy[nMuons]", mpy);
-  fOutTree->Branch("mpz[nMuons]", mpz);
-  fOutTree->Branch("me[nMuons]", me);
-  fOutTree->Branch("mpt[nMuons]", mpt);
-  fOutTree->Branch("mcharge[nMuons]", mcharge);
+  Tree->Branch("epx[nElectrons]", epx);
+  Tree->Branch("epy[nElectrons]", epy);
+  Tree->Branch("epz[nElectrons]", epz);
+  Tree->Branch("ee[nElectrons]", ee);
+  Tree->Branch("ept[nElectrons]", ept);
+  Tree->Branch("echarge[nElectrons]", echarge);
 
 
-  fOutTree->Branch("phpt[nPhotons]", phpt);
-  fOutTree->Branch("phpx[nPhotons]", phpx);
-  fOutTree->Branch("phpy[nPhotons]", phpy);
-  fOutTree->Branch("phpz[nPhotons]", phpz);
-  fOutTree->Branch("phe[nPhotons]", phe);
-
-  fOutTree->Branch("pfMET", &pfMET);
-  fOutTree->Branch("pfMETphi", &pfMETphi);
-
-  fOutTree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
-  fOutTree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
-  fOutTree->Branch("triplet_jet3pt[nTriplets]", triplet_jet3pt);
-  fOutTree->Branch("triplet_sumScalarPt[nTriplets]",triplet_sumScalarPt);
-  fOutTree->Branch("triplet_mass[nTriplets]",triplet_mass);
-  fOutTree->Branch("triplet_sumVectorPt[nTriplets]",triplet_sumVectorPt);
-
-  fOutTree->Branch("triplet_jet1px[nTriplets]", triplet_jet1px);
-  fOutTree->Branch("triplet_jet1py[nTriplets]", triplet_jet1py);
-  fOutTree->Branch("triplet_jet1pz[nTriplets]", triplet_jet1pz);
-  fOutTree->Branch("triplet_jet1e[nTriplets]", triplet_jet1e);
+  Tree->Branch("mpx[nMuons]", mpx);
+  Tree->Branch("mpy[nMuons]", mpy);
+  Tree->Branch("mpz[nMuons]", mpz);
+  Tree->Branch("me[nMuons]", me);
+  Tree->Branch("mpt[nMuons]", mpt);
+  Tree->Branch("mcharge[nMuons]", mcharge);
 
 
-  fOutTree->Branch("triplet_jet2px[nTriplets]", triplet_jet2px);
-  fOutTree->Branch("triplet_jet2py[nTriplets]", triplet_jet2py);
-  fOutTree->Branch("triplet_jet2pz[nTriplets]", triplet_jet2pz);
-  fOutTree->Branch("triplet_jet2e[nTriplets]", triplet_jet2e);
+  Tree->Branch("phpt[nPhotons]", phpt);
+  Tree->Branch("phpx[nPhotons]", phpx);
+  Tree->Branch("phpy[nPhotons]", phpy);
+  Tree->Branch("phpz[nPhotons]", phpz);
+  Tree->Branch("phe[nPhotons]", phe);
+
+  Tree->Branch("pfMET", &pfMET);
+  Tree->Branch("pfMETphi", &pfMETphi);
+
+  Tree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
+  Tree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
+  Tree->Branch("triplet_jet3pt[nTriplets]", triplet_jet3pt);
+  Tree->Branch("triplet_sumScalarPt[nTriplets]",triplet_sumScalarPt);
+  Tree->Branch("triplet_mass[nTriplets]",triplet_mass);
+  Tree->Branch("triplet_sumVectorPt[nTriplets]",triplet_sumVectorPt);
+
+  Tree->Branch("triplet_jet1px[nTriplets]", triplet_jet1px);
+  Tree->Branch("triplet_jet1py[nTriplets]", triplet_jet1py);
+  Tree->Branch("triplet_jet1pz[nTriplets]", triplet_jet1pz);
+  Tree->Branch("triplet_jet1e[nTriplets]", triplet_jet1e);
 
 
-  fOutTree->Branch("triplet_jet3px[nTriplets]", triplet_jet3px);
-  fOutTree->Branch("triplet_jet3py[nTriplets]", triplet_jet3py);
-  fOutTree->Branch("triplet_jet3pz[nTriplets]", triplet_jet3pz);
-  fOutTree->Branch("triplet_jet3e[nTriplets]", triplet_jet3e);
+  Tree->Branch("triplet_jet2px[nTriplets]", triplet_jet2px);
+  Tree->Branch("triplet_jet2py[nTriplets]", triplet_jet2py);
+  Tree->Branch("triplet_jet2pz[nTriplets]", triplet_jet2pz);
+  Tree->Branch("triplet_jet2e[nTriplets]", triplet_jet2e);
+
+
+  Tree->Branch("triplet_jet3px[nTriplets]", triplet_jet3px);
+  Tree->Branch("triplet_jet3py[nTriplets]", triplet_jet3py);
+  Tree->Branch("triplet_jet3pz[nTriplets]", triplet_jet3pz);
+  Tree->Branch("triplet_jet3e[nTriplets]", triplet_jet3e);
 
  
 
@@ -242,7 +224,3 @@ int NtpReader::GetEntry (int const ientry)
 }
 
 
-void NtpReader::FillTree ()
-{
-  fOutTree->Fill();
-}
