@@ -57,7 +57,7 @@ void NtpTopXana::BookHistograms()
    VarList.push_back("LepB_Diag50_Upper160_3Jet1B_");
    VarList.push_back("LeadingJetPt_");
    VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt_");
-   
+   VarList.push_back("St_");
    //std::cout<<CutList[0]+VarList[0]<<std::endl;
    for (int f=0; f< (int) CutList.size(); f++){
      vh_SumptSig4Highest.push_back          (new TH1F((VarList[0]+CutList[f]).c_str(),(VarList[0]+CutList[f]).c_str(),200,0,2));
@@ -78,7 +78,9 @@ void NtpTopXana::BookHistograms()
      vh_LepBDiag50_Upper160_3Jet1B.push_back(new TH1F((VarList[12]+CutList[f]).c_str(),(VarList[12]+CutList[f]).c_str(),200,0,2000));
 
      vh_LeadingJetPt.push_back              (new TH1F((VarList[13]+CutList[f]).c_str(),(VarList[13]+CutList[f]).c_str(),200,0,600));
-     vh_TransMassLepMET4Jet_vs_LeadingJetPt.push_back(new TH2F((VarList[14]+CutList[f]).c_str(),(VarList[14]+CutList[f]).c_str(),200,0,2000,200,0,2000));
+     
+       vh_TransMassLepMET4Jet_vs_LeadingJetPt.push_back(new TH2F((VarList[14]+CutList[f]).c_str(),(VarList[14]+CutList[f]).c_str(),200,0,2000,200,0,2000));
+
         
    }
    return;
@@ -131,9 +133,11 @@ void NtpTopXana::Loop ()
     }
 
     int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();fCleanJets.clear();
+    float SumptAllJet=0;
      for (int i=0; i<nJets; i++){
       TLorentzVector Jet(jetpx[i],jetpy[i],jetpz[i],jete[i]);
       if (jetpt[i]>35.0){
+	SumptAllJet=SumptAllJet+jetpt[i];
 	fCleanJets.push_back(Jet);
 	nJet35=i+1;
 	if (bdiscSSVHE[i] > 1.74)
@@ -207,6 +211,8 @@ void NtpTopXana::Loop ()
 			   v_TransMassLepMET.SetPz(0);
 			   v_TransMassLepMET.SetE(fLepton.Et()+fMET.Et());
 			   
+			   float St=0;
+			   St=SumptAllJet+ept[0]+pfMET;
 			  
 			 /////////Positives charges//////////
 			   if(*echarge==+1)
@@ -221,6 +227,7 @@ void NtpTopXana::Loop ()
 				   vh_MassLepB_vs_SumPt                    [0]->Fill(fLepton.Pt()+fBJets[0].Pt(),(fLepton+fBJets[0]).Mag());
 				   vh_DeltaPhiLepMET                       [0]->Fill(fabs(pfMETphi-fLepton.Phi()));
 				   vh_LeadingJetPt                         [0]->Fill(fCleanJets[0].Pt());
+				   
 				   if(nNoBJet35>=3){
 				     vh_TransMassLepMET4JetB                [0]->Fill(v_TransMassLepMET4Jet1B.Mag());
 				     vh_MassLep1Jet                         [0]->Fill((fLepton+fNoBJets[0]).Mag());
