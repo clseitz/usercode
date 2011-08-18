@@ -47,10 +47,10 @@ class NtpTopXana : public NtpReader
     std::vector<TH1F*> vh_LepBDiag50_Upper160_3Jet1B;
     std::vector<TH1F*> vh_LeadingJetPt;
 
-    std::vector<TH1F*> vh_bla;
+    std::vector<TH1F*> vh_St;
    
     std::vector<TH2F*> vh_TransMassLepMET4Jet_vs_LeadingJetPt;
-
+    std::vector<TH1F*> vh_TransMassLepMET1JetB;
     private:
     TFile* fOutFile;
 
