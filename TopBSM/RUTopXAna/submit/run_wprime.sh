@@ -12,17 +12,18 @@ export VO_CMS_SW_DIR="/cms/base/cmssoft"
 export COIN_FULL_INDIRECT_RENDERING=1
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
-cd /users/h1/clseitz/MyCMS/CMSSW_4_2_4/src/
+cd /users/h1/clseitz/MyCMS/DeanTest/CMSSW_4_2_4/src/TopBSM/RUTopXAna/submit
+
 eval `scramv1 runtime -sh`
 
-export MYSCRIPT=/users/h1/clseitz/MyCMS/CMSSW_4_2_4/src/TopBSM/TopXana/submit/MyTopXana_wprime_cfg.py
+export MYSCRIPT=/users/h1/clseitz/MyCMS/DeanTest/CMSSW_4_2_4/src/TopBSM/RUTopXAna/submit/MyTopXana_wprime_cfg.py
 
 
 #---------------------------------------------------------------
 
  echo "Running script " $MYSCRIPT 
 
- cd /users/h1/clseitz/MyCMS/CMSSW_4_2_4/src/TopBSM/TopXana/submit
+ cd /users/h1/clseitz/MyCMS/DeanTest/CMSSW_4_2_4/src/TopBSM/RUTopXAna/submit
 
 cmsRun $MYSCRIPT $process >& /cms/data24/clseitz/MC_4_2_4/Wprime2/log/TopXanaPlots_${process}.log
 #cmsRun $MYSCRIPT $process >& /cms/data23/evah/2011Data/Muons_anaPlots_mFO_${process}.log

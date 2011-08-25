@@ -10,12 +10,14 @@ suffix_list.append("Wp600_CMS_1")
 suffix_list.append("Wp600_CMS_2")
 suffix_list.append("Wp1000_CMS_1")
 suffix_list.append("Wp1000_CMS_2")
+suffix_list.append("Stop_350")
+suffix_list.append("Sbottom750_neutralino150")
 
+#this_fin_nocfi  = "file:/cms/data24/clseitz/MC_4_2_4/Wprime2/ttbsm_42x_mc"+suffix_list[string.atoi(sys.argv[2])]+".root"
 
-
-this_fin_nocfi  = "file:/cms/data24/clseitz/MC_4_2_4/Wprime2/ttbsm_42x_mc"+suffix_list[string.atoi(sys.argv[2])]+".root"
-this_fout0 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_e_vec.root"
-this_fout1 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_e_vec_tree.root"
+this_fin_nocfi  = "file:/cms/data24/clseitz/ttbsmPat4_2_4/"+suffix_list[string.atoi(sys.argv[2])]+"_ttbsm424.root" 
+this_fout0 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_plots.root"
+this_fout1 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_tree.root"
 
 
 process = cms.Process("data2")
@@ -25,13 +27,21 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 process.maxEvents = cms.untracked.PSet( 
-  #input = cms.untracked.int32(2000)
+  #input = cms.untracked.int32(200)
  input = cms.untracked.int32(-1) 
 )
+
 process.source = cms.Source("PoolSource",
+                    fileNames = cms.untracked.vstring(this_fin_nocfi),
+                    duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
+                    )
+
+#process.source = cms.Source("PoolSource",
                                 # replace 'myfile.root' with the source file you want to use
-                                fileNames = cms.untracked.vstring(this_fin_nocfi)
-                            )
+ #                               fileNames = cms.untracked.vstring(this_fin_nocfi)
+  #                           duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
+                                                         
+   #                          )
 
 ##process.source = cms.Source("PoolSource",
 ##  skipEvents = cms.untracked.uint32(0), 
