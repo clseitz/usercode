@@ -1,4 +1,4 @@
- #include <vector>
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -18,7 +18,7 @@ void CountMjjj(TH1F *temp_diagcut,float diag, float i){
 }
 void make_asym()
 {
-  float lumi=1000.;
+  float lumi=2000.;
   vector <string > namelist;
   
   vector <string > VarList;
@@ -27,17 +27,17 @@ void make_asym()
   vector<float> nEvtTot;
   vector<float> McXsec;
   vector<float> DataLumi;
-
+vector <TH1F* > v_Asym;
   //file 0-3 are the files to fit
   
-  filelist.push_back(TFile::Open("../TTBar_plots_St600.root"));
+  filelist.push_back(TFile::Open("../TTBar_plots_additionalCuts.root"));
   namelist.push_back("TTbarJEts_e");
   //nEvtTot.push_back(216095.0);
   nEvtTot.push_back(3.6838e+06);
   McXsec.push_back(157.5);
   DataLumi.push_back(lumi);
 
-  filelist.push_back(TFile::Open("../TTBar_plots_St600.root"));
+  filelist.push_back(TFile::Open("../TTBar_plots_additionalCuts.root"));
   namelist.push_back("TTbarJEts_e");
   //nEvtTot.push_back(216095.0);
   nEvtTot.push_back(3.6838e+06);
@@ -49,32 +49,33 @@ void make_asym()
   McXsec.push_back(31314.0);
   DataLumi.push_back(lumi);
   */
-
-  filelist.push_back(TFile::Open("../Wp600_plots_St600.root"));
+  
+  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
-  McXsec.push_back(0.0);
+  McXsec.push_back(8.0);
   DataLumi.push_back(lumi);
-  filelist.push_back(TFile::Open("../Wp600_plots_St600.root"));
+  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
   namelist.push_back("Wp1000_e");
   nEvtTot.push_back(99995.0);
   McXsec.push_back(0.0);
   DataLumi.push_back(lumi);
   
-  //filelist.push_back(TFile::Open("/cms/data24/clseitz/MC_4_2_4/Sbottom/Sbottom750_neutralino150_LeptonAna_e25_met30_b12.root"));
 
-  //plotlist.push_back("Event/SumptSig4HighestPlus");
-  //plotlist.push_back("Event/SumptSig4SecondHighestPlus");
-  //plotlist.push_back("Event/TransMassLepMET4JetPlus");
-  //plotlist.push_back("Event/TransMassLepMET4SecondJetPlus");
-  //plotlist.push_back("Event/SumptSig4HighestMinus");
-  //plotlist.push_back("Event/SumptSig4SecondHighestMinus");
-  //plotlist.push_back("Event/TransMassLepMET4JetMinus");
-  //plotlist.push_back("Event/TransMassLepMET4SecondJetMinus");
+  /*
+  filelist.push_back(TFile::Open("../Sbottom750_plots.root"));
+  namelist.push_back("Sbottom750_e");
+  nEvtTot.push_back(78000.0);
+  McXsec.push_back(8.0);
+  DataLumi.push_back(lumi);
+ filelist.push_back(TFile::Open("../Stop350_plots.root"));
+  namelist.push_back("Stop350_e");
+  nEvtTot.push_back(10000.0);
+  McXsec.push_back(0.72);
+  DataLumi.push_back(lumi);
+  */
 
-  // string plotname="Mass3Jet2B";
-  //string plotname="LepB_Diag50_Upper160_3Jet1B";
-  //string plotname="LepBJet_Diag50_Upper160_4Jet";
+  
 
  VarList.push_back("SumptSig4Highest_");
  VarList.push_back("SumptSig4SecondHighest_");
@@ -93,24 +94,26 @@ void make_asym()
  VarList.push_back("St_");
 
    VarList.push_back("TransMassLepMET1JetB_");
-
+VarList.push_back("Mass3Jet1B_");
  //VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt_");
 
   
 
 
-  TFile fnew1("ttbar_asym_plots.root", "recreate");
+  TFile fnew1("wp600ttbar_asym_plots.root", "recreate");
   
   for(int m=0; m<VarList.size(); m++){
     vector <string > plotlist;
+
+    //COMMENT ALL IN if you want to look at other variables but then the added asymmetry doesn't work
   plotlist.push_back("5Jet_1b_P/"+VarList[m]+"5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/"+VarList[m]+"5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/"+VarList[m]+"4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/"+VarList[m]+"4Jet_2b_P");
+  //plotlist.push_back("5Jet_2b_P/"+VarList[m]+"5Jet_2b_P");
+  //plotlist.push_back("4Jet_1b_P/"+VarList[m]+"4Jet_1b_P");
+  //plotlist.push_back("4Jet_2b_P/"+VarList[m]+"4Jet_2b_P");
   plotlist.push_back("5Jet_1b_M/"+VarList[m]+"5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/"+VarList[m]+"5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/"+VarList[m]+"4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/"+VarList[m]+"4Jet_2b_M");
+  // plotlist.push_back("5Jet_2b_M/"+VarList[m]+"5Jet_2b_M");
+  //plotlist.push_back("4Jet_1b_M/"+VarList[m]+"4Jet_1b_M");
+  //plotlist.push_back("4Jet_2b_M/"+VarList[m]+"4Jet_2b_M");
 
   for(int i=0; i<(plotlist.size()/2); i++){//loop for all the plots we wan to
    
@@ -136,8 +139,9 @@ void make_asym()
       temp2 = (TH1F*) tempb->Rebin(4,"temp2");
       //temp->Add(temp2);
       float scale = (1.0/nEvtTot[file])*DataLumi[file]*McXsec[file];
-      temp->Scale(scale);
-      temp2->Scale(scale);
+      //temp->Scale(scale);
+      //temp2->Scale(scale);
+	
       //TH1F* Asym;
 
       //temp->Draw("SAME");
@@ -183,20 +187,24 @@ void make_asym()
      Wp600StackM.Add(histosM[0]);
      Wp600StackM.Add(histosM[1]); 
      Wp600StackM.Add(histosM[2]);
-     TCanvas* c2= new TCanvas((cn1.str()).c_str(),(cn1.str()).c_str(),800,600);
-     Wp600StackP.Draw("hist");
-     Wp600StackM.Draw("histsame");
+     //TCanvas* c2= new TCanvas((cn1.str()).c_str(),(cn1.str()).c_str(),800,600);
+     //Wp600StackM.Draw("hist");    
+     //Wp600StackP.Draw("histsame");
+    
      TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
      leg->AddEntry(histosP[1], "postive","lep");
      leg->AddEntry(histosM[1], "negative","lep");
     // leg->AddEntry(histos[2], namelist[2].c_str(),"lep");
     leg->Draw();
      fnew1.cd();
-     c2->Write();
+     
      TH1F* Asym;
      Asym = (TH1F*) histosP[2]->Clone();
-     
-     for (int k=1; k<histosP[2]->GetNbinsX()-1; k++){
+     TH1F* Pos;
+     Pos = (TH1F*) histosP[2]->Clone();
+     TH1F* Neg;
+     Neg = (TH1F*) histosP[2]->Clone();
+     /*for (int k=1; k<histosP[2]->GetNbinsX()-1; k++){
        //cout<<"loop"<<endl;
        Float_t binP = ((TH1*)(Wp600StackP.GetStack()->Last()))->GetBinContent(k);
        Float_t binM = ((TH1*)(Wp600StackM.GetStack()->Last()))->GetBinContent(k);
@@ -204,45 +212,94 @@ void make_asym()
        float ratio=0;
        if(binP!=0 && binM!=0){
        ratio=(binP-binM)/(binP+binM);
-       //binE=2*sqrt((binM*binP)/pow(binM + binP,3));
-       binE=0.02;
+       binE=2*sqrt((binM*binP)/pow(binM + binP,3));
+       //binE=0.02;
        cout<<ratio<<" "<<binP<<" "<<binM<<endl;
        }
        else ratio=0;
        Asym->SetBinContent(k,ratio);
        Asym->SetBinError(k,binE);
 			     
+       }
+ fnew1.cd();
+     Asym->SetTitle(plotlist[i].c_str());
+     Asym->SetName(plotlist[i].c_str());
+     Asym->Write();
+     */
+     for (int k=1; k<histosP[2]->GetNbinsX()-1; k++){
+       //cout<<"loop"<<endl;
+       float scale_tt = (1.0/nEvtTot[0])*DataLumi[0]*McXsec[0];
+       float scale_wp = (1.0/nEvtTot[2])*DataLumi[2]*McXsec[2];
+       float EP_tt=sqrt(histosP[0]->GetBinContent(k));
+       float EP_wp=sqrt(histosP[2]->GetBinContent(k));
+       float EM_tt=sqrt(histosM[0]->GetBinContent(k));
+       float EM_wp=sqrt(histosM[2]->GetBinContent(k));
+       float BP_tt=histosP[0]->GetBinContent(k);
+       float BP_wp=histosP[2]->GetBinContent(k);
+       float BM_tt=histosM[0]->GetBinContent(k);
+       float BM_wp=histosM[2]->GetBinContent(k);
+
+      
+       float binP = 0;
+       float binM = 0;
+       //cout<<scale_tt<<" "<<BP_tt<<" "<<EP_tt<<endl;
+       // cout<<binP_E<<endl;
+       float binE=0;
+       float ratio=0;
+       if(BP_tt!=0 && BP_wp!=0 && BM_tt!=0 && BM_wp!=0){
+	 binP = scale_tt*BP_tt+scale_wp*BP_wp;
+	 binM =  scale_tt*BM_tt+scale_wp*BM_wp;
+	 cout<<scale_tt<<" "<<BP_tt<<" "<<EP_tt<<" "<<scale_wp<<" "<<BP_wp<<" "<<EP_wp<<endl;
+	 float binP_E=sqrt(pow(scale_tt*BP_tt/EP_tt,2)+pow(scale_wp*BP_wp/EP_wp,2));
+	 float binM_E=sqrt(pow(scale_tt*BM_tt/EM_tt,2)+pow(scale_wp*BM_wp/EM_wp,2));
+	 
+	 if(m==VarList.size()-1) ratio=(-binP+binM)/(binP+binM);
+	 else  ratio=(binP-binM)/(binP+binM);
+	 //Real Errors from MC statistics
+	 //binE=2*sqrt((pow(binM_E,2)*pow(binP,2) + pow(binM,2)*pow(binP_E,2))/pow(binM + binP,4));
+	 //Error as would be seen in data just sqrt(binContent)
+	  binE=2*sqrt((binM*binP)/pow(binM + binP,3));
+	  //binE=0.02;
+	 //cout<<ratio<<" "<<binE<<" "<<binP<<" "<<binM<<" "<<binM_E<<" "<<binP_E<<endl;
+       }
+       else ratio=0;
+
+       Asym->SetBinContent(k,ratio);
+       Asym->SetBinError(k,binE);
+       Pos->SetBinContent(k,binP);
+       Neg->SetBinContent(k,binM);
+			     
      }
      fnew1.cd();
      Asym->SetTitle(plotlist[i].c_str());
      Asym->SetName(plotlist[i].c_str());
      Asym->Write();
+     v_Asym.push_back(Asym);
+      TCanvas* c2= new TCanvas((cn1.str()).c_str(),(cn1.str()).c_str(),800,600);
+      Pos->SetLineColor(1); Neg->SetLineColor(2);
+      Pos->Draw();
+      Neg->Draw("same");
+      c2->Write();
      
-     
-     /*
-     std::stringstream cn2;
-     cn2<<plotlist[i]<<"_Wprime1000";
-     TCanvas* c2= new TCanvas(((cn2.str()).c_str()),((cn2.str()).c_str()),800,600);
-     TLegend *leg2 = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
-     leg2->AddEntry(histos[0], namelist[0].c_str(),"lep");
-     
-     leg2->AddEntry(histos[1], namelist[1].c_str(),"lep");
-     leg2->AddEntry(histos[3], namelist[3].c_str(),"lep");
-     Wp1000Stack.Add(histos[1]);  Wp1000Stack.Add(histos[0]); Wp1000Stack.Add(histos[3]);
-     Wp1000Stack.Draw("hist");
-     //Wp1000Stack.GetXaxis()->SetRangeUser(0,500);
-     Wp1000Stack.SetTitle(plotlist[i].c_str());
-     
-    leg2->Draw();
-    fnew1.cd();
-     std::stringstream gif2;
-    gif2<<plotlist[i]<<"_Wprime1000_e_delphi_120.gif";
-    c2->Write();
-    c2->SaveAs((gif2.str()).c_str());
-    //      temp_Mjj->Wr
-    */
+    
   } 
-} 
+}
+TH1F* temp1;
+ temp1 = (TH1F*) v_Asym[v_Asym.size()-2]->Clone(); 
+TH1F* temp2;
+ temp2 = (TH1F*) v_Asym[v_Asym.size()-1]->Clone(); 
+TH1F* AddAsym;
+ AddAsym = (TH1F*) v_Asym[v_Asym.size()-2]->Clone();
+ for (int k=1; k< temp1->GetNbinsX()-1; k++){
+   AddAsym->SetBinContent(k,temp1->GetBinContent(k)+temp2->GetBinContent(k));
+   float error=sqrt(pow(temp1->GetBinError(k),2)+pow(temp2->GetBinError(k),2));
+   AddAsym->SetBinError(k,error);
+ }
+     //AddAsym->Add(v_Asym[v_Asym.size()-1]);
+ AddAsym->SetTitle("adding asymmetry");	 
+ AddAsym->SetName("adding_asymmetry");	 
+ AddAsym->Write();
+     
 } 
 
 

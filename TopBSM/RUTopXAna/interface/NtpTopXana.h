@@ -27,6 +27,7 @@ class NtpTopXana : public NtpReader
     std::vector<TLorentzVector >      fCleanJets;
     
     TH1F* h_NumEvtCut;
+    TH1F* h_MET;
     //lots of plots
     std::vector <std::string > VarList;
     std::vector <std::string > CutList;
@@ -48,9 +49,27 @@ class NtpTopXana : public NtpReader
     std::vector<TH1F*> vh_LeadingJetPt;
 
     std::vector<TH1F*> vh_St;
-   
+
     std::vector<TH2F*> vh_TransMassLepMET4Jet_vs_LeadingJetPt;
     std::vector<TH1F*> vh_TransMassLepMET1JetB;
+    std::vector<TH1F*> vh_Mass3Jet1B;
+    std::vector<TH2F*> vh_TransMassLepMET1JetB_vs_Mass3Jet1B;
+    //////plots for optimization//////
+    std::vector<TH1F*> vh_TransMassLepMET1JetB_pt;
+    std::vector<TH1F*> vh_TransMassLepMET1JetB_delphi;
+    std::vector<TH1F*> vh_TransMassLepMET1JetB_st;
+
+    std::vector<TH1F*> vh_TransMassLepMET4Jet_pt;
+    std::vector<TH1F*> vh_TransMassLepMET4Jet_delphi;
+    std::vector<TH1F*> vh_TransMassLepMET4Jet_st;
+
+    std::vector<std::vector<TH1F*> >  vh_TransMassLepMET4Jet_pt_st;
+    std::vector<std::vector<TH1F*> >  vh_TransMassLepMET1JetB_pt_st;
+
+    std::vector<TH1F*> vh_ChargeXeta;
+
+
+
     private:
     TFile* fOutFile;
 
