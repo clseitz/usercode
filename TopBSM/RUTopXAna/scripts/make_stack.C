@@ -1,4 +1,4 @@
-#include <vector>
+ #include <vector>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -29,40 +29,44 @@ void make_stack()
   vector<float> DataLumi;
 
   //file 0-3 are the files to fit
-  
-  filelist.push_back(TFile::Open("/uscms_data/d3/clseitz/TTBarJets/TTbarJets_LeptonANA_e_vec_delphi_120.root"));
+   filelist.push_back(TFile::Open("../TTBar_plots_additionalCuts.root"));
   namelist.push_back("TTbarJEts_e");
   //nEvtTot.push_back(216095.0);
   nEvtTot.push_back(3.6838e+06);
   McXsec.push_back(157.5);
   DataLumi.push_back(lumi);
 
-  filelist.push_back(TFile::Open("/uscms_data/d3/clseitz/TTBarJets/TTbarJets_LeptonANA_e_vec_delphi_120.root"));
+  /* filelist.push_back(TFile::Open("../TTBar_plots_St600.root"));
   namelist.push_back("TTbarJEts_e");
   //nEvtTot.push_back(216095.0);
   nEvtTot.push_back(3.6838e+06);
   McXsec.push_back(0);
   DataLumi.push_back(lumi);
-
-  /* filelist.push_back(TFile::Open("/uscms_data/d3/clseitz/WJets/WJets_LeptonANA_e_vec_delphi_120.root"));
-  nEvtTot.push_back(4.5972e+07);
-  namelist.push_back("WJets_e");
-  McXsec.push_back(31314.0);
-  DataLumi.push_back(lumi);
   */
-
-  filelist.push_back(TFile::Open("/uscms_data/d3/clseitz/WprimeHexcms/Wp600_CMS_LeptonANA_e_vec_delphi_120.root"));
+  
+  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
   McXsec.push_back(8.0);
   DataLumi.push_back(lumi);
-  filelist.push_back(TFile::Open("/uscms_data/d3/clseitz/WprimeHexcms/Wp1000_CMS_LeptonANA_e_vec_delphi_120.root"));
+  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
   namelist.push_back("Wp1000_e");
   nEvtTot.push_back(99995.0);
   McXsec.push_back(0.72);
   DataLumi.push_back(lumi);
+
+ 
+  filelist.push_back(TFile::Open("../Sbottom750_plots_additionalCuts.root"));
+  namelist.push_back("Sbottom750_e");
+  nEvtTot.push_back(57073.0);
+  McXsec.push_back(8.0);
+  DataLumi.push_back(lumi);
+ filelist.push_back(TFile::Open("../Stop350_plots_additionalCuts.root"));
+  namelist.push_back("Stop350_e");
+  nEvtTot.push_back(10000.0);
+  McXsec.push_back(1);
+  DataLumi.push_back(lumi);
   
-  //filelist.push_back(TFile::Open("/cms/data24/clseitz/MC_4_2_4/Sbottom/Sbottom750_neutralino150_LeptonAna_e25_met30_b12.root"));
 
   //plotlist.push_back("Event/SumptSig4HighestPlus");
   //plotlist.push_back("Event/SumptSig4SecondHighestPlus");
@@ -91,77 +95,20 @@ void make_stack()
  VarList.push_back("LepBJet_Diag50_Upper160_4Jet_");
  VarList.push_back("LepB_Diag50_Upper160_3Jet1B_");
  VarList.push_back("LeadingJetPt_");
- //VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt_");
-
+ VarList.push_back("St_");
+ VarList.push_back("TransMassLepMET1JetB_");
+VarList.push_back("Mass3Jet1B_");
+//VarList.push_back("TransMassLepMET4Jet_vs_Mass3Jet1B_");
   
   
-  /*plotlist.push_back("5Jet_1b_P/DeltaPhiLepMET_5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/DeltaPhiLepMET_5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/DeltaPhiLepMET_4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/DeltaPhiLepMET_4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/DeltaPhiLepMET_5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/DeltaPhiLepMET_5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/DeltaPhiLepMET_4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/DeltaPhiLepMET_4Jet_2b_M");
-  */
 
-  /*plotlist.push_back("5Jet_1b_P/MassLep1Jet_5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/MassLep1Jet_5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/MassLep1Jet_4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/MassLep1Jet_4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/MassLep1Jet_5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/MassLep1Jet_5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/MassLep1Jet_4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/MassLep1Jet_4Jet_2b_M");*/
-  /*
-  plotlist.push_back("5Jet_1b_P/MassLep1B_5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/MassLep1B_5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/MassLep1B_4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/MassLep1B_4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/MassLep1B_5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/MassLep1B_5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/MassLep1B_4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/MassLep1B_4Jet_2b_M");
-  */
-  
-  /*plotlist.push_back("5Jet_1b_P/LeadingJetPt5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/LeadingJetPt5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/LeadingJetPt4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/LeadingJetPt4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/LeadingJetPt5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/LeadingJetPt5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/LeadingJetPt4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/LeadingJetPt4Jet_2b_M");*/
-
-  /*plotlist.push_back("5Jet_1b_P/LeadingJetPt5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/LeadingJetPt5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/LeadingJetPt4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/LeadingJetPt4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/LeadingJetPt5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/LeadingJetPt5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/LeadingJetPt4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/LeadingJetPt4Jet_2b_M");*/
-  /*
-  plotlist.push_back("5Jet_1b_P/TransMassLepMET4Jet_5Jet_1b_P");
-  plotlist.push_back("5Jet_2b_P/TransMassLepMET4Jet_5Jet_2b_P");
-  plotlist.push_back("4Jet_1b_P/TransMassLepMET4Jet_4Jet_1b_P");
-  plotlist.push_back("4Jet_2b_P/TransMassLepMET4Jet_4Jet_2b_P");
-  plotlist.push_back("5Jet_1b_M/TransMassLepMET4Jet_5Jet_1b_M");
-  plotlist.push_back("5Jet_2b_M/TransMassLepMET4Jet_5Jet_2b_M");
-  plotlist.push_back("4Jet_1b_M/TransMassLepMET4Jet_4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/TransMassLepMET4Jet_4Jet_2b_M");
-  */
-  /*plotlist.push_back("Event/TransMassLepMET5JetPlus_5jet1b");
-  plotlist.push_back("Event/TransMassLepMET5JetPlus_5jet2b");  
-  plotlist.push_back("Event/TransMassLepMET5JetMinus_5jet1b");
-  plotlist.push_back("Event/TransMassLepMET5JetMinus_5jet2b");
-  */
-
-  TFile fnew1("stack_plots.root", "recreate");
+  TFile fnew1("stack_plots_additionalCuts.root", "recreate");
   
   for(int m=0; m<VarList.size(); m++){
     vector <string > plotlist;
-  plotlist.push_back("5Jet_1b_P/"+VarList[m]+"5Jet_1b_P");
+    //plotlist.push_back("MET");
+    //plotlist.push_back("MET");
+    plotlist.push_back("5Jet_1b_P/"+VarList[m]+"5Jet_1b_P");
   plotlist.push_back("5Jet_2b_P/"+VarList[m]+"5Jet_2b_P");
   plotlist.push_back("4Jet_1b_P/"+VarList[m]+"4Jet_1b_P");
   plotlist.push_back("4Jet_2b_P/"+VarList[m]+"4Jet_2b_P");
@@ -178,7 +125,7 @@ void make_stack()
    
     
     
-    for(int file=0; file<4; file++){
+    for(int file=0; file<5; file++){
       std::stringstream dir;
       cout<<namelist[file]<<endl;
       dir<<namelist[file];
@@ -187,10 +134,10 @@ void make_stack()
       TH1F* tempb;
       
       tempa = (TH1F*) filelist[file]->Get(plotlist[i].c_str());
-      temp =  (TH1F*) tempa->Rebin(5, "temp");
+      temp =  (TH1F*) tempa->Rebin(6, "temp");
       TH1F* temp2;
       tempb = (TH1F*) filelist[file]->Get(plotlist[i+plotlist.size()/2].c_str());
-      temp2 = (TH1F*) tempb->Rebin(5,"temp2");
+      temp2 = (TH1F*) tempb->Rebin(6,"temp2");
       temp->Add(temp2);
       float scale = (1.0/nEvtTot[file])*DataLumi[file]*McXsec[file];
       
@@ -201,12 +148,12 @@ void make_stack()
       //temp->SetFillColor(file+1);
       temp->SetLineWidth(2);
       //temp->GetXaxis()->SetRangeUser(0,300);
-
-      if(file==4){
+if(file==4) temp->SetLineColor(46);
+      /* if(file==4){
 	temp->Sumw2();
 	temp->SetMarkerStyle(23);
 	temp->SetLineColor(12);
-      }
+	}*/
       histos.push_back(temp);
       //leg->AddEntry(temp, namelist[file].c_str(),"lep");
      
@@ -215,7 +162,7 @@ void make_stack()
       
     }
    
-    Wp600Stack.Add(histos[1]);  Wp600Stack.Add(histos[0]); Wp600Stack.Add(histos[2]);
+    Wp600Stack.Add(histos[0]);  Wp600Stack.Add(histos[1]);
     std::stringstream cn1;
      cn1<<plotlist[i]<<"_Wprime600";
      TCanvas* c1= new TCanvas((cn1.str()).c_str(),(cn1.str()).c_str(),800,600);
@@ -223,9 +170,19 @@ void make_stack()
     leg->AddEntry(histos[0], namelist[0].c_str(),"lep");
     leg->AddEntry(histos[1], namelist[1].c_str(),"lep");
     leg->AddEntry(histos[2], namelist[2].c_str(),"lep");
-     Wp600Stack.Draw("hist");
+    leg->AddEntry(histos[3], namelist[3].c_str(),"lep");
+    leg->AddEntry(histos[4], namelist[4].c_str(),"lep");
+    //comment next line in for seeing stacked plots
+    Wp600Stack.Draw("hist");
      //Wp600Stack.GetXaxis()->SetRangeUser(0,300);
      Wp600Stack.SetTitle(plotlist[i].c_str());
+     //comment these in to just make overlayed plots
+     // histos[0]->Draw();
+     //histos[1]->Draw("same");
+     //histos[2]->Draw("same");
+     //histos[3]->Draw("same");
+     //histos[4]->Draw("same");
+
      leg->Draw();
      fnew1.cd();
      c1->Write();
