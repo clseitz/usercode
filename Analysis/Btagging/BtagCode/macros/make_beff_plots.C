@@ -86,6 +86,8 @@ void make_beff_plots()
       dummy->GetXaxis()->SetTitle("pt of the jets");
       dummy->GetXaxis()->SetTitleOffset(1.9);
       dummy->GetYaxis()->SetTitleOffset(2.2);
+
+dummy->GetXaxis()->SetRangeUser(0,300);
       if(b==0 || b ==1){
 	dummy->GetYaxis()->SetTitle("b-tag efficiency");
 	sprintf(hNAME, "B-tag efficiency %s ",namelist[file].c_str());
@@ -187,7 +189,7 @@ void make_beff_plots()
     for (int b=0; b<4;b++){
       fnew1.cd(dir);
       std::stringstream sOP1 ;
-      sOP1<<"B-"<<v_eff[b] <<"_efficiency_"<<eff_name[b];
+      sOP1<<"B-"<<v_eff[b] <<"_efficiency_eta_"<<eff_name[b];
       TCanvas* c1 = new TCanvas((sOP1.str()).c_str(),(sOP1.str()).c_str(),800,600);
       TH1F* dummy = new TH1F("zmass","",100,0,4);
       dummy->Draw();
@@ -287,7 +289,7 @@ void make_beff_plots()
       fnew1.cd(dir);
       c1->Write();
       sOP1<<dir<<".gif";
-      c1->SaveAs((sOP1.str()).c_str());
+      c1->Saves((sOP1.str()).c_str());
 
 	 
     }

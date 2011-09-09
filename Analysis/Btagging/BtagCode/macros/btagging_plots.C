@@ -29,7 +29,7 @@ vector <string > flavors;
   
   
  
- filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/RPV_MC_113_223_200GeV_424_raw.root"));
+ filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/RPV_MC_113_223_200GeV_424_2raw.root"));
  namelist.push_back("RPV_MC_113_223_200GeV");
 
  filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/TTbarJets/TTbarJets_Btag_raw_full.root"));
@@ -132,8 +132,8 @@ namelist.push_back("Zprime_M500_W5");
     }
           
     }
-   Double_t xbins[27]={0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,250,300,400,500,600,1000};
-
+    Double_t xbins[27]={0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,250,300,400,500,600,1000};
+   //Double_t xbins[15]={0,20,30,40,50,60,70,80,100,120,240,380,520,660,1000};
    //making plots for btag efficiency and miss tag rate
       for(int file=0; file<6; file++){
   cout<<namelist[file]<<endl;;
@@ -169,6 +169,8 @@ namelist.push_back("Zprime_M500_W5");
 	tempBtag = (TH1F*) filelist[file]->Get((sOP2.str()).c_str());
 	tempNoBtag = (TH1F*) filelist[file]->Get((sNoBtag.str()).c_str());
 	tempBtagEta = (TH1F*) filelist[file]->Get((sOP3.str()).c_str());
+	fnew1.cd(dir);
+	
 	cout<<(sNoBtagEta.str()).c_str()<<endl;
 	tempNoBtagEta = (TH1F*) filelist[file]->Get((sNoBtagEta.str()).c_str());
 
@@ -181,13 +183,15 @@ namelist.push_back("Zprime_M500_W5");
 		h_NoBtag=(TH1F*) tempNoBtag->Rebin(26,"h_NoBtag",xbins);
 
 		h_BtagEta =(TH1F*) tempBtagEta->Rebin(3,"h_Btag");
-		h_NoBtagEta=(TH1F*) tempNoBtagEta->Rebin(3,"h_Btag");
+		h_NoBtagEta=(TH1F*) tempNoBtagEta->Rebin(3,"h_NoBtagEta");
 
-		h_Btag->SetName((sOP2.str()).c_str());
-	h_NoBtag->SetName((sOP2.str()).c_str());
-	h_BtagEta->SetName((sOP3.str()).c_str());
-	h_NoBtagEta->SetName((sOP3.str()).c_str());
+		//h_Btag->SetName((sOP2.str()).c_str());
+		//h_NoBtag->SetName((sOP2.str()).c_str());
+
+		//h_BtagEta->SetName((sOP3.str()).c_str());
+		//h_NoBtagEta->SetName((sOP3.str()).c_str());
 	fnew1.cd(dir);
+h_NoBtagEta->Write();
 	//temp_Btag->Write();
 	//temp_NoBtag->Write();
 	std::stringstream seff;
@@ -200,6 +204,7 @@ namelist.push_back("Zprime_M500_W5");
 	BTagEff=(TH1F*) h_Btag->Clone();
 	BTagEff->Divide(h_NoBtag);
 	BTagEff->SetName((seff.str()).c_str());
+
 	BTagEff->SetTitle((seff.str()).c_str());
 	BTagEffEta=(TH1F*) h_BtagEta->Clone();
 	BTagEffEta->Divide(h_NoBtagEta);
@@ -266,7 +271,7 @@ namelist.push_back("Zprime_M500_W5");
 	 h_Triplet_jetpt =  (TH1F*)h_tempTriplet_jetpt->Rebin(26,"temp_Btag",xbins);
 	 h_Triplet_sumpt =  (TH1F*) h_tempTriplet_sumpt->Clone();
 	 h_Triplet_mass =  (TH1F*)h_tempTriplet_mass->Clone();
-	 
+	
 	 h_Triplet_jetpt_none = (TH1F*) h_tempTriplet_jetpt_none->Rebin(26,"temp_Btag",xbins);
 	 h_Triplet_sumpt_none = (TH1F*)  h_tempTriplet_sumpt_none->Clone();
 	 h_Triplet_mass_none = (TH1F*) h_tempTriplet_mass_none->Clone();
