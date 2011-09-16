@@ -48,13 +48,13 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("event", &event);
   Tree->Branch("lumis", &lumis);
   Tree->Branch("entry", &entry);
-  if(!IsData()){
+
     Tree->Branch("pdgID",pdgID,"pdgID[200]/I");
     Tree->Branch("MCpx", MCpx, "MCpx[200]/F");
     Tree->Branch("MCpy", MCpy, "MCpy[200]/F");
     Tree->Branch("MCpz", MCpz, "MCpz[200]/F");
     Tree->Branch("MCe", MCe, "MCe[200]/F");
-  }
+
   Tree->Branch("nJets", &nJets);
   Tree->Branch("nElectrons", &nElectrons);
   Tree->Branch("nMuons", &nMuons);
@@ -137,13 +137,13 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("event", &event);
   fChain.SetBranchAddress("lumis", &lumis);
   fChain.SetBranchAddress("entry", &entry);
-  if(!IsData()){
+ 
     fChain.SetBranchAddress("pdgID[200]",pdgID);
     fChain.SetBranchAddress("MCpx[200]", MCpx);
     fChain.SetBranchAddress("MCpy[200]", MCpy);
     fChain.SetBranchAddress("MCpz[200]", MCpz);
     fChain.SetBranchAddress("MCe[200]", MCe);
-  }
+ 
   fChain.SetBranchAddress("nJets", &nJets);
   fChain.SetBranchAddress("nElectrons", &nElectrons);
   fChain.SetBranchAddress("nMuons", &nMuons);
