@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "TLorentzVector.h"
 #include "TFile.h"
+#include "math.h"
 
 using namespace std;
 
@@ -134,7 +135,19 @@ void NtpTopXana::BookHistograms()
 
 
    }
-   return;
+   //MC plots
+ h_MCwprimeMassPos = new TH1F("MCwprimeMassPos", "MCwprimeMassPos",200,0,2000);
+ h_MCwprimeMassNeg = new TH1F("MCwprimeMassNeg", "MCwprimeMassNeg",200,0,2000);
+ h_MCwprimeMETMassPos = new TH1F("MCwprimeMETMassPos", "MCwprimeMETMassPos",200,0,2000);
+ h_MCwprimeMETMassNeg = new TH1F("MCwprimeMETMassNeg", "MCwprimeMETMassNeg",200,0,2000);
+ h_minChi2Pos = new TH1F("minChi2Pos", "minCh2Pos",1000,0,1000);
+ h_minChi2Neg = new TH1F("minChi2Neg", "minCh2Neg",1000,0,1000);
+ h_MCPhidLepTopPos = new TH1F("MCPhidLepTopPos", "MCPhidLepTopPos",200,0,4);
+ h_MCPhidLepTopNeg = new TH1F("MCPhidLepTopNeg", "MCPhidLepTopNeg",200,0,4);
+ h_MCPhiWpTopPos = new TH1F("MCPhiWpTopPos", "MCPhiWpTopPos",200,0,4);
+ h_MCPhiWpTopNeg = new TH1F("MCPhiWpTopNeg", "MCPhiWpTopNeg",200,0,4);
+ h_MCPhiWpTop = new TH1F("MCPhiWpTop", "MCPhiWpTop",200,0,4);
+ return;
 }
  
 void NtpTopXana::WriteHistograms()
@@ -189,7 +202,20 @@ void NtpTopXana::WriteHistograms()
      }
 
    }
- 
+ fOutFile->cd();
+ fOutFile->mkdir("MCwprime");
+ fOutFile->cd("MCwprime");
+ h_MCwprimeMassPos->Write();
+ h_MCwprimeMassNeg->Write();
+ h_MCwprimeMETMassPos->Write();
+ h_MCwprimeMETMassNeg->Write();
+ h_minChi2Neg->Write();
+ h_minChi2Pos->Write();
+ h_MCPhidLepTopNeg->Write();
+ h_MCPhidLepTopPos->Write();
+ h_MCPhiWpTopPos->Write();
+ h_MCPhiWpTopNeg->Write();
+ h_MCPhiWpTop->Write();
   return;
 }
   
@@ -197,10 +223,13 @@ void NtpTopXana::WriteHistograms()
 void NtpTopXana::Loop ()
 {
   // Run over all entries and do what you like!
+  int countallhad=0;
+  int countlep=0;
+  int countsemilep=0;
 
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
     
-    cout<<"should be 4000023 "<<MCpz[0]<<" should 24 "<<pdgID[10]<<" should be 6 "<<pdgID[9]<<endl;
+    
 
     if (ientry % 1000 == 0) {
       printf("Processing entry: %i\n", ientry);
@@ -718,14 +747,291 @@ void NtpTopXana::Loop ()
     //make some Generator level plots
     bool MCgen=true;
 
-    //if (MCgen){
-      //first find out
+    if (MCgen){
+      bool allhad=false;
+      bool lep=false;
+      bool semilep=false;
+      if (fabs(pdgID[12])<5 && fabs(pdgID[13])<5 && fabs(pdgID[16])<5 && fabs(pdgID[17])<5) 
+	{allhad=true;
+	  countallhad++;
+  }
+      if( (fabs(pdgID[12])>=11 && fabs(pdgID[12])<=18) && (fabs(pdgID[13])>=11 && fabs(pdgID[13])<=18) && (fabs(pdgID[16])>=11 && fabs(pdgID[16])<=18) && (fabs(pdgID[17])>=11 && fabs(pdgID[17])<=18))
+	{
+	  lep=true;
+	  countlep++;
+  }
+      if((fabs(pdgID[12])>=11 && fabs(pdgID[12])<=18) && (fabs(pdgID[13])>=11 && fabs(pdgID[13])<=18) &&fabs(pdgID[16])<5 &&fabs(pdgID[17])<5) 
+	{semilep=true;
+	  countsemilep++;
+  }
+      if((fabs(pdgID[16])>=11 && fabs(pdgID[16])<=18) && (fabs(pdgID[17])>=11 && fabs(pdgID[17])<=18) &&fabs(pdgID[12])<5 &&fabs(pdgID[13])<5)
+	{
+	  semilep=true;
+	
+	  countsemilep++;
+  }
 
-     
+      //now only use the semileptonic events
+      if(semilep){
+	TLorentzVector MClep;
+	TLorentzVector MCnu;
+	TLorentzVector MC1b;
+	TLorentzVector MC2b;
+	TLorentzVector MCtb;
+	TLorentzVector MCtbHad;
+	TLorentzVector MCd;
+	TLorentzVector MCrealWp;
+	TLorentzVector MCrealt1;
+	TLorentzVector MCrealt2;
+	TLorentzVector MCMET;
+	vector<TLorentzVector > Jets;
+	vector<TLorentzVector > bjets;
+	vector<TLorentzVector > Mets;
+	vector<float > chi2;
+	//find negative events
+	int lepcharge;
+	float bpt=0;
+	float bcharge1=0;
+	float bcharge2=0;
+	for (int k=6; k<100; k++){
+	  //find the lepton
+	  if(fabs(pdgID[k])==11 || fabs(pdgID[k])==13 || fabs(pdgID[k])==15){
+	    //leptons are defined with positive ID for negative charge 
+	    if(pdgID[k] > 0 ) lepcharge=-1;
+	    if (pdgID[k]<0) lepcharge=+1; 
+	    MClep.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+	  }
+	  //find the neutrino
+	  if(fabs(pdgID[k])==12 || fabs(pdgID[k])==14 || fabs(pdgID[k])==16)
+	    {
+	      MCnu.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+	      MCMET.SetPxPyPzE(MCpx[k],MCpy[k],0,MCe[k]);
+
+	    }
+	    //find the hardest bjet (which might not be the right one but I don't have parent info)
+	  if(fabs(pdgID[k])==5)
+	    { 
+	      TLorentzVector tempbjet;
+	      tempbjet.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+	      bjets.push_back(tempbjet);
+	      if (bpt==0)
+		{ MC1b.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+		  if (pdgID[k]<0) bcharge1=-1;
+		  if (pdgID[k]>0) bcharge1=+1;
+		}
+	      if (bpt!=0)
+		{ MC2b.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+		  if (pdgID[k]<0) bcharge2=-1;
+		  if (pdgID[k]>0) bcharge2=+1;
+		}
+	      bpt=1;
+	      
+	    }
+	  //Find all the jets in the event
+	  if(fabs(pdgID[k])<=4 && fabs(pdgID[k])>=1)
+	      {	
+		//cout<<MCpz[k]<<endl;
+		TLorentzVector tempJet;
+		tempJet.SetPxPyPzE(MCpx[k],MCpy[k],MCpz[k],MCe[k]);
+		Jets.push_back(tempJet);
+	      }
+
+	   
+
+	}
+	
+	
+	//the d-quark is always on position 8
+	MCd.SetPxPyPzE(MCpx[8],MCpy[8],MCpz[8],MCe[8]);
+	//double check the real wprime and two tops
+	MCrealWp.SetPxPyPzE(MCpx[6],MCpy[6],MCpz[6],MCe[6]);
+	MCrealt1.SetPxPyPzE(MCpx[7],MCpy[7],MCpz[7],MCe[7]);
+	MCrealt2.SetPxPyPzE(MCpx[9],MCpy[9],MCpz[9],MCe[9]);
+
+	h_MCPhiWpTop->Fill(min(fabs(MCrealWp.Phi()-MCrealt1.Phi()), 2*3.14159265 - fabs(MCrealWp.Phi()-MCrealt1.Phi())));
+	//cout some stuff and see if it works
+	//cout<<lepcharge<<endl;
+	//cout<<entry<<" lep: "<<MClep.Px()<<" nu: "<<MCnu.Px()<<" 1b: "<<MC1b.Px()<<" "<<bcharge1<<" second b: "<<MC2b.Px()<<" "<<bcharge2<<endl;
+	//associate the right b with the lepton
+	if (lepcharge== bcharge1)
+	  {MCtb=MC1b;
+	    MCtbHad=MC2b;
+	  }
+	if (lepcharge==bcharge2)
+	  { MCtb=MC2b;
+	    MCtbHad=MC1b;
+	  }
+	//TOP RECO////////////
+	/////////////////////////
+	//find neutrino solution
+	////////////////////////
+	float nupz1; float nupz2; float Wmass=80.389; float nupz=0;
+	float Disc=0;
+	Disc=pow(Wmass,2) + pow(MClep.Pz(),2)+ pow((MClep.Px()+MCMET.Px()),2)+ pow((MClep.Py()+MCMET.Py()),2) -  pow((MClep.E()+MCMET.E()),2);
+	//cout<<pow(MClep.Pz(),2)<<" "<<Disc<<endl;
+	if (pow(MClep.Pz(),2)<= Disc){
+	  nupz1=nupz2=-MClep.Pz();
+	  TLorentzVector tempmet;
+	  tempmet.SetPxPyPzE(MCMET.Px(),MCMET.Py(),nupz1,MCMET.E());
+	  Mets.push_back(tempmet);
+	  Mets.push_back(tempmet);
+	}
+	else{
+	nupz1=-MClep.Pz()+sqrt(pow(MClep.Pz(),2)-Disc);
+	nupz2=-MClep.Pz()-sqrt(pow(MClep.Pz(),2)-Disc);
+	TLorentzVector tempmet;
+	tempmet.SetPxPyPzE(MCMET.Px(),MCMET.Py(),nupz1,MCMET.E());
+	Mets.push_back(tempmet);
+
+	tempmet.SetPxPyPzE(MCMET.Px(),MCMET.Py(),nupz2,MCMET.E());
+        Mets.push_back(tempmet);
+
+	}
+	//cout<<"Pz: "<<nupz1<<" "<<nupz2<<" "<<MCnu.Pz()<<endl;	
+	//cout<<entry<<" "<<bjets.size()<<" "<<Mets.size()<<endl;
+	//calculate top mass w
+	TLorentzVector MCtopMET1((MCtb.Px()+MCMET.Px()+MClep.Px()),(MCtb.Py()+MCMET.Py()+MClep.Py())
+				 ,(MCtb.Pz()+nupz1+MClep.Pz()),(MCtb.E()+MCMET.E()+MClep.E()));
+	TLorentzVector MCtopMET2((MCtb.Px()+MCMET.Px()+MClep.Px()),(MCtb.Py()+MCMET.Py()+MClep.Py())
+				 ,(MCtb.Pz()+nupz2+MClep.Pz()),(MCtb.E()+MCMET.E()+MClep.E()));
+	//cout<<"Mtopreco: "<<MCtopMET1.M()<<" "<<MCtopMET2.M()<<endl;
+	if (MCtopMET1.M()>0)nupz=nupz1;
+	if (MCtopMET2.M()>0)nupz=nupz2;
+	if(MCtopMET1.M() > 0 && MCtopMET2.M() >0){
+	  if(fabs(nupz1-MClep.Pz()) < fabs(nupz2-MClep.Pz())) nupz=nupz1;
+	  if(fabs(nupz1-MClep.Pz()) > fabs(nupz2-MClep.Pz())) nupz=nupz2;
+	}
+	//Reconstruct the top and Wprime from its decays products
+	TLorentzVector MCtop;
+	MCtop.SetPx(MCtb.Px()+MCnu.Px()+MClep.Px());
+	MCtop.SetPy(MCtb.Py()+MCnu.Py()+MClep.Py());
+	MCtop.SetPz(MCtb.Pz()+MCnu.Pz()+MClep.Pz());
+	MCtop.SetE(MCtb.E()+MCnu.E()+MClep.E());
+	//cout<<MCtop.M()<<" "<<MCrealt1.M()<<" "<<MCrealt2.M()<<endl;                                                                                        
+	TLorentzVector MCwprime;
+	MCwprime.SetPx(MCtop.Px()+MCd.Px());
+	MCwprime.SetPy(MCtop.Py()+MCd.Py());
+	MCwprime.SetPz(MCtop.Pz()+MCd.Pz());
+	MCwprime.SetE(MCtop.E()+MCd.E());
+	//cout<<MCwprime.M()<<" "<<MCrealWp.M()<<endl;  
+	TLorentzVector MCtopMET((MCtb.Px()+MCMET.Px()+MClep.Px()),
+				(MCtb.Py()+MCMET.Py()+MClep.Py()),(MCtb.Pz()+nupz+MClep.Pz()),(MCtb.E()+MCMET.E()+MClep.E()));
+	TLorentzVector MCtopHad((MCtbHad.Px()+Jets[1].Px()+Jets[2].Px()),
+				(MCtbHad.Py()+Jets[1].Py()+Jets[2].Py()),(MCtbHad.Pz()+Jets[1].Pz()+Jets[2].Pz()),(MCtbHad.E()+Jets[1].E()+Jets[2].E()));
+
+	TLorentzVector MCwprimeMET((MCtopMET.Px()+MCd.Px()),(MCtopMET.Py()+MCd.Py()),(MCtopMET.Pz()+MCd.Pz()),(MCtopMET.E()+MCd.E()));
+	cout<<MCtopMET.M()<<" "<<MCtopHad.M()<<" "<<MCwprimeMET.M()<<" "<<MCrealWp.M()<<endl;
+			
+
+	if (lepcharge==-1){
+	  h_MCwprimeMassNeg->Fill(MCwprime.M());
+	  h_MCwprimeMETMassNeg->Fill(MCwprimeMET.M());
+	   h_MCPhidLepTopNeg->Fill(min(fabs(MCtopMET.Phi()-MCd.Phi()), 2*3.14159265 - fabs(MCtopMET.Phi()-MCd.Phi())));
+	   //cout<<MCwprime.M()<<" "<<MCwprimeMET.M()<<endl;
+	}
+	if (lepcharge==+1){  
+	  h_MCwprimeMassPos->Fill(MCwprime.M());
+	  h_MCwprimeMETMassPos->Fill(MCwprimeMET.M());
+	  h_MCPhidLepTopPos->Fill(min(fabs(MCtopMET.Phi()-MCd.Phi()), 2*3.14159265 - fabs(MCtopMET.Phi()-MCd.Phi())));
+	}
+	
+	//CHI2 stuff
+	//Now lets assume we don't know the b charge find the best match                                                                             
+	//both leptonic tops with the neutrino solution
+	//first define all the variabels
+
+
+	//take only things that actually have b-jets
+	if(bjets.size()==2){
+	TLorentzVector LepTopMet0b0(bjets[0].Px()+Mets[0].Px()+MClep.Px()
+				    ,bjets[0].Py()+Mets[0].Py()+MClep.Py(),bjets[0].Pz()+Mets[0].Pz()+MClep.Pz(),bjets[0].E()+Mets[0].E()+MClep.E());
+	TLorentzVector LepTopMet0b1(bjets[1].Px()+Mets[0].Px()+MClep.Px()
+                                    ,bjets[1].Py()+Mets[0].Py()+MClep.Py(),bjets[1].Pz()+Mets[0].Pz()+MClep.Pz(),bjets[1].E()+Mets[0].E()+MClep.E());
+	TLorentzVector LepTopMet1b0(bjets[0].Px()+Mets[1].Px()+MClep.Px()
+                                    ,bjets[0].Py()+Mets[1].Py()+MClep.Py(),bjets[0].Pz()+Mets[1].Pz()+MClep.Pz(),bjets[0].E()+Mets[1].E()+MClep.E());
+	TLorentzVector LepTopMet1b1(bjets[1].Px()+Mets[1].Px()+MClep.Px()
+                                    ,bjets[1].Py()+Mets[1].Py()+MClep.Py(),bjets[1].Pz()+Mets[1].Pz()+MClep.Pz(),bjets[1].E()+Mets[1].E()+MClep.E());
+
+	TLorentzVector W01(Jets[0].Px()+Jets[1].Px(),Jets[0].Py()+Jets[1].Py(),Jets[0].Pz()+Jets[1].Pz(),Jets[0].E()+Jets[1].E());
+	TLorentzVector HadTop01b0(W01.Px()+bjets[0].Px(),W01.Py()+bjets[0].Py(),W01.Pz()+bjets[0].Pz(),W01.E()+bjets[0].E());
+	TLorentzVector HadTop01b1(W01.Px()+bjets[1].Px(),W01.Py()+bjets[1].Py(),W01.Pz()+bjets[1].Pz(),W01.E()+bjets[1].E());
+	float dPhi2LepTopMet0b0 =(min(fabs(LepTopMet0b0.Phi()-Jets[2].Phi()), 2*3.14159265 - fabs(LepTopMet0b0.Phi()-Jets[2].Phi())));
+	float dPhi2LepTopMet0b1 =(min(fabs(LepTopMet0b1.Phi()-Jets[2].Phi()), 2*3.14159265 - fabs(LepTopMet0b1.Phi()-Jets[2].Phi())));
+	float dPhi2LepTopMet1b0 =(min(fabs(LepTopMet1b0.Phi()-Jets[2].Phi()), 2*3.14159265 - fabs(LepTopMet1b0.Phi()-Jets[2].Phi())));
+	float dPhi2LepTopMet1b1 =(min(fabs(LepTopMet1b1.Phi()-Jets[2].Phi()), 2*3.14159265 - fabs(LepTopMet1b1.Phi()-Jets[2].Phi())));
+
+	TLorentzVector W02(Jets[0].Px()+Jets[2].Px(),Jets[0].Py()+Jets[2].Py(),Jets[0].Pz()+Jets[2].Pz(),Jets[0].E()+Jets[2].E());
+	TLorentzVector HadTop02b0(W02.Px()+bjets[0].Px(),W02.Py()+bjets[0].Py(),W02.Pz()+bjets[0].Pz(),W02.E()+bjets[0].E());
+	TLorentzVector HadTop02b1(W02.Px()+bjets[1].Px(),W02.Py()+bjets[1].Py(),W02.Pz()+bjets[1].Pz(),W02.E()+bjets[1].E());
+	float dPhi1LepTopMet0b0 =(min(fabs(LepTopMet0b0.Phi()-Jets[1].Phi()), 2*3.14159265 - fabs(LepTopMet0b0.Phi()-Jets[1].Phi())));
+	float dPhi1LepTopMet0b1 =(min(fabs(LepTopMet0b1.Phi()-Jets[1].Phi()), 2*3.14159265 - fabs(LepTopMet0b1.Phi()-Jets[1].Phi())));
+	float dPhi1LepTopMet1b0 =(min(fabs(LepTopMet1b0.Phi()-Jets[1].Phi()), 2*3.14159265 - fabs(LepTopMet1b0.Phi()-Jets[1].Phi())));
+	float dPhi1LepTopMet1b1 =(min(fabs(LepTopMet1b1.Phi()-Jets[1].Phi()), 2*3.14159265 - fabs(LepTopMet1b1.Phi()-Jets[1].Phi())));
+
+	TLorentzVector W12(Jets[1].Px()+Jets[2].Px(),Jets[1].Py()+Jets[2].Py(),Jets[1].Pz()+Jets[2].Pz(),Jets[1].E()+Jets[2].E());
+	TLorentzVector HadTop12b0(W12.Px()+bjets[0].Px(),W12.Py()+bjets[0].Py(),W12.Pz()+bjets[0].Pz(),W12.E()+bjets[0].E());
+	TLorentzVector HadTop12b1(W12.Px()+bjets[1].Px(),W12.Py()+bjets[1].Py(),W12.Pz()+bjets[1].Pz(),W12.E()+bjets[1].E());
+	float dPhi0LepTopMet0b0 =(min(fabs(LepTopMet0b0.Phi()-Jets[0].Phi()), 2*3.14159265 - fabs(LepTopMet0b0.Phi()-Jets[0].Phi())));
+	float dPhi0LepTopMet0b1 =(min(fabs(LepTopMet0b1.Phi()-Jets[0].Phi()), 2*3.14159265 - fabs(LepTopMet0b1.Phi()-Jets[0].Phi())));
+	float dPhi0LepTopMet1b0 =(min(fabs(LepTopMet1b0.Phi()-Jets[0].Phi()), 2*3.14159265 - fabs(LepTopMet1b0.Phi()-Jets[0].Phi())));
+	float dPhi0LepTopMet1b1 =(min(fabs(LepTopMet1b1.Phi()-Jets[0].Phi()), 2*3.14159265 - fabs(LepTopMet1b1.Phi()-Jets[0].Phi())));
+	//	cout<<HadTop12b0.M()<<" "<<HadTop12b1.M()<<endl;
+	//	cout<<dPhi0LepTopMet0b0<<" "<<dPhi0LepTopMet0b1<<" "<<dPhi0LepTopMet1b0<<" "<<dPhi0LepTopMet1b1<<endl;
+	float mW=80.398; float mT=172.9; float wW=2; float wT=1.5; float Phi=3.14159; float wPhi=0.1;
+	//cout<<pow((LepTopMet0b0.M()-mT)/wT,2)<<" "<<pow((W01.M()-mW)/wW,2)<<" "<<pow((HadTop01b1.M()-mT)/wT,2)<<" "<<pow((dPhi2LepTopMet0b0-Phi)/wPhi,2)<<endl;
+	//cout<<(LepTopMet0b0.M()-mT)/wT<<" "<<(W01.M()-mW)/wW<<" "<<(HadTop01b1.M()-mT)/wT<<" "<<(dPhi2LepTopMet0b0-Phi)/wPhi<<endl;
+	//
+
+	//cout<<LepTopMet0b0.M()<<" "<<W01.M()<<" "<<HadTop01b1.M()<<" "<<dPhi2LepTopMet0b0<<endl;
+
+	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b1.M()-mT)/wT,2)+pow((dPhi2LepTopMet0b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b0.M()-mT)/wT,2)+pow((dPhi2LepTopMet0b1-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b1.M()-mT)/wT,2)+pow((dPhi2LepTopMet1b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b0.M()-mT)/wT,2)+pow((dPhi2LepTopMet1b1-Phi)/wPhi,2));
+	
+	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b1.M()-mT)/wT,2)+pow((dPhi1LepTopMet0b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b0.M()-mT)/wT,2)+pow((dPhi1LepTopMet0b1-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b1.M()-mT)/wT,2)+pow((dPhi1LepTopMet1b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b0.M()-mT)/wT,2)+pow((dPhi1LepTopMet1b1-Phi)/wPhi,2));
+	
+	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b1.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b1-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b1.M()-mT)/wT,2)+pow((dPhi0LepTopMet1b0-Phi)/wPhi,2));
+	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet1b1-Phi)/wPhi,2));
+cout<<"-------------------------------------"<<endl;
+
+//cout<<pow((LepTopMet0b1.M()-mT)/wT,2)<<" "<<pow((W12.M()-mW)/wW,2)<<" "<<pow((HadTop12b0.M()-mT)/wT,2)<<" "<<pow((dPhi0LepTopMet0b1-Phi)/wPhi,2)<<endl;
+	cout<<LepTopMet1b1.M()<<" "<<W12.M()<<" "<<HadTop12b0.M()<<" "<<dPhi0LepTopMet1b1<<endl;
+	cout<<LepTopMet0b0.M()<<" "<<W12.M()<<" "<<HadTop12b1.M()<<" "<<dPhi0LepTopMet0b0<<endl;
+	cout<<pow((LepTopMet0b0.M()-mT)/wT,2)<<" "<<pow((W12.M()-mW)/wW,2)<<" "<<pow((HadTop12b1.M()-mT)/wT,2)<<" "<<pow((dPhi0LepTopMet0b0-Phi)/wPhi,2)<<endl;
+	//cout<<pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b1-Phi)/wPhi,2)<<endl;
+	
+	float minChi2=chi2[0];
+	for(int m=0; m<chi2.size(); m++){
+	  if (chi2[m]<=minChi2) minChi2=chi2[m];
+	}
+	cout<<entry<<" "<<minChi2<<endl;
+	if (lepcharge==-1){
+          	h_minChi2Neg->Fill(minChi2);
+
+        }
+        if (lepcharge==+1){
+          	h_minChi2Pos->Fill(minChi2);
+
+        }
+
+
+	}
+      }
      
 
-      //}
+      }
     
   }
+
+  //lets see if the top branching ratios work
+  cout<<"allhadronic: "<<countallhad<<" leptonic: "<<countlep<<" semilept: "<<countsemilep<<endl;
+  float tot=countallhad+countlep+countsemilep;
+  cout<<"BR: "<<(float) countallhad/tot<<" "<<(float) countlep/tot<<" "<<(float) countsemilep/tot<<endl;
   return;
 }
