@@ -54,6 +54,9 @@ class NtpTopXana : public NtpReader
     std::vector<TH1F*> vh_TransMassLepMET1JetB;
     std::vector<TH1F*> vh_Mass3Jet1B;
     std::vector<TH2F*> vh_TransMassLepMET1JetB_vs_Mass3Jet1B;
+    std::vector<TH1F*> vh_ChargeXeta;
+    std::vector<TH1F*> vh_TransMass3Jet1B;
+    std::vector<TH1F*> vh_DeltaPhiLep1Jet;
     //////plots for optimization//////
     std::vector<TH1F*> vh_TransMassLepMET1JetB_pt;
     std::vector<TH1F*> vh_TransMassLepMET1JetB_delphi;
@@ -66,26 +69,32 @@ class NtpTopXana : public NtpReader
     std::vector<std::vector<TH1F*> >  vh_TransMassLepMET4Jet_pt_st;
     std::vector<std::vector<TH1F*> >  vh_TransMassLepMET1JetB_pt_st;
 
-    std::vector<TH1F*> vh_ChargeXeta;
+    //MC plots
+    TH1F* h_MCwprimeMassPos;
+    TH1F* h_MCwprimeMassNeg;
+    TH1F* h_MCwprimeMETMassPos;
+    TH1F* h_MCwprimeMETMassNeg;
+    TH1F* h_MCminChi2Pos;
+    TH1F* h_MCminChi2Neg;
+    TH1F* h_MCPhidLepTopNeg;
+    TH1F* h_MCPhidLepTopPos;
+    TH1F* h_MCPhiWpTopNeg;
+    TH1F* h_MCPhiWpTopPos;
+    TH1F* h_MCPhiWpTop;
 
-
-
+    //some plots with chi2 selection applied
+    TH1F* h_minChi2Pos;
+    TH1F* h_minChi2Neg;
+    TH1F* h_TopLepJetMassPos;
+    TH1F* h_TopLepJetMassNeg;
+    TH1F* h_TopLepJetMassGood;
+    TH1F* h_TopLepJetMassBad;
+    TH1F*  h_dPhiTopLepJetPos;
+    TH1F* h_dPhiTopLepJetNeg;
     private:
     TFile* fOutFile;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
