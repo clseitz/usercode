@@ -1,5 +1,4 @@
 #include "TopBSM/RUTopXAna/interface/NtpTopXana.h"
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -140,18 +139,28 @@ void NtpTopXana::BookHistograms()
  h_MCwprimeMassNeg = new TH1F("MCwprimeMassNeg", "MCwprimeMassNeg",200,0,2000);
  h_MCwprimeMETMassPos = new TH1F("MCwprimeMETMassPos", "MCwprimeMETMassPos",200,0,2000);
  h_MCwprimeMETMassNeg = new TH1F("MCwprimeMETMassNeg", "MCwprimeMETMassNeg",200,0,2000);
- h_minChi2Pos = new TH1F("minChi2Pos", "minCh2Pos",1000,0,1000);
- h_minChi2Neg = new TH1F("minChi2Neg", "minCh2Neg",1000,0,1000);
+ h_MCminChi2Pos = new TH1F("MCminChi2Pos", "MCminCh2Pos",1000,0,1000);
+ h_MCminChi2Neg = new TH1F("MCminChi2Neg", "MCminCh2Neg",1000,0,1000);
  h_MCPhidLepTopPos = new TH1F("MCPhidLepTopPos", "MCPhidLepTopPos",200,0,4);
  h_MCPhidLepTopNeg = new TH1F("MCPhidLepTopNeg", "MCPhidLepTopNeg",200,0,4);
  h_MCPhiWpTopPos = new TH1F("MCPhiWpTopPos", "MCPhiWpTopPos",200,0,4);
  h_MCPhiWpTopNeg = new TH1F("MCPhiWpTopNeg", "MCPhiWpTopNeg",200,0,4);
  h_MCPhiWpTop = new TH1F("MCPhiWpTop", "MCPhiWpTop",200,0,4);
+
+ h_minChi2Pos = new TH1F("minChi2Pos", "minCh2Pos",1000,0,1000);
+ h_minChi2Neg = new TH1F("minChi2Neg", "minCh2Neg",1000,0,1000);
+ h_TopLepJetMassPos= new TH1F("TopLepJetMassPos","TopLepJetMassPos",200,0,2000);
+ h_TopLepJetMassNeg= new TH1F("TopLepJetMassNeg","TopLepJetMassNeg",200,0,2000);
+ h_TopLepJetMassGood= new TH1F("TopLepJetMassGood","TopLepJetMassGood",200,0,2000);
+ h_TopLepJetMassBad= new TH1F("TopLepJetMassBad","TopLepJetMassBad",200,0,2000);
+ h_dPhiTopLepJetPos= new TH1F("dPhiTopLepJetPos", "dPhiTopLepJetPos",200,0,4);
+ h_dPhiTopLepJetNeg= new TH1F("dPhiTopLepJetNeg", "dPhiTopLepJetNeg",200,0,4);
+
  return;
 }
  
 void NtpTopXana::WriteHistograms()
-{
+{cout<<"made it here"<<endl;
   fOutFile->cd();
   h_NumEvtCut->Write();
   h_MET->Write();
@@ -202,20 +211,34 @@ void NtpTopXana::WriteHistograms()
      }
 
    }
- fOutFile->cd();
- fOutFile->mkdir("MCwprime");
- fOutFile->cd("MCwprime");
- h_MCwprimeMassPos->Write();
- h_MCwprimeMassNeg->Write();
- h_MCwprimeMETMassPos->Write();
- h_MCwprimeMETMassNeg->Write();
- h_minChi2Neg->Write();
- h_minChi2Pos->Write();
- h_MCPhidLepTopNeg->Write();
- h_MCPhidLepTopPos->Write();
- h_MCPhiWpTopPos->Write();
- h_MCPhiWpTopNeg->Write();
- h_MCPhiWpTop->Write();
+   fOutFile->cd();
+   fOutFile->mkdir("MCwprime");
+   fOutFile->cd("MCwprime");
+   h_MCwprimeMassPos->Write();
+   h_MCwprimeMassNeg->Write();
+   h_MCwprimeMETMassPos->Write();
+   h_MCwprimeMETMassNeg->Write();
+   h_MCminChi2Neg->Write();
+   h_MCminChi2Pos->Write();
+   h_MCPhidLepTopNeg->Write();
+   h_MCPhidLepTopPos->Write();
+   h_MCPhiWpTopPos->Write();
+   h_MCPhiWpTopNeg->Write();
+   h_MCPhiWpTop->Write();
+   cout<<"made it here"<<endl;
+   fOutFile->cd();
+   fOutFile->mkdir("Chi2Reco");
+   fOutFile->cd("Chi2Reco");
+   h_minChi2Pos->Write();
+   h_minChi2Neg->Write();
+   h_TopLepJetMassPos->Write();
+   h_TopLepJetMassNeg->Write();
+   h_TopLepJetMassGood->Write();
+   h_TopLepJetMassBad->Write();
+   h_dPhiTopLepJetPos->Write();
+   h_dPhiTopLepJetNeg->Write();
+
+
   return;
 }
   
@@ -266,7 +289,18 @@ void NtpTopXana::Loop ()
 
      //////////OPTIMIZATION PLOTS////////////
      if ((nElectrons+ nMuons) == 1){
+       TLorentzVector flep;
+       bool OKlep=false;
        if (nElectrons==1 && ept[0]>45.0){
+	 flep.SetPxPyPzE(epx[0],epy[0],epz[0],ee[0]);
+	 OKlep=true;
+       }
+       if (nMuons==1 && ept[0]>30.0){
+	 flep.SetPxPyPzE(mpx[0],mpy[0],mpz[0],me[0]);
+	 OKlep=true;
+       }
+       if(OKlep){
+
 	 if( pfMET>30.0){
 	   if(nJet35 >=5 && nBJet35>=1){
 	     for(int i=0; i<35; i++){
@@ -320,10 +354,20 @@ void NtpTopXana::Loop ()
      //std::cout<<nJet35<<" "<<nNoBJet35<<std::endl; 
     h_NumEvtCut->Fill(0);
     if ((nElectrons+ nMuons) == 1){//asking for exactly one clean muon or electron > 20GeV
-     h_NumEvtCut->Fill(1); //cout<<"1------------"<<endl;
-     if (nElectrons==1 && ept[0]>45.0){//one electron with pt > 45 GeV
-       h_NumEvtCut->Fill(2);
-       h_MET->Fill(pfMET);// cout<<"2------------"<<endl;
+      h_NumEvtCut->Fill(1); //cout<<"1------------"<<endl;
+      TLorentzVector flep;
+      bool OKlep=false;
+      if (nElectrons==1 && ept[0]>45.0){
+	flep.SetPxPyPzE(epx[0],epy[0],epz[0],ee[0]);
+	OKlep=true;
+      }
+      if (nMuons==1 && ept[0]>30.0){
+	flep.SetPxPyPzE(mpx[0],mpy[0],mpz[0],me[0]);
+	OKlep=true;
+      }
+      if(OKlep){
+	h_NumEvtCut->Fill(2);
+	h_MET->Fill(pfMET);// cout<<"2------------"<<endl;
        if( pfMET>30.0){//MET above 30
 	 h_NumEvtCut->Fill(3); //cout<<"3------------"<<endl;
 	 if(nJet35 >=1){//at least one jet with pt >35
@@ -743,9 +787,160 @@ void NtpTopXana::Loop ()
      
     }
     
-    
+    //calculate chi2 at RECO Level
+    if ((nElectrons+ nMuons) == 1){
+      TLorentzVector flep;
+      bool OKlep=false;
+      if (nElectrons==1 && ept[0]>45.0){
+       flep.SetPxPyPzE(epx[0],epy[0],epz[0],ee[0]);
+       OKlep=true;
+      }
+      /*      if (nMuons==1 && ept[0]>30.0){
+	flep.SetPxPyPzE(mpx[0],mpy[0],mpz[0],me[0]);
+	OKlep=true;
+	}*/
+      if(OKlep){
+	if( pfMET>30.0){
+	  float St=SumptAllJet+ept[0]+pfMET;
+	  if(nNoBJet35 >=3 && nBJet35==2 && fCleanJets[0].Pt()>180 && St >700.0){
+
+
+	    //pick the 5jets with 2 btag selection
+	    //first calculate the neutrino solution
+	    TLorentzVector flep(epx[0],epy[0],epz[0],ee[0]);
+	    TLorentzVector fMET; fMET.SetPtEtaPhiE(pfMET,0,pfMETphi,pfMET);
+	    float nupz0=0; float nupz1=0; float Wmass=80.389;
+	    float Disc=0; float nupz=0;
+	    Disc=pow(Wmass,2) + pow(flep.Pz(),2)+ pow((flep.Px()+fMET.Px()),2)+ pow((flep.Py()+fMET.Py()),2) -  pow((flep.E()+fMET.E()),2);
+	    if (pow(flep.Pz(),2)<= Disc){
+	      nupz0=nupz1=-flep.Pz();
+	    }
+	    else{
+	      nupz0=-flep.Pz()+sqrt(pow(flep.Pz(),2)-Disc);
+	      nupz1=-flep.Pz()-sqrt(pow(flep.Pz(),2)-Disc);
+	    }
+	  
+	      if(fabs(nupz0-flep.Pz()) < fabs(nupz1-flep.Pz())) nupz=nupz0;
+	      if(fabs(nupz0-flep.Pz()) > fabs(nupz1-flep.Pz())) nupz=nupz1;
+	  
+
+	    vector< TLorentzVector > TopLep;
+	    TLorentzVector TopLepMet0b0(fBJets[0].Px()+fMET.Px()+flep.Px(),fBJets[0].Py()+fMET.Py()+flep.Py()
+					,fBJets[0].Pz()+nupz+flep.Pz(),fBJets[0].E()+fMET.E()+flep.E());
+	    //	    TLorentzVector TopLepMet1b0(fBJets[0].Px()+fMET.Px()+flep.Px(),fBJets[0].Py()+fMET.Py()+flep.Py()
+	    //                              ,fBJets[0].Pz()+nupz1+flep.Pz(),fBJets[0].E()+fMET.E()+flep.E());
+	    TLorentzVector TopLepMet0b1(fBJets[1].Px()+fMET.Px()+flep.Px(),fBJets[1].Py()+fMET.Py()+flep.Py()
+					,fBJets[1].Pz()+nupz+flep.Pz(),fBJets[1].E()+fMET.E()+flep.E());
+	    //    TLorentzVector TopLepMet1b1(fBJets[1].Px()+fMET.Px()+flep.Px(),fBJets[1].Py()+fMET.Py()+flep.Py()
+	    //			,fBJets[1].Pz()+nupz1+flep.Pz(),fBJets[1].E()+fMET.E()+flep.E());
+	    	    TopLep.push_back(TopLepMet0b0);  
+		    //TopLep.push_back(TopLepMet1b0);
+		    TopLep.push_back(TopLepMet0b1); 
+		    //TopLep.push_back(TopLepMet1b1);	    
+	    //cout<<TopLepMet0b0.M()<<" "<<TopLepMet1b0.M()<<" "<<TopLepMet0b1.M()<<" "<<TopLepMet1b1.M()<<endl;
+
+	    vector<TLorentzVector > BestComboChi2;
+	    vector<vector< TLorentzVector > > ComboChi2;
+	    int countChi2=0;
+	    vector <float > vChi2;
+	    for(int a=0; a<2; a++){
+	      for(unsigned int i=0; i<fNoBJets.size()-1; i++){
+		for(unsigned int j=0; j<fNoBJets.size(); j++){
+
+		  float mW=80.398; float mT=172.9; float wW=2.0; float wT=15.0; float Phi=3.14159/2; float wPhi=0.1;
+		  TLorentzVector Wij(fNoBJets[i].Px()+fNoBJets[j].Px(),
+				     fNoBJets[i].Py()+fNoBJets[j].Py(),fNoBJets[i].Pz()+fNoBJets[j].Pz(),fNoBJets[i].E()+fNoBJets[j].E());
+		  TLorentzVector HadTopijb0(Wij.Px()+fBJets[0].Px(),Wij.Py()+fBJets[0].Py(),Wij.Pz()+fBJets[0].Pz(),Wij.E()+fBJets[0].E());
+		  TLorentzVector HadTopijb1(Wij.Px()+fBJets[1].Px(),Wij.Py()+fBJets[1].Py(),Wij.Pz()+fBJets[1].Pz(),Wij.E()+fBJets[1].E());
+		  //select the highest pt non w jet
+		  TLorentzVector nonWJet;
+		  if (i!=0) nonWJet= fNoBJets[0];
+		  if (i==0 && j!=1) nonWJet= fNoBJets[1];
+		  if (i==0 && j==1) nonWJet= fNoBJets[2];
+		  float dPhiTopLepJet =min(fabs(TopLep[a].Phi()-nonWJet.Phi()), 2*3.14159265 - fabs(TopLep[a].Phi()-nonWJet.Phi()));
+		  float chi2=-5;
+		  ComboChi2.push_back(vector<TLorentzVector >());
+		  if(a==0 || a==0)
+		    {
+		      chi2=pow((TopLep[a].M()-mT)/wT,2)+pow((Wij.M()-mW)/wW,2)+pow((HadTopijb1.M()-mT)/wT,2);//+pow((dPhiTopLepJet-Phi)/wPhi,2);
+		      ComboChi2[countChi2].push_back(TopLep[a]); ComboChi2[countChi2].push_back(Wij);  ComboChi2[countChi2].push_back(HadTopijb1);
+		      ComboChi2[countChi2].push_back(nonWJet);
+		      vChi2.push_back(chi2);
+
+		    }
+		  if(a==1 || a==1)
+		    {
+		      chi2=pow((TopLep[a].M()-mT)/wT,2)+pow((Wij.M()-mW)/wW,2)+pow((HadTopijb0.M()-mT)/wT,2);//+pow((dPhiTopLepJet-Phi)/wPhi,2);
+		      ComboChi2[countChi2].push_back(TopLep[a]); ComboChi2[countChi2].push_back(Wij);  ComboChi2[countChi2].push_back(HadTopijb0);
+		      ComboChi2[countChi2].push_back(nonWJet);
+		      vChi2.push_back(chi2);
+
+		    }
+
+
+		  //cout<<"TopLep: "<<TopLep[a].M()<<" W: "<<Wij.M()<<" TopHad: "<<HadTopijb0.M()<<" dPhi: "<<dPhiTopLepJet<<endl;
+		  //cout<<chi2<<endl;
+
+		  countChi2++;
+		}
+	      }
+	    }
+	    //cout<<"-------------------"<<endl;
+	    //find minimum chi2
+	    float minChi2=vChi2[0]; int indexMin=0;
+	    for(unsigned int m=0; m<vChi2.size(); m++){
+	      if (vChi2[m]<=minChi2){
+		minChi2=vChi2[m];
+		indexMin=m;
+	      }
+	    }
+	    //BesCcombo hast the 4-vectors of 0=leptonic top, 1=W, 2=hadronic top, 3=highest pt nonWjet                                                    
+	    BestComboChi2.push_back(ComboChi2[indexMin][0]);
+	    BestComboChi2.push_back(ComboChi2[indexMin][1]);
+	    BestComboChi2.push_back(ComboChi2[indexMin][2]);
+	    BestComboChi2.push_back(ComboChi2[indexMin][3]);
+	    //cout<<"TopLep: "<<BestComboChi2[0].M()<<" W: "<<BestComboChi2[1].M()<<" TopHad: "
+	    //<<BestComboChi2[2].M()<<" d-jet Pt: "<< BestComboChi2[3].Pt()<<" chi2: "<<minChi2<<endl; 
+	    TLorentzVector WprimeTopLep;
+	    WprimeTopLep.SetPx(BestComboChi2[0].Px()+BestComboChi2[3].Px());
+	    WprimeTopLep.SetPy(BestComboChi2[0].Py()+BestComboChi2[3].Py());
+	    WprimeTopLep.SetPz(BestComboChi2[0].Pz()+BestComboChi2[3].Pz());
+	    WprimeTopLep.SetE(BestComboChi2[0].E()+BestComboChi2[3].E());
+
+	    TLorentzVector WprimeTopHad;
+            WprimeTopHad.SetPx(BestComboChi2[2].Px()+BestComboChi2[3].Px());
+            WprimeTopHad.SetPy(BestComboChi2[2].Py()+BestComboChi2[3].Py());
+            WprimeTopHad.SetPz(BestComboChi2[2].Pz()+BestComboChi2[3].Pz());
+            WprimeTopHad.SetE(BestComboChi2[2].E()+BestComboChi2[3].E());
+	    float fdPhiTopLepJet =min(fabs(BestComboChi2[0].Phi()-BestComboChi2[3].Phi()), 2*3.14159265 - fabs(BestComboChi2[0].Phi()-BestComboChi2[3].Phi()));
+	    cout<<*echarge<<" "<<WprimeTopHad.M()<<" "<<WprimeTopLep.M()<<endl;
+	    if(*echarge==+1)
+	      { h_minChi2Pos->Fill(minChi2);
+		h_TopLepJetMassPos->Fill(WprimeTopLep.M());
+		h_TopLepJetMassGood->Fill(WprimeTopHad.M());
+		h_TopLepJetMassBad->Fill(WprimeTopLep.M());
+		h_dPhiTopLepJetPos->Fill(fdPhiTopLepJet);
+	      }
+	    if(*echarge==-1)
+	      {
+		h_minChi2Neg->Fill(minChi2);
+		h_TopLepJetMassNeg->Fill(WprimeTopLep.M());
+		h_TopLepJetMassGood->Fill(WprimeTopLep.M());
+		h_TopLepJetMassBad->Fill(WprimeTopHad.M());
+		h_dPhiTopLepJetNeg->Fill(fdPhiTopLepJet);
+	      }
+
+
+
+	  }
+	}
+      }
+    }
+
+
+
     //make some Generator level plots
-    bool MCgen=true;
+    bool MCgen=false;
 
     if (MCgen){
       bool allhad=false;
@@ -788,6 +983,8 @@ void NtpTopXana::Loop ()
 	vector<TLorentzVector > bjets;
 	vector<TLorentzVector > Mets;
 	vector<float > chi2;
+	vector<TLorentzVector > BestComboChi2;
+	vector<vector< TLorentzVector > > CombosChi2; 
 	//find negative events
 	int lepcharge;
 	float bpt=0;
@@ -920,7 +1117,7 @@ void NtpTopXana::Loop ()
 				(MCtbHad.Py()+Jets[1].Py()+Jets[2].Py()),(MCtbHad.Pz()+Jets[1].Pz()+Jets[2].Pz()),(MCtbHad.E()+Jets[1].E()+Jets[2].E()));
 
 	TLorentzVector MCwprimeMET((MCtopMET.Px()+MCd.Px()),(MCtopMET.Py()+MCd.Py()),(MCtopMET.Pz()+MCd.Pz()),(MCtopMET.E()+MCd.E()));
-	cout<<MCtopMET.M()<<" "<<MCtopHad.M()<<" "<<MCwprimeMET.M()<<" "<<MCrealWp.M()<<endl;
+	//cout<<MCtopMET.M()<<" "<<MCtopHad.M()<<" "<<MCwprimeMET.M()<<" "<<MCrealWp.M()<<endl;
 			
 
 	if (lepcharge==-1){
@@ -936,7 +1133,7 @@ void NtpTopXana::Loop ()
 	}
 	
 	//CHI2 stuff
-	//Now lets assume we don't know the b charge find the best match                                                                             
+	//Now lets assume we don't know the b charge find thebe st match                                                                             
 	//both leptonic tops with the neutrino solution
 	//first define all the variabels
 
@@ -983,40 +1180,68 @@ void NtpTopXana::Loop ()
 	//
 
 	//cout<<LepTopMet0b0.M()<<" "<<W01.M()<<" "<<HadTop01b1.M()<<" "<<dPhi2LepTopMet0b0<<endl;
-
+	CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >());
+	CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >());
+	CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >());
+	CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >()); CombosChi2.push_back(vector<TLorentzVector >());
 	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b1.M()-mT)/wT,2)+pow((dPhi2LepTopMet0b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b0.M()-mT)/wT,2)+pow((dPhi2LepTopMet0b1-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b1.M()-mT)/wT,2)+pow((dPhi2LepTopMet1b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W01.M()-mW)/wW,2)+pow((HadTop01b0.M()-mT)/wT,2)+pow((dPhi2LepTopMet1b1-Phi)/wPhi,2));
-	
+	CombosChi2[0].push_back(LepTopMet0b0); CombosChi2[0].push_back(W01); CombosChi2[0].push_back(HadTop01b1);  CombosChi2[0].push_back(Jets[2]);
+	CombosChi2[1].push_back(LepTopMet0b1); CombosChi2[1].push_back(W01); CombosChi2[1].push_back(HadTop01b0); CombosChi2[1].push_back(Jets[2]);
+	CombosChi2[2].push_back(LepTopMet1b0); CombosChi2[2].push_back(W01); CombosChi2[2].push_back(HadTop01b1); CombosChi2[2].push_back(Jets[2]);
+	CombosChi2[3].push_back(LepTopMet1b1); CombosChi2[3].push_back(W01); CombosChi2[3].push_back(HadTop01b0); CombosChi2[3].push_back(Jets[2]);
+
+
 	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b1.M()-mT)/wT,2)+pow((dPhi1LepTopMet0b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b0.M()-mT)/wT,2)+pow((dPhi1LepTopMet0b1-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b1.M()-mT)/wT,2)+pow((dPhi1LepTopMet1b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W02.M()-mW)/wW,2)+pow((HadTop02b0.M()-mT)/wT,2)+pow((dPhi1LepTopMet1b1-Phi)/wPhi,2));
+	CombosChi2[4].push_back(LepTopMet0b0); CombosChi2[4].push_back(W02); CombosChi2[4].push_back(HadTop02b1); CombosChi2[4].push_back(Jets[1]);
+        CombosChi2[5].push_back(LepTopMet0b1); CombosChi2[5].push_back(W02); CombosChi2[5].push_back(HadTop02b0);  CombosChi2[5].push_back(Jets[1]);
+        CombosChi2[6].push_back(LepTopMet1b0); CombosChi2[6].push_back(W02); CombosChi2[6].push_back(HadTop02b1); CombosChi2[6].push_back(Jets[1]);
+        CombosChi2[7].push_back(LepTopMet1b1); CombosChi2[7].push_back(W02); CombosChi2[7].push_back(HadTop02b0); CombosChi2[7].push_back(Jets[1]);
 	
 	chi2.push_back(pow((LepTopMet0b0.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b1.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b1-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b0.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b1.M()-mT)/wT,2)+pow((dPhi0LepTopMet1b0-Phi)/wPhi,2));
 	chi2.push_back(pow((LepTopMet1b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet1b1-Phi)/wPhi,2));
-cout<<"-------------------------------------"<<endl;
+	CombosChi2[8].push_back(LepTopMet0b0); CombosChi2[8].push_back(W12); CombosChi2[8].push_back(HadTop12b1); CombosChi2[8].push_back(Jets[0]);
+        CombosChi2[9].push_back(LepTopMet0b1); CombosChi2[9].push_back(W12); CombosChi2[9].push_back(HadTop12b0);  CombosChi2[9].push_back(Jets[0]);
+        CombosChi2[10].push_back(LepTopMet1b0); CombosChi2[10].push_back(W12); CombosChi2[10].push_back(HadTop12b1);  CombosChi2[10].push_back(Jets[0]);
+        CombosChi2[11].push_back(LepTopMet1b1); CombosChi2[11].push_back(W12); CombosChi2[11].push_back(HadTop12b0);  CombosChi2[11].push_back(Jets[0]);
+
+	//cout<<"-------------------------------------"<<endl;
 
 //cout<<pow((LepTopMet0b1.M()-mT)/wT,2)<<" "<<pow((W12.M()-mW)/wW,2)<<" "<<pow((HadTop12b0.M()-mT)/wT,2)<<" "<<pow((dPhi0LepTopMet0b1-Phi)/wPhi,2)<<endl;
-	cout<<LepTopMet1b1.M()<<" "<<W12.M()<<" "<<HadTop12b0.M()<<" "<<dPhi0LepTopMet1b1<<endl;
-	cout<<LepTopMet0b0.M()<<" "<<W12.M()<<" "<<HadTop12b1.M()<<" "<<dPhi0LepTopMet0b0<<endl;
-	cout<<pow((LepTopMet0b0.M()-mT)/wT,2)<<" "<<pow((W12.M()-mW)/wW,2)<<" "<<pow((HadTop12b1.M()-mT)/wT,2)<<" "<<pow((dPhi0LepTopMet0b0-Phi)/wPhi,2)<<endl;
-	//cout<<pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b1-Phi)/wPhi,2)<<endl;
+//cout<<LepTopMet1b1.M()<<" "<<W12.M()<<" "<<HadTop12b0.M()<<" "<<dPhi0LepTopMet1b1<<endl;
+//cout<<LepTopMet0b0.M()<<" "<<W12.M()<<" "<<HadTop12b1.M()<<" "<<dPhi0LepTopMet0b0<<endl;
+//cout<<pow((LepTopMet0b0.M()-mT)/wT,2)<<" "<<pow((W12.M()-mW)/wW,2)<<" "<<pow((HadTop12b1.M()-mT)/wT,2)<<" "<<pow((dPhi0LepTopMet0b0-Phi)/wPhi,2)<<endl;
+//cout<<pow((LepTopMet0b1.M()-mT)/wT,2)+pow((W12.M()-mW)/wW,2)+pow((HadTop12b0.M()-mT)/wT,2)+pow((dPhi0LepTopMet0b1-Phi)/wPhi,2)<<endl;
 	
-	float minChi2=chi2[0];
-	for(int m=0; m<chi2.size(); m++){
-	  if (chi2[m]<=minChi2) minChi2=chi2[m];
+	float minChi2=chi2[0]; int indexMin=0;
+	for(unsigned int m=0; m<chi2.size(); m++){
+	  if (chi2[m]<=minChi2){
+	    minChi2=chi2[m];
+	    indexMin=m;
+	  }
 	}
-	cout<<entry<<" "<<minChi2<<endl;
+	//now best combo hast the 4-vectors of 0=leptonic top, 1=W, 2= hadronic top
+	BestComboChi2.push_back(CombosChi2[indexMin][0]);
+	BestComboChi2.push_back(CombosChi2[indexMin][1]);
+	BestComboChi2.push_back(CombosChi2[indexMin][2]);
+	BestComboChi2.push_back(CombosChi2[indexMin][3]);
+	//Lets try if it worked
+	//cout<<"TopLep: "<<BestComboChi2[0].M()<<" W: "<<BestComboChi2[1].M()<<" TopHad: "<<BestComboChi2[2].M()<<" d-jet Pt: "<< BestComboChi2[3].Pt()<<" chi2: "<<minChi2<<endl; 
+
+	//cout<<entry<<" "<<minChi2<<endl;
 	if (lepcharge==-1){
-          	h_minChi2Neg->Fill(minChi2);
+          	h_MCminChi2Neg->Fill(minChi2);
 
         }
         if (lepcharge==+1){
-          	h_minChi2Pos->Fill(minChi2);
+          	h_MCminChi2Pos->Fill(minChi2);
 
         }
 
