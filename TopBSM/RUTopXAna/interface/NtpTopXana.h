@@ -26,7 +26,10 @@ class NtpTopXana : public NtpReader
     std::vector<TLorentzVector >      fNoBJets;
     std::vector<TLorentzVector >      fCleanJets;
     
+    TH1F* h_NumEvtCutMuon;
+    TH1F* h_NumEvtCutElectron;
     TH1F* h_NumEvtCut;
+
     TH1F* h_MET;
     //lots of plots
     std::vector <std::string > VarList;
@@ -81,6 +84,8 @@ class NtpTopXana : public NtpReader
     TH1F* h_MCPhiWpTopNeg;
     TH1F* h_MCPhiWpTopPos;
     TH1F* h_MCPhiWpTop;
+    TH1F* h_MCwprimeMassGood;
+    TH1F* h_MCwprimeMassBad;
 
     //some plots with chi2 selection applied
     TH1F* h_minChi2Pos;
@@ -91,7 +96,15 @@ class NtpTopXana : public NtpReader
     TH1F* h_TopLepJetMassBad;
     TH1F*  h_dPhiTopLepJetPos;
     TH1F* h_dPhiTopLepJetNeg;
-    private:
+    
+    TH2F* h_TopLepSumptPos;
+    TH2F* h_TopLepSumptNeg;
+    TH2F* h_TopHadSumptPos;
+    TH2F* h_TopHadSumptNeg;
+
+    TH1F* h_TopLepMass;
+    TH1F* h_TopHadMass;
+ private:
     TFile* fOutFile;
 
 };
