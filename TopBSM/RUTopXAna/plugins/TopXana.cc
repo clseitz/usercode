@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.2 2011/08/16 12:35:06 dhidas Exp $
+// $Id: TopXana.cc,v 1.3 2011/08/26 08:56:11 dhidas Exp $
 //
 //
 
@@ -777,7 +777,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
    
    //fill the tree use golden JSON file
-   //GetMCTruth(iEvent);
+   GetMCTruth(iEvent);
 
     MyTree->Fill();
     entry++;
@@ -1463,7 +1463,7 @@ TopXana::DoElectronID(const edm::Event& iEvent){
 
     // Global cuts
     if (PFIso > 0.1) continue;
-    if (PFElectron->pt() < 45.0) continue;
+    if (PFElectron->pt() < 20.0) continue;
     if (fabs(Electron->superCluster()->eta()) > 2.5) continue;
     if (fabs(Electron->superCluster()->eta()) > 1.4442 && fabs(Electron->superCluster()->eta())< 1.566) continue;
     //if (fabs(Electron->gsfTrack()->d0()) > 0.02) continue;
@@ -1588,7 +1588,7 @@ TopXana::DoMuonID(const edm::Event& iEvent){
 
     // global cuts
     if (PFIso > 0.1) continue;
-    if (PFMuon->pt() < 35.0) continue;
+    if (PFMuon->pt() < 20.0) continue;
     if (fabs(Muon->eta()) > 2.1) continue;
     if (fabs(Muon->globalTrack()->dxy((*primaryVertices)[0].position())) > 0.02) continue;
     if (vtxDistZ > 1.0) continue;
@@ -1681,16 +1681,17 @@ TopXana::DoCleanUp(vector<Muon >fGoodMuons,vector<Electron >fGoodElectrons,vecto
 
   return;
 }
-/*void 
+void 
 TopXana::GetMCTruth(const edm::Event& iEvent){
   if(!_isData){
     
     Handle< vector<reco::GenParticle> > GenParticles; 
-    iEvent.getByLabel("GenParticles", GenParticles);  
-    for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
+    iEvent.getByLabel("genParticles", GenParticles);  
+    for (unsigned int p=0; p<40; p++) { 
       //cout<<p<<endl; 
       //use only that hard process
       if(p<200){
+	if((*GenParticles)[p].status()==3){
 	pdgID[p]=(*GenParticles)[p].pdgId();
        
 	MCpx[p]=(*GenParticles)[p].px();
@@ -1698,6 +1699,7 @@ TopXana::GetMCTruth(const edm::Event& iEvent){
 	MCpz[p]=(*GenParticles)[p].pz();
 	MCe[p]=(*GenParticles)[p].energy();
 	//cout<<MCpx[p]<<" "<<MCpy[p]<<" "<<MCpz[p]<<" "<<MCe[p]<<endl;
+	}
       }
 
      
@@ -1705,7 +1707,7 @@ TopXana::GetMCTruth(const edm::Event& iEvent){
   }
   return;
 }
-*/
+
 void
 TopXana::MakeTriplets(vector<Jet >fCleanJets){
    const int nCombs = TMath::Factorial(nCleanJets)/(TMath::Factorial(nCleanJets - 3)*TMath::Factorial(3));
