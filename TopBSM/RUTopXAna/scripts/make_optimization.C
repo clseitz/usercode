@@ -21,7 +21,7 @@ void CountMjjj(TH1F *temp_diagcut,float diag, float i){
 }
 void make_optimization()
 { char hNAME[99];
-  float lumi=1000.;
+  float lumi=2000.;
   vector <string > namelist;
   
   vector <string > VarList;
@@ -32,26 +32,37 @@ void make_optimization()
   vector<float> DataLumi;
 
   
-  filelist.push_back(TFile::Open("../TTBar_plots_additionalCuts.root"));
+  filelist.push_back(TFile::Open("../TTBar_plots_Chi2Algo2a_5Jet1B_em.root"));
   namelist.push_back("TTbarJEts_e");
   nEvtTot.push_back(3.6838e+06);
   McXsec.push_back(157.5);
   DataLumi.push_back(lumi);
- filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
-  namelist.push_back("Wp1000_e");
+
+  filelist.push_back(TFile::Open("../Wp600_plots_Chi2Algo2a_5Jet1B_em.root"));
+  namelist.push_back("Wp600");
   nEvtTot.push_back(99995.0);
-  McXsec.push_back(0.72);
-  DataLumi.push_back(lumi);
- 
-filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
-  namelist.push_back("Wp600_e");
-  nEvtTot.push_back(99987.0);
   McXsec.push_back(8.0);
   DataLumi.push_back(lumi);
-  
- 
-  
- 
+
+  filelist.push_back(TFile::Open("../Wp1000_plots_chi2NoangleNupz_em.root"));
+  namelist.push_back("Wp600_e");
+  nEvtTot.push_back(99987.0);
+  McXsec.push_back(0.72);
+  DataLumi.push_back(lumi);
+
+
+  filelist.push_back(TFile::Open("../Wp400_plots_chi2NoangleNupz_em.root"));
+  namelist.push_back("Wp600_e");
+  nEvtTot.push_back(99987.0);
+  McXsec.push_back(38.4);
+  DataLumi.push_back(lumi);
+
+  filelist.push_back(TFile::Open("../Wp800_plots_chi2NoangleNupz_em.root"));
+  namelist.push_back("Wp600_e");
+  nEvtTot.push_back(99987.0);
+  McXsec.push_back(2.1);
+  DataLumi.push_back(lumi);
+
  
 
  
@@ -87,7 +98,7 @@ filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
   TH1F* h_pt_st_wp600;
   TH1F* h_TransMassLepMET1JetB_pt_st_ttbar;
    TH1F* h_TransMassLepMET1JetB_pt_st_wp600;
- TH2F* h_TransMassLepMET1JetB_pt_st= new TH2F("TransMassLepMET1JetB_pt_st","TransMassLepMET1JetB_pt_st",35,200,1950,35,70,420);
+ TH2F* h_TransMassLepMET1JetB_pt_st= new TH2F("TransMassLepMET1JetB_pt_st","TransMassLepMET1JetB_pt_st",37,100,1950,39,30,420);
   vector<float> v_pt_y;
   vector<float> v_delphi_y;
   vector<float> v_st_y;
@@ -100,7 +111,7 @@ filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
 
  for(int i=0; i<35; i++){
      cout<<"do"<<endl;
-     sprintf(hNAME, "TransMassLepMET4Jet_1jet_%i_pt", i*10+70);
+     sprintf(hNAME, "TransMassLepMET4Jet_1jet_%i_pt", i*10+30);
      h_pt_ttbar = (TH1F*) filelist[0]->Get(hNAME);
      h_pt_wp600 = (TH1F*) filelist[1]->Get(hNAME);
      THStack sh_pt;
@@ -111,7 +122,7 @@ filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
      h_delphi_wp600 = (TH1F*) filelist[1]->Get(hNAME);
      THStack sh_delphi;
      TCanvas* c_delphi= new TCanvas(hNAME,hNAME,800,600);
-     sprintf(hNAME, "TransMassLepMET4Jet_st_%i", i*50+200);
+     sprintf(hNAME, "TransMassLepMET4Jet_st_%i", i*50+100);
      h_st_ttbar= (TH1F*) filelist[0]->Get(hNAME);
      h_st_wp600= (TH1F*) filelist[1]->Get(hNAME);
      THStack sh_st;
@@ -159,7 +170,7 @@ TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
      sh_pt.Add(h_TransMassLepMET1JetB_pt_ttbar); sh_pt.Add(h_TransMassLepMET1JetB_pt_wp600);
      leg->Draw();
      c_pt->cd();
-     sprintf(hNAME, "TransMassLepMET1JetB_1jet_%i_pt_stack", i*10+70);
+     sprintf(hNAME, "TransMassLepMET1JetB_1jet_%i_pt_stack", i*10+30);
      c_pt->SetName(hNAME);
      sh_pt.Draw("hist");
      leg->Draw();
@@ -185,7 +196,7 @@ TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
      c_st->Write();
      sh_st.Add(h_TransMassLepMET1JetB_st_ttbar); sh_st.Add(h_TransMassLepMET1JetB_st_wp600);
      c_st->cd();
-     sprintf(hNAME, "TransMassLepMET1JetB_st_%i_stack", i*50+200);
+     sprintf(hNAME, "TransMassLepMET1JetB_st_%i_stack", i*50+100);
      c_st->SetName(hNAME);
      sh_st.Draw("hist");
      leg->Draw();
@@ -200,15 +211,15 @@ TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
      v_st_y.push_back(r_st);
 
      
-     v_pt_x.push_back(i*10+70);
+     v_pt_x.push_back(i*10+30);
      v_delphi_x.push_back(i*0.5+1);
-     v_st_x.push_back(i*50+200);
+     v_st_x.push_back(i*50+100);
 
      cout<<h_TransMassLepMET1JetB_pt_ttbar->Integral(0,h_TransMassLepMET1JetB_pt_ttbar->GetNbinsX())<<endl;;
 
       for(int j=0; j<35; j++){
         
-       sprintf(hNAME, "TransMassLepMET4Jet_1jet_%i_st_%i", i*10+70,j*50+200);
+       sprintf(hNAME, "TransMassLepMET4Jet_1jet_%i_st_%i", i*10+30,j*50+100);
        TCanvas* c_pt_st= new TCanvas(hNAME,hNAME,800,600);
        THStack sh_pt_st;
        h_pt_st_ttbar = (TH1F*) filelist[0]->Get(hNAME);
@@ -220,7 +231,7 @@ TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
        h_TransMassLepMET1JetB_pt_st_wp600->SetLineColor(3);
 
         float r_pt_st=h_TransMassLepMET1JetB_pt_st_wp600->Integral(0,h_TransMassLepMET1JetB_pt_st_wp600->GetNbinsX())/sqrt(h_TransMassLepMET1JetB_pt_st_ttbar->Integral(0,h_TransMassLepMET1JetB_pt_st_ttbar->GetNbinsX()));
-	h_TransMassLepMET1JetB_pt_st->Fill(j*50+200, i*10+70,r_pt_st);
+	h_TransMassLepMET1JetB_pt_st->Fill(j*50+100, i*10+30,r_pt_st);
 
 	c_pt_st->cd();
 	h_TransMassLepMET1JetB_pt_st_ttbar->Draw(); 
@@ -230,7 +241,7 @@ TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
 	sh_pt_st.Add(h_TransMassLepMET1JetB_pt_st_ttbar); sh_pt_st.Add(h_TransMassLepMET1JetB_pt_st_wp600);
 	leg->Draw();
 	c_pt_st->cd();
-	sprintf(hNAME, "TransMassLepMET1JetB_1jet_%i_st_%i_stack", i*10+70,j*50+200);
+	sprintf(hNAME, "TransMassLepMET1JetB_1jet_%i_st_%i_stack", i*10+30,j*50+100);
 	c_pt_st->SetName(hNAME);
 	sh_pt_st.Draw("hist");
 	leg->Draw();

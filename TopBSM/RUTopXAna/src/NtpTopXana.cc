@@ -37,7 +37,16 @@ void NtpTopXana::BookHistograms()
   h_NumEvtCutElectron = new TH1F("NumEvtCutElectron", "NumEvtCutElectron",20,0,20);
   h_NumEvtCut = new TH1F("NumEvtCut", "NumEvtCut",20,0,20);
   h_MET = new TH1F("MET", "MET",200,0,1000);
-  //redefining everything with vectors
+  h_ept= new TH1F("ept", "ept",200,0,1000);
+  h_mpt= new TH1F("mpt", "mpt",200,0,1000);
+  
+  h_Jet0= new TH1F("Jet0", "Jet0",200,0,1000);
+  h_Jet1= new TH1F("Jet1", "Jet1",200,0,1000);
+  h_Jet2= new TH1F("Jet2", "Jet2",200,0,1000);
+  h_Jet4= new TH1F("Jet3", "Jet3",200,0,1000);
+  h_Jet5= new TH1F("Jet4", "Jet4",200,0,1000);
+  
+//redefining everything with vectors
   //different cuts
   CutList.push_back("4Jet_1b_P");
   CutList.push_back("4Jet_2b_P");
@@ -151,11 +160,18 @@ void NtpTopXana::BookHistograms()
  h_MCPhiWpTopNeg = new TH1F("MCPhiWpTopNeg", "MCPhiWpTopNeg",200,0,4);
  h_MCPhiWpTop = new TH1F("MCPhiWpTop", "MCPhiWpTop",200,0,4);
 
+ //Tonly plots
+ h_MCdeltaEtaTopAntiTop = new TH1F("MCdeltaEtaTopAntiTop", "MCdeltaEtaTopAntiTop",350,-7,7);
+ h_MC_posneg_DeltaEta = new TH1F("MC_posneg_DeltaEta", "MC_posneg_DeltaEta",4,-1,2);
+
+
  h_minChi2Pos = new TH1F("minChi2Pos", "minCh2Pos",1000,0,1000);
  h_minChi2Neg = new TH1F("minChi2Neg", "minCh2Neg",1000,0,1000);
  h_TopLepJetMassPos= new TH1F("TopLepJetMassPos","TopLepJetMassPos",200,0,2000);
  h_TopLepJetMassNeg= new TH1F("TopLepJetMassNeg","TopLepJetMassNeg",200,0,2000);
  h_TopLepJetMassGood= new TH1F("TopLepJetMassGood","TopLepJetMassGood",200,0,2000);
+ h_TopJetMass_Good_vs_Bad= new TH2F("TopJetMass_Good_vs_Bad"," TopJetMass_Good_vs_Bad",200,0,2000,200,0,2000);
+
  h_TopLepJetMassBad= new TH1F("TopLepJetMassBad","TopLepJetMassBad",200,0,2000);
  h_dPhiTopLepJetPos= new TH1F("dPhiTopLepJetPos", "dPhiTopLepJetPos",200,0,4);
  h_dPhiTopLepJetNeg= new TH1F("dPhiTopLepJetNeg", "dPhiTopLepJetNeg",200,0,4);
@@ -172,11 +188,8 @@ void NtpTopXana::BookHistograms()
  
 void NtpTopXana::WriteHistograms()
 {cout<<"made it here"<<endl;
-  fOutFile->cd();
-  h_NumEvtCutMuon->Write();
-h_NumEvtCutElectron->Write();
- h_NumEvtCut->Write(); 
-h_MET->Write();
+  
+
   for (int f=0; f< (int) CutList.size(); f++){
     fOutFile->cd();
     fOutFile->mkdir(CutList[f].c_str());
@@ -240,6 +253,10 @@ h_MET->Write();
    h_MCPhiWpTopPos->Write();
    h_MCPhiWpTopNeg->Write();
    h_MCPhiWpTop->Write();
+
+   h_MCdeltaEtaTopAntiTop->Write();
+   h_MC_posneg_DeltaEta->Write();
+
    cout<<"made it here"<<endl;
    fOutFile->cd();
    fOutFile->mkdir("Chi2Reco");
@@ -250,6 +267,7 @@ h_MET->Write();
    h_TopLepJetMassNeg->Write();
    h_TopLepJetMassGood->Write();
    h_TopLepJetMassBad->Write();
+   h_TopJetMass_Good_vs_Bad->Write();
    h_dPhiTopLepJetPos->Write();
    h_dPhiTopLepJetNeg->Write();
    h_TopLepSumptPos->Write();
@@ -259,7 +277,24 @@ h_MET->Write();
 
    h_TopLepMass->Write();
    h_TopHadMass->Write();
+   cout<<"made it here"<<endl;
+   fOutFile->cd();
+   fOutFile->mkdir("Events");
+   fOutFile->cd("Events");
 
+   h_NumEvtCutMuon->Write();
+   h_NumEvtCutElectron->Write();
+   h_NumEvtCut->Write();
+   h_MET->Write();
+
+   h_ept->Write();
+   h_mpt->Write();
+
+   h_Jet0->Write();
+   h_Jet1->Write();
+   h_Jet2->Write();
+   h_Jet4->Write();
+   h_Jet5->Write();
 
 
   return;
@@ -399,9 +434,27 @@ void NtpTopXana::Loop ()
        }
      }
      
+     ////TRIGGER////////////
+     if ((nElectrons+ nMuons) == 1 && nJet35>=5){
+       if (nElectrons==1){
+	 h_ept->Fill(ept[0]);
+       }
+       if (nMuons==1){
+	 h_mpt->Fill(mpt[0]);
+	 
+       }
+       h_MET->Fill(pfMET);
+	 h_Jet0->Fill(fCleanJets[0].Pt());
+       h_Jet1->Fill(fCleanJets[1].Pt());
+       h_Jet2->Fill(fCleanJets[2].Pt());
+       h_Jet4->Fill(fCleanJets[3].Pt());
+       h_Jet5->Fill(fCleanJets[4].Pt());
+	 }
+     
      ///////////////////////////////
      ////Make the Cutflow plot////////
      /////MUONS////
+    bool SemilepRecoSelection=false;
      h_NumEvtCutMuon->Fill(0);     
      if ((nElectrons+ nMuons) == 1){
        h_NumEvtCutMuon->Fill(1);
@@ -424,7 +477,7 @@ void NtpTopXana::Loop ()
 		   h_NumEvtCutMuon->Fill(8);
 		   if(nJet35 >=4){
 		     h_NumEvtCutMuon->Fill(9);
-
+		     SemilepRecoSelection=true;
 		     if(nJet35 >=5){
 		       h_NumEvtCutMuon->Fill(10);
 
@@ -455,7 +508,7 @@ void NtpTopXana::Loop ()
 		     h_NumEvtCutElectron->Fill(8);
 		     if(nJet35 >=4){
 		       h_NumEvtCutElectron->Fill(9);
-
+		       SemilepRecoSelection=true;
 		       if(nJet35 >=5){
 			 h_NumEvtCutElectron->Fill(10);
 
@@ -480,7 +533,7 @@ void NtpTopXana::Loop ()
       }
       if(OKlep){
 	
-	h_MET->Fill(pfMET);// cout<<"2------------"<<endl;
+	//h_MET->Fill(pfMET);// cout<<"2------------"<<endl;
        if( pfMET>30.0){//MET above 30
 	 
 	 if(nJet35 >=1){//at least one jet with pt >35
@@ -899,7 +952,7 @@ void NtpTopXana::Loop ()
      }
      
     }
-    
+
     //calculate chi2 at RECO Level
     h_NumEvtCut->Fill(0);
     if ((nElectrons+ nMuons) == 1){
@@ -954,7 +1007,7 @@ void NtpTopXana::Loop ()
 		    
 		    
 		    vector< TLorentzVector > TopLep;
-		    cout<<"bjets might be the problem"<<endl;
+		    //cout<<"bjets might be the problem"<<endl;
 		    TLorentzVector TopLepMet0b0(fBJets[0].Px()+fMET.Px()+flep.Px(),fBJets[0].Py()+fMET.Py()+flep.Py()
 						,fBJets[0].Pz()+nupz0+flep.Pz(),fBJets[0].E()+fMET.E()+flep.E());
 		    TLorentzVector TopLepMet1b0(fBJets[0].Px()+fMET.Px()+flep.Px(),fBJets[0].Py()+fMET.Py()+flep.Py()
@@ -963,7 +1016,7 @@ void NtpTopXana::Loop ()
 						,fBJets[1].Pz()+nupz0+flep.Pz(),fBJets[1].E()+fMET.E()+flep.E());
 		    TLorentzVector TopLepMet1b1(fBJets[1].Px()+fMET.Px()+flep.Px(),fBJets[1].Py()+fMET.Py()+flep.Py()
 						,fBJets[1].Pz()+nupz1+flep.Pz(),fBJets[1].E()+fMET.E()+flep.E());
-		    cout<<"bjets are not  the problem"<<endl;
+		    //cout<<"bjets are not  the problem"<<endl;
 		    float SumptLep0b0=(fBJets[0].Pt()+fMET.Pt()+flep.Pt());
 		    float SumptLep1b0=(fBJets[0].Pt()+fMET.Pt()+flep.Pt());
 		    float SumptLep0b1=(fBJets[1].Pt()+fMET.Pt()+flep.Pt());
@@ -1016,16 +1069,16 @@ void NtpTopXana::Loop ()
 				ComboChi2[countChi2].push_back(TopLep[a]); ComboChi2[countChi2].push_back(Wij);  ComboChi2[countChi2].push_back(HadTopijb1);
 				ComboChi2[countChi2].push_back(nonWJet);
 				vChi2.push_back(chi2);
-				cout<<"TopLep: "<<TopLep[a].M()<<" W: "<<Wij.M()<<" TopHad: "<<HadTopijb1.M()<<endl;
-				cout<<chi2<<" "<<countChi2<<endl;
+				//cout<<"TopLep: "<<TopLep[a].M()<<" W: "<<Wij.M()<<" TopHad: "<<HadTopijb1.M()<<endl;
+				//cout<<chi2<<" "<<countChi2<<endl;
 			      }
 			    if(a==2 || a==3)
 			      { chi2=pow((TopLep[a].M()-mT)/wT,2)+1/sqrt(2)*(pow((Wij.M()-mW)/wW,2)+pow((HadTopijb0.M()-mT)/wT,2));//+pow((dPhiTopLepJet-Phi)/wPhi,2);
 				ComboChi2[countChi2].push_back(TopLep[a]); ComboChi2[countChi2].push_back(Wij);  ComboChi2[countChi2].push_back(HadTopijb0);
 				ComboChi2[countChi2].push_back(nonWJet);
 				vChi2.push_back(chi2);
-				cout<<"TopLep: "<<TopLep[a].M()<<" W: "<<Wij.M()<<" TopHad: "<<HadTopijb0.M()<<endl;
-				cout<<chi2<<" "<<countChi2<<endl;
+				//cout<<"TopLep: "<<TopLep[a].M()<<" W: "<<Wij.M()<<" TopHad: "<<HadTopijb0.M()<<endl;
+				//cout<<chi2<<" "<<countChi2<<endl;
 			      }
 			    
 			    countChi2++;
@@ -1069,10 +1122,10 @@ void NtpTopXana::Loop ()
 			posJetLep.push_back(a);
 			
 		      }
-		      cout<<"leave leptonic loop"<<endl;
+		      //cout<<"leave leptonic loop"<<endl;
 		      float minChi2Lep=Chi2Lep[0];
 		      int indexMinLep=0;
-		      cout<<"start findin min"<<endl;
+		      // cout<<"start findin min"<<endl;
 		      
 		      for(unsigned int m=0; m<Chi2Lep.size(); m++){
 			if (Chi2Lep[m]<=minChi2Lep){
@@ -1081,7 +1134,7 @@ void NtpTopXana::Loop ()
 			}
 			
 		      }
-		      cout<<vChi2Lep[indexMinLep].M()<<endl;
+		      //		      cout<<vChi2Lep[indexMinLep].M()<<endl;
 		      
 		      //now the hadronic reconstruction
 		      int countChi2Had=0;
@@ -1128,7 +1181,7 @@ void NtpTopXana::Loop ()
 		      }
 		      
 		      
-		      cout<<"find hadronic chi2"<<endl;
+		      //		      cout<<"find hadronic chi2"<<endl;
 		      
 		      float minChi2Had=Chi2Had[0];
 		      int indexMinHad=0;
@@ -1149,7 +1202,7 @@ void NtpTopXana::Loop ()
 		      float dJetPt=1;
 		      TLorentzVector dJetnonB;
 		      for (unsigned int i=0; i<fdummyCleanJets.size(); i++){
-			cout<<fdummyCleanJets[i].Pt()<<" "<<fCleanJets[i].Pt()<<endl;
+			//cout<<fdummyCleanJets[i].Pt()<<" "<<fCleanJets[i].Pt()<<endl;
 			if(dJetPt<fdummyCleanJets[i].Pt()){ dJetnonB=fdummyCleanJets[i];
 			  break;
 			}
@@ -1162,12 +1215,12 @@ void NtpTopXana::Loop ()
 		      BestComboChi2.push_back(vChi2Had[indexMinHad][0]);
 		      BestComboChi2.push_back(vChi2Had[indexMinHad][0]);
 		      BestComboChi2.push_back(dJetnonB);
-		      cout<<"push back everything"<<endl;
+		      //cout<<"push back everything"<<endl;
 		    }
 		    //BesCcombo hast the 4-vectors of 0=leptonic top, 1=W, 2=hadronic top, 3=highest pt nonWjet                                                  
 		    
-		    cout<<"TopLep: "<<BestComboChi2[0].M()<<" W: "<<BestComboChi2[1].M()<<" TopHad: "<<BestComboChi2[2].M()<<" NonWJet: "<<BestComboChi2[3].Pt()<<endl;
-		    cout<<"TopLepD: "<<(BestComboChi2[0]+BestComboChi2[3]).M()<<"TopHadD: "<<(BestComboChi2[2]+BestComboChi2[3]).M()<<endl;
+		    //cout<<"TopLep: "<<BestComboChi2[0].M()<<" W: "<<BestComboChi2[1].M()<<" TopHad: "<<BestComboChi2[2].M()<<" NonWJet: "<<BestComboChi2[3].Pt()<<endl;
+		    //cout<<"TopLepD: "<<(BestComboChi2[0]+BestComboChi2[3]).M()<<"TopHadD: "<<(BestComboChi2[2]+BestComboChi2[3]).M()<<endl;
 		    //<<BestComboChi2[2].M()<<" d-jet Pt: "<< BestComboChi2[3].Pt()<<" chi2: "<<minChi2<<endl; 
 		    h_TopLepMass->Fill(BestComboChi2[0].M());
 		    h_TopHadMass->Fill(BestComboChi2[2].M());
@@ -1183,13 +1236,14 @@ void NtpTopXana::Loop ()
 		    WprimeTopHad.SetPz(BestComboChi2[2].Pz()+BestComboChi2[3].Pz());
 		    WprimeTopHad.SetE(BestComboChi2[2].E()+BestComboChi2[3].E());
 		    float fdPhiTopLepJet =min(fabs(BestComboChi2[0].Phi()-BestComboChi2[3].Phi()), 2*3.14159265 - fabs(BestComboChi2[0].Phi()-BestComboChi2[3].Phi()));
-		    cout<<*echarge<<" "<<WprimeTopHad.M()<<" "<<WprimeTopLep.M()<<endl;
-		    cout<<"---------------------------------"<<endl;
+		    //cout<<*echarge<<" "<<WprimeTopHad.M()<<" "<<WprimeTopLep.M()<<endl;
+		    //cout<<"---------------------------------"<<endl;
 		    if(lepcharge==+1)
 		      { //h_minChi2Pos->Fill(minChi2);
 			h_TopLepJetMassPos->Fill(WprimeTopLep.M());
 			h_TopLepJetMassGood->Fill(WprimeTopHad.M());
 			h_TopLepJetMassBad->Fill(WprimeTopLep.M());
+			h_TopJetMass_Good_vs_Bad->Fill(WprimeTopLep.M(),WprimeTopHad.M());
 			h_dPhiTopLepJetPos->Fill(fdPhiTopLepJet);
 		      }
 		    if(lepcharge==-1)
@@ -1198,6 +1252,7 @@ void NtpTopXana::Loop ()
 			h_TopLepJetMassNeg->Fill(WprimeTopLep.M());
 			h_TopLepJetMassGood->Fill(WprimeTopLep.M());
 			h_TopLepJetMassBad->Fill(WprimeTopHad.M());
+			h_TopJetMass_Good_vs_Bad->Fill(WprimeTopHad.M(),WprimeTopLep.M());
 			h_dPhiTopLepJetNeg->Fill(fdPhiTopLepJet);
 		      }
 		  }
@@ -1213,7 +1268,8 @@ void NtpTopXana::Loop ()
 
     //make some Generator level plots
     bool MCgen=true;
-
+    bool Tonly=true;
+    cout<<"before MC stuff"<<endl;
     if (MCgen){
       bool allhad=false;
       bool lep=false;
@@ -1238,8 +1294,48 @@ void NtpTopXana::Loop ()
 	  countsemilep++;
   }
 
-      //now only use the semileptonic events
+      cout<<"before semilep"<<endl;   
+   //now only use the semileptonic events
+      //test the Tchannle sample with 4-jet, 1 b reco selection
+      if (Tonly){
+	if ((nElectrons+ nMuons) == 1){
+	  TLorentzVector flep; int lepcharge=0;
+	  bool OKlep=false;
+	  if (nElectrons==1 && ept[0]>30.0){
+	    flep.SetPxPyPzE(epx[0],epy[0],epz[0],ee[0]);
+	    lepcharge=*echarge;
+	    
+	    OKlep=true;
+	  }
+	  if (nMuons==1 && mpt[0]>20.0){
+	    flep.SetPxPyPzE(mpx[0],mpy[0],mpz[0],me[0]);
+	    OKlep=true;
+	    lepcharge=*mcharge;
+	  }
+	  if(OKlep){   
+	    if(nJet35 >=4 && (fBJets.size()>=1)){
+
+	      TLorentzVector MCTopTchannel;
+	      TLorentzVector MCAntiTopTchannel;
+	      if(pdgID[6]==6){
+		MCTopTchannel.SetPxPyPzE(MCpx[6],MCpy[6],MCpz[6],MCe[6]);
+		MCAntiTopTchannel.SetPxPyPzE(MCpx[7],MCpy[7],MCpz[7],MCe[7]);
+	      }
+	      if(pdgID[6]==-6){
+                 MCTopTchannel.SetPxPyPzE(MCpx[7],MCpy[7],MCpz[7],MCe[7]);
+		MCAntiTopTchannel.SetPxPyPzE(MCpx[6],MCpy[6],MCpz[6],MCe[6]);
+	      } 
+      cout<<"nu aber"<<endl;
+
+      float DelEta= fabs(MCTopTchannel.Eta())- fabs(MCAntiTopTchannel.Eta());
+      h_MCdeltaEtaTopAntiTop->Fill(DelEta);
+      if (DelEta<0.0)  h_MC_posneg_DeltaEta->Fill(-1);
+      if (DelEta>=0.0)  h_MC_posneg_DeltaEta->Fill(1);
+	    }}}
+
+      }
       if(semilep){
+	cout<<"after semilep"<<endl;
 	TLorentzVector MClep;
 	TLorentzVector MCnu;
 	TLorentzVector MC1b;
@@ -1309,7 +1405,7 @@ void NtpTopXana::Loop ()
 
 	}
 	
-	
+
 	//the d-quark is always on position 8
 	MCd.SetPxPyPzE(MCpx[8],MCpy[8],MCpz[8],MCe[8]);
 	//double check the real wprime and two tops

@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.3 2011/08/26 08:56:11 dhidas Exp $
+// $Id: TopXana.cc,v 1.4 2011/10/12 09:13:55 clseitz Exp $
 //
 //
 
@@ -39,7 +39,13 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/PatCandidates/interface/Jet.h" // based on DataFormats/Candidate/interface/Particle.h
+
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+
 #include "TTree.h"
 #include "TopXana.h"
 #include "TopBSM/RUTopXAna/interface/NtpReader.h"
@@ -178,6 +184,9 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   nGoodMuons=0; nCleanMuons=0;  
   fGoodPhotons.clear(); fCleanPhotons.clear();
   nGoodPhotons=0; nCleanPhotons=0;
+  fGoodVtx.clear();
+  nGoodVtx=0; int CountVtx=0;
+
   for (int i=0; i<200; ++i)
     {
       pdgID[i] = -99;
@@ -192,7 +201,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    sumVectorPtTriplet.clear();
    massTriplet.clear();
    nTriplets=0; q=0; //basically just triplet counting
-   IsVtxGood = 0; nGoodVtx = 0;
+   IsVtxGood = 0; 
 
   
   
@@ -200,13 +209,13 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    /////DO OBJECT ID
    //////////////////
    //Select all the objects int the event (vertex function makes some plots)
-   DoJetID(iEvent);
+   DoJetID(iEvent,iSetup);
    DoVertexID(iEvent);
    DoElectronID(iEvent);
    DoMuonID(iEvent);
    //DoPhotonID(iEvent);
    DoMETID(iEvent);
-
+  
    //make some plots before cleanup 
    h_nGoodJets->Fill(nGoodJets);
    h_nGoodElectrons->Fill(nGoodElectrons);  
@@ -224,7 +233,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    h_nCleanMuons->Fill(nCleanMuons);
    h_nCleanPhotons->Fill(nCleanPhotons);
    h_nCleanJets->Fill(nCleanJets);
-
+   
    /////////////////
    //////KINEMATIC PLOTS OF OBJECTS + STUFF FOR THE TREE
    ////////////////
@@ -294,6 +303,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      phe[i]=fCleanPhotons[i].energy();	 
      
    }
+   nGoodVtx=CountVtx;
    h_MET->Fill(fMET.et());
    pfMET= fMET.et();
    pfMETphi=fMET.phi();
@@ -777,7 +787,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
    
    //fill the tree use golden JSON file
-   GetMCTruth(iEvent);
+   //GetMCTruth(iEvent);
 
     MyTree->Fill();
     entry++;
@@ -1307,10 +1317,11 @@ TopXana::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
 
 
 void 
-TopXana::DoJetID(const edm::Event& iEvent){
+TopXana::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup){
    // Jet Handle  
   Handle< vector<Jet> > PatJets; 
   iEvent.getByLabel(_patJetType, PatJets); 
+
    //lets do some JetID
   
   for (unsigned int j=0; j<PatJets->size(); j++) {
@@ -1366,6 +1377,15 @@ TopXana::DoJetID(const edm::Event& iEvent){
        }//JetKinematics
    }//JetLoop
  if (_debug) std::cout << "Found "<< nGoodJets << " Jets" << std::endl;
+ //JEC uncertainty doesn't work
+ // const JetCorrector* corrector = JetCorrector::getJetCorrector("JetCorrectionService",iSetup);
+ //JetCorrectionUncertainty *jecUnc(0);
+ // JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("Jec11_V2_AK5PF_Uncertainty.txt");
+ //  edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+ //(iSetup).get<JetCorrectionsRecord>().get("AK5PF",JetCorParColl);
+ //JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+ //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
+
 return;
 }
 
@@ -1376,20 +1396,20 @@ TopXana::DoVertexID(const edm::Event& iEvent){
   iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
   
  
-  
+  int CountVtx=0;
   for (size_t i=0; i<recVtxs->size(); ++i)
     if (!((*recVtxs)[i].isFake())) {
       if ( ((*recVtxs)[i].ndof() > 4) &&
            (fabs( (*recVtxs)[i].z()) <= 24) &&
            ((*recVtxs)[i].position().rho() <= 2) ){
-        nGoodVtx++;
+        CountVtx++;
 	h_zPosGoodVtx->Fill((*recVtxs)[i].z());
       }
     }
   
-  if (nGoodVtx > 0) IsVtxGood = 1;
-  h_nGoodVtx->Fill(nGoodVtx);
-  
+  if (CountVtx > 0) IsVtxGood = 1;
+  h_nGoodVtx->Fill(CountVtx);
+  cout<<CountVtx<<" "<< recVtxs->size()<<endl;
   return;
 }
 

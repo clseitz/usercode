@@ -28,26 +28,27 @@ void make_asym_MC()
   vector<float> McXsec;
   vector<float> DataLumi;
 vector <TH1F* > v_Asym;
+ filelist.push_back(TFile::Open("../TTBar_plots_Chi2Algo2a_5Jet1B_em.root"));
+ namelist.push_back("TTbarJEts_e");
+ //nEvtTot.push_back(216095.0);                                                                                                                            
+ nEvtTot.push_back(3.6838e+06);
+ McXsec.push_back(157.5);
+ DataLumi.push_back(lumi);
   
-  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
+
+  filelist.push_back(TFile::Open("../Wp600_plots_Chi2Algo2a_5Jet1B_em.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
-  McXsec.push_back(0.0);
+  McXsec.push_back(0);
   DataLumi.push_back(lumi);
 
-  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
+  filelist.push_back(TFile::Open("../Wp400_plots_Chi2Algo2a_5Jet1B_em.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
-  McXsec.push_back(0.0);
+  McXsec.push_back(32.2);
   DataLumi.push_back(lumi);
 
-  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
-  namelist.push_back("Wp600_e");
-  nEvtTot.push_back(99987.0);
-  McXsec.push_back(8.0);
-  DataLumi.push_back(lumi);
-
-  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
+  filelist.push_back(TFile::Open("../Wp600_plots_Chi2Algo2a_5Jet1B_em.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
   McXsec.push_back(0.0);
@@ -71,24 +72,24 @@ vector <TH1F* > v_Asym;
   
 
 
- VarList.push_back("MCwprimeMass");
- VarList.push_back("MCwprimeMETMass");
- VarList.push_back("MCPhidLepTop");
- VarList.push_back("minChi2");
-
+  // VarList.push_back("MCwprimeMass");
+  //VarList.push_back("MCwprimeMETMass");
+  //VarList.push_back("MCPhidLepTop");
+  // VarList.push_back("minChi2");
+ VarList.push_back("TopLepJetMass");
  //VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt_");
 
   
 
 
-  TFile fnew1("wpMC_asym_plots.root", "recreate");
+  TFile fnew1("wp400_asym_Chi2Algo2a_Chi2Algo2a_5Jet1B_em.root", "recreate");
   
   for(int m=0; m<VarList.size(); m++){
     vector <string > plotlist;
 
     //COMMENT ALL IN if you want to look at other variables but then the added asymmetry doesn't work
-  plotlist.push_back("MCwprime/"+VarList[m]+"Pos");
-  plotlist.push_back("MCwprime/"+VarList[m]+"Neg");
+  plotlist.push_back("Chi2Reco/"+VarList[m]+"Bad");
+  plotlist.push_back("Chi2Reco/"+VarList[m]+"Good");
   // plotlist.push_back("5Jet_2b_M/"+VarList[m]+"5Jet_2b_M");
   //plotlist.push_back("4Jet_1b_M/"+VarList[m]+"4Jet_1b_M");
   //plotlist.push_back("4Jet_2b_M/"+VarList[m]+"4Jet_2b_M");
@@ -112,11 +113,11 @@ vector <TH1F* > v_Asym;
       cout<<plotlist[i]<<endl;
       tempa = (TH1F*) filelist[file]->Get(plotlist[i].c_str());
       cout<<"got it"<<endl;
-      temp =  (TH1F*) tempa->Rebin(2, "temp");
+      temp =  (TH1F*) tempa->Rebin(6, "temp");
       TH1F* temp2;
       tempb = (TH1F*) filelist[file]->Get(plotlist[i+plotlist.size()/2].c_str());
       cout<<"got 2it"<<endl;
-      temp2 = (TH1F*) tempb->Rebin(2,"temp2");
+      temp2 = (TH1F*) tempb->Rebin(6,"temp2");
       //temp->Add(temp2);
       float scale = (1.0/nEvtTot[file])*DataLumi[file]*McXsec[file];
       //temp->Scale(scale);
@@ -180,16 +181,32 @@ vector <TH1F* > v_Asym;
      
      TH1F* Asym;
      Asym = (TH1F*) histosP[2]->Clone();
+     TH1F* AsymSig;
+     AsymSig = (TH1F*) histosP[2]->Clone();
+     TH1F* AsymBg;
+     AsymBg = (TH1F*) histosP[2]->Clone();
+
      TH1F* Pos;
      Pos = (TH1F*) histosP[2]->Clone();
      TH1F* Neg;
      Neg = (TH1F*) histosP[2]->Clone();
+
+     TH1F* PosSig;
+     PosSig = (TH1F*) histosP[2]->Clone();
+     TH1F* NegSig;
+     NegSig = (TH1F*) histosP[2]->Clone();
+
+     TH1F* PosBg;
+     PosBg = (TH1F*) histosP[2]->Clone();
+     TH1F* NegBg;
+     NegBg = (TH1F*) histosP[2]->Clone();
+
      /*for (int k=1; k<histosP[2]->GetNbinsX()-1; k++){
        //cout<<"loop"<<endl;
        Float_t binP = ((TH1*)(Wp600StackP.GetStack()->Last()))->GetBinContent(k);
        Float_t binM = ((TH1*)(Wp600StackM.GetStack()->Last()))->GetBinContent(k);
        Float_t binE=0;
-       float ratio=0;
+       float ratio;
        if(binP!=0 && binM!=0){
        ratio=(binP-binM)/(binP+binM);
        binE=2*sqrt((binM*binP)/pow(binM + binP,3));
@@ -206,7 +223,7 @@ vector <TH1F* > v_Asym;
      Asym->SetName(plotlist[i].c_str());
      Asym->Write();
      */
-     for (int k=1; k<histosP[2]->GetNbinsX()-1; k++){
+     for (int k=1; k<histosP[2]->GetNbinsX()+1; k++){
        //cout<<"loop"<<endl;
        float scale_tt = (1.0/nEvtTot[0])*DataLumi[0]*McXsec[0];
        float scale_wp = (1.0/nEvtTot[2])*DataLumi[2]*McXsec[2];
@@ -222,13 +239,33 @@ vector <TH1F* > v_Asym;
       
        float binP = 0;
        float binM = 0;
-       //cout<<scale_tt<<" "<<BP_tt<<" "<<EP_tt<<endl;
+       
+       float binPSig = 0;
+       float binMSig = 0;
+
+       float binPBg = 0;
+       float binMBg = 0;
+//cout<<scale_tt<<" "<<BP_tt<<" "<<EP_tt<<endl;
        // cout<<binP_E<<endl;
        float binE=0;
        float ratio=0;
+       float binESig=0;
+       float ratioSig=0;
+
+       float binEBg=0;
+       float ratioBg=0;
+
        if(BP_tt!=0 && BP_wp!=0 && BM_tt!=0 && BM_wp!=0){
 	 binP = scale_tt*BP_tt+scale_wp*BP_wp;
 	 binM =  scale_tt*BM_tt+scale_wp*BM_wp;
+	 
+	 binPSig = scale_wp*BP_wp;
+         binMSig = scale_wp*BM_wp;
+
+	 binPBg =scale_tt*BP_tt;
+         binMBg =scale_tt*BM_tt;
+
+
 	 cout<<scale_tt<<" "<<BP_tt<<" "<<EP_tt<<" "<<scale_wp<<" "<<BP_wp<<" "<<EP_wp<<endl;
 	 float binP_E=sqrt(pow(scale_tt*BP_tt/EP_tt,2)+pow(scale_wp*BP_wp/EP_wp,2));
 	 float binM_E=sqrt(pow(scale_tt*BM_tt/EM_tt,2)+pow(scale_wp*BM_wp/EM_wp,2));
@@ -238,31 +275,102 @@ vector <TH1F* > v_Asym;
 	 //Real Errors from MC statistics
 	 //binE=2*sqrt((pow(binM_E,2)*pow(binP,2) + pow(binM,2)*pow(binP_E,2))/pow(binM + binP,4));
 	 //Error as would be seen in data just sqrt(binContent)
-	 binE=2*sqrt((binM*binP)/pow(binM + binP,3));
-	 ratio=(binP-binM)/(binP+binM);
+	 //binE=2*sqrt((binM*binP)/pow(binM + binP,3));
+	 //corelated error bars from carl
+	 float errsum=binP+binM;
+	 float errprod=binP*binM;
+	 float tot=errprod*(errsum-1.8*sqrt(errprod));
+	 binE= 2*sqrt(tot)/(errsum*errsum);
+	 ratio=(-binP+binM)/(binP+binM)*2;
+
+	 float errsumSig=binPSig+binMSig;
+         float errprodSig=binPSig*binMSig;
+         float totSig=errprodSig*(errsumSig-1.8*sqrt(errprodSig));
+         binESig= 2*sqrt(totSig)/(errsumSig*errsumSig);
+         ratioSig=(-binPSig+binMSig)/(binPSig+binMSig)*2;
+
+	 float errsumBg=binPBg+binMBg;
+         float errprodBg=binPBg*binMBg;
+         float totBg=errprodBg*(errsumBg-1.8*sqrt(errprodBg));
+         binEBg= 2*sqrt(totBg)/(errsumBg*errsumBg);
+         ratioBg=(-binPBg+binMBg)/(binPBg+binMBg)*2;
 	 //binE=0.02;
 	 //cout<<ratio<<" "<<binE<<" "<<binP<<" "<<binM<<" "<<binM_E<<" "<<binP_E<<endl;
        }
-       else ratio=0;
+       else {
+ratio=0;
+ratioSig=0;
+ratioBg=0;
+       }
 
        Asym->SetBinContent(k,ratio);
        Asym->SetBinError(k,binE);
        Pos->SetBinContent(k,binP);
        Neg->SetBinContent(k,binM);
-			     
+		
+       AsymSig->SetBinContent(k,ratioSig);
+       AsymSig->SetBinError(k,binESig);
+       PosSig->SetBinContent(k,binPSig);
+       NegSig->SetBinContent(k,binMSig);
+
+       AsymBg->SetBinContent(k,ratioBg);
+       AsymBg->SetBinError(k,binEBg);
+       PosBg->SetBinContent(k,binPBg);
+       NegBg->SetBinContent(k,binMBg);
+	     
      }
      fnew1.cd();
      Asym->SetTitle(plotlist[i].c_str());
      Asym->SetName(plotlist[i].c_str());
+     Asym->SetFillColor(46);
+     Asym->SetFillStyle(3001);
      Asym->Write();
+
+     AsymSig->SetTitle(plotlist[i].c_str());
+     AsymSig->SetName(plotlist[i].c_str());
+     AsymSig->SetFillColor(46);
+     AsymSig->SetFillStyle(3001);
+     AsymSig->Write();
+
+     AsymBg->SetTitle(plotlist[i].c_str());
+     AsymBg->SetName(plotlist[i].c_str());
+     AsymBg->SetFillColor(46);
+     AsymBg->SetFillStyle(3001);
+     AsymBg->Write();
+
      v_Asym.push_back(Asym);
-      TCanvas* c2= new TCanvas((cn1.str()).c_str(),(cn1.str()).c_str(),800,600);
+      TCanvas* c2SigBg= new TCanvas("PosNeg_SigBg","PosNeg_SigBg",800,600);
       Pos->SetLineColor(1); Neg->SetLineColor(2);
       Neg->Draw();
       Pos->Draw("same");
-      
-      c2->Write();
-     
+      TCanvas* c2Sig= new TCanvas("PosNeg_Sig","PosNeg_Sig",800,600);
+      PosSig->SetLineColor(1); NegSig->SetLineColor(2);
+      NegSig->Draw();
+      PosSig->Draw("same");
+      TCanvas* c2Bg= new TCanvas("PosNeg_Bg","PosNeg_Bg",800,600);
+      PosBg->SetLineColor(1); NegBg->SetLineColor(2);
+      NegBg->Draw();
+      PosBg->Draw("same");
+
+      c2SigBg->Write();
+      c2Sig->Write();
+      c2Bg->Write();
+
+      //gStyle->SetHistFillColor(kRed);
+
+      TCanvas* cAsymmetrySigBg= new TCanvas("AsymmetrySigBg","AsymmetrySigBg",800,600);
+      Asym->Draw("HISTE1");
+      Asym->GetXaxis()->SetRangeUser(180,1200);
+      cAsymmetrySigBg->Write();
+      TCanvas* cAsymmetrySig= new TCanvas("AsymmetrySig","AsymmetrySig",800,600);
+      AsymSig->Draw("HISTE1");
+      AsymSig->GetXaxis()->SetRangeUser(180,1200);
+      cAsymmetrySig->Write();
+      TCanvas* cAsymmetryBg= new TCanvas("AsymmetryBg","AsymmetryBg",800,600);
+      AsymBg->Draw("HISTE1");
+      AsymBg->GetXaxis()->SetRangeUser(180,1200);
+      cAsymmetryBg->Write();
+
     
   } 
 }

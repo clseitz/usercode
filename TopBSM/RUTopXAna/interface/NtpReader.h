@@ -40,11 +40,11 @@ class NtpReader
     int   nGoodVtx;
 
     int   mcsize;
-    int   pdgID[500];
-    float MCpx[500];
-    float MCpy[500];
-    float MCpz[500];
-    float MCe[500];
+    int   pdgID[200];
+    float MCpx[200];
+    float MCpy[200];
+    float MCpz[200];
+    float MCe[200];
     // int MaxSize=500;
     int   nJets; 
     float jetpx[200];

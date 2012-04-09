@@ -40,7 +40,7 @@ void NtpDeanAna::Loop ()
     if (ientry % 1000 == 0) {
       printf("Processing entry: %i\n", ientry);
     }
-
+    std::cout<<"should be 4000023 "<<MCpz[0]<<" should 24 "<<pdgID[10]<<" should be 6 "<<pdgID[9]<<std::endl;
     // Analysis code call here
     DileptonEvents();
     LeptonPlusJetsEvents();

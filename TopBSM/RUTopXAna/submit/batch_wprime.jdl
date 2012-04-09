@@ -6,4 +6,4 @@ Output = /cms/data24/clseitz/MC_4_2_4/Wprime2/log/mypatanalysis_$(cluster)_$(pro
 Error  = /cms/data24/clseitz/MC_4_2_4/Wprime2/log/mypatanalysis_$(cluster)_$(process).stderr
 Log    = /cms/data24/clseitz/MC_4_2_4/Wprime2/log/mypatanalysis_$(cluster)_$(process).condor
 Arguments = $(cluster) $(process) 
-Queue 5
+Queue 10

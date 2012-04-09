@@ -25,6 +25,6 @@ export MYSCRIPT=/users/h1/clseitz/MyCMS/DeanTest/CMSSW_4_2_4/src/TopBSM/RUTopXAn
 
  cd /users/h1/clseitz/MyCMS/DeanTest/CMSSW_4_2_4/src/TopBSM/RUTopXAna/submit
 
-cmsRun $MYSCRIPT $process >& /cms/data24/clseitz/MC_4_2_4/Wprime2/log/TopXanaPlots_${process}.log
+cmsRun $MYSCRIPT $process >& /cms/data24/clseitz/MCcomparison/Ntuplizer_${process}.log
 #cmsRun $MYSCRIPT $process >& /cms/data23/evah/2011Data/Muons_anaPlots_mFO_${process}.log
 

@@ -64,7 +64,7 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
   virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
   void UseJson( vector<int > GoodRuns, vector<int > GoodLumiStart,  vector<int > GoodLumiEnd,  Int_t nGoodRuns, int run, int lumis );
-  void DoJetID(const edm::Event&);
+  void DoJetID(const edm::Event&,const edm::EventSetup& iSetup);
   void DoVertexID(const edm::Event&);
   void DoElectronID(const edm::Event&);
   void DoMuonID(const edm::Event&);
@@ -234,6 +234,8 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   std::vector<pat::Photon>     fGoodPhotons;
   std::vector<pat::Photon>      fCleanPhotons;
   
+  //vertices
+  std::vector<reco::VertexCollection>     fGoodVtx;
   //MET
   //TLorentzVector  fMET;
   pat::MET  fMET;

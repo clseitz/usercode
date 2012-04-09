@@ -1,3 +1,4 @@
+
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -49,17 +50,18 @@ vector <TH1F* > v_Asym;
   McXsec.push_back(31314.0);
   DataLumi.push_back(lumi);
   */
+  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
+  namelist.push_back("Wp1000_e");
+  nEvtTot.push_back(99995.0);
+  McXsec.push_back(1.0);
+  DataLumi.push_back(lumi);
   
   filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
-  McXsec.push_back(8.0);
-  DataLumi.push_back(lumi);
-  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
-  namelist.push_back("Wp1000_e");
-  nEvtTot.push_back(99995.0);
   McXsec.push_back(0.0);
   DataLumi.push_back(lumi);
+
   
 
   /*
@@ -93,8 +95,10 @@ vector <TH1F* > v_Asym;
  VarList.push_back("LeadingJetPt_");
  VarList.push_back("St_");
 
-   VarList.push_back("TransMassLepMET1JetB_");
-VarList.push_back("Mass3Jet1B_");
+ VarList.push_back("TransMassLepMET1JetB_");
+ VarList.push_back("Mass3Jet1B_");
+ VarList.push_back("DeltaPhiLep1Jet");
+
  //VarList.push_back("TransMassLepMET4Jet_vs_LeadingJetPt_");
 
   
@@ -133,10 +137,10 @@ VarList.push_back("Mass3Jet1B_");
       TH1F* tempb;
       cout<<plotlist[i]<<endl;
       tempa = (TH1F*) filelist[file]->Get(plotlist[i].c_str());
-      temp =  (TH1F*) tempa->Rebin(4, "temp");
+      temp =  (TH1F*) tempa->Rebin(10, "temp");
       TH1F* temp2;
       tempb = (TH1F*) filelist[file]->Get(plotlist[i+plotlist.size()/2].c_str());
-      temp2 = (TH1F*) tempb->Rebin(4,"temp2");
+      temp2 = (TH1F*) tempb->Rebin(10,"temp2");
       //temp->Add(temp2);
       float scale = (1.0/nEvtTot[file])*DataLumi[file]*McXsec[file];
       //temp->Scale(scale);

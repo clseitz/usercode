@@ -49,11 +49,11 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("lumis", &lumis);
   Tree->Branch("entry", &entry);
 
-    Tree->Branch("pdgID",pdgID,"pdgID[200]/I");
-    Tree->Branch("MCpx", MCpx, "MCpx[200]/F");
-    Tree->Branch("MCpy", MCpy, "MCpy[200]/F");
-    Tree->Branch("MCpz", MCpz, "MCpz[200]/F");
-    Tree->Branch("MCe", MCe, "MCe[200]/F");
+    Tree->Branch("pdgID[200]",pdgID);
+    Tree->Branch("MCpx[200]", MCpx);
+    Tree->Branch("MCpy[200]", MCpy);
+    Tree->Branch("MCpz[200]", MCpz);
+    Tree->Branch("MCe[200]", MCe);
 
   Tree->Branch("nJets", &nJets);
   Tree->Branch("nElectrons", &nElectrons);

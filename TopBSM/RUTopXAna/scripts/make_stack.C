@@ -18,7 +18,7 @@ void CountMjjj(TH1F *temp_diagcut,float diag, float i){
 }
 void make_stack()
 {
-  float lumi=1000.;
+  float lumi=4000.;
   vector <string > namelist;
   
   vector <string > VarList;
@@ -29,7 +29,7 @@ void make_stack()
   vector<float> DataLumi;
 
   //file 0-3 are the files to fit
-   filelist.push_back(TFile::Open("../TTBar_plots_additionalCuts.root"));
+   filelist.push_back(TFile::Open("../TTBar_plots_chi2Noangle_2.root"));
   namelist.push_back("TTbarJEts_e");
   //nEvtTot.push_back(216095.0);
   nEvtTot.push_back(3.6838e+06);
@@ -44,12 +44,13 @@ void make_stack()
   DataLumi.push_back(lumi);
   */
   
-  filelist.push_back(TFile::Open("../Wp600_plots_additionalCuts.root"));
+  filelist.push_back(TFile::Open("../Wp600_plots_chi2Noangle_2.root"));
   namelist.push_back("Wp600_e");
   nEvtTot.push_back(99987.0);
   McXsec.push_back(8.0);
   DataLumi.push_back(lumi);
-  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
+
+  /*  filelist.push_back(TFile::Open("../Wp1000_plots_additionalCuts.root"));
   namelist.push_back("Wp1000_e");
   nEvtTot.push_back(99995.0);
   McXsec.push_back(0.72);
@@ -66,7 +67,7 @@ void make_stack()
   nEvtTot.push_back(10000.0);
   McXsec.push_back(1);
   DataLumi.push_back(lumi);
-  
+  */
 
   //plotlist.push_back("Event/SumptSig4HighestPlus");
   //plotlist.push_back("Event/SumptSig4SecondHighestPlus");
@@ -81,7 +82,7 @@ void make_stack()
   //string plotname="LepB_Diag50_Upper160_3Jet1B";
   //string plotname="LepBJet_Diag50_Upper160_4Jet";
 
- VarList.push_back("SumptSig4Highest_");
+  /* VarList.push_back("SumptSig4Highest_");
  VarList.push_back("SumptSig4SecondHighest_");
  VarList.push_back("TransMassLepMET4Jet_");
  VarList.push_back("TransMassLepMET5Jet_");
@@ -97,9 +98,10 @@ void make_stack()
  VarList.push_back("LeadingJetPt_");
  VarList.push_back("St_");
  VarList.push_back("TransMassLepMET1JetB_");
-VarList.push_back("Mass3Jet1B_");
+ VarList.push_back("Mass3Jet1B_");*/
 //VarList.push_back("TransMassLepMET4Jet_vs_Mass3Jet1B_");
-  
+  VarList.push_back("TopLepJetMass");
+
   
 
   TFile fnew1("stack_plots_additionalCuts.root", "recreate");
@@ -108,14 +110,17 @@ VarList.push_back("Mass3Jet1B_");
     vector <string > plotlist;
     //plotlist.push_back("MET");
     //plotlist.push_back("MET");
-    plotlist.push_back("5Jet_1b_P/"+VarList[m]+"5Jet_1b_P");
+    /*    plotlist.push_back("5Jet_1b_P/"+VarList[m]+"5Jet_1b_P");
   plotlist.push_back("5Jet_2b_P/"+VarList[m]+"5Jet_2b_P");
   plotlist.push_back("4Jet_1b_P/"+VarList[m]+"4Jet_1b_P");
   plotlist.push_back("4Jet_2b_P/"+VarList[m]+"4Jet_2b_P");
   plotlist.push_back("5Jet_1b_M/"+VarList[m]+"5Jet_1b_M");
   plotlist.push_back("5Jet_2b_M/"+VarList[m]+"5Jet_2b_M");
   plotlist.push_back("4Jet_1b_M/"+VarList[m]+"4Jet_1b_M");
-  plotlist.push_back("4Jet_2b_M/"+VarList[m]+"4Jet_2b_M");
+  plotlist.push_back("4Jet_2b_M/"+VarList[m]+"4Jet_2b_M");*/
+
+  plotlist.push_back("Chi2Reco/"+VarList[m]+"Good");
+  plotlist.push_back("Chi2Reco/"+VarList[m]+"Bad");
 
   for(int i=0; i<(plotlist.size()/2); i++){//loop for all the plots we wan to
    
@@ -125,7 +130,7 @@ VarList.push_back("Mass3Jet1B_");
    
     
     
-    for(int file=0; file<5; file++){
+    for(int file=0; file<2; file++){
       std::stringstream dir;
       cout<<namelist[file]<<endl;
       dir<<namelist[file];
@@ -138,7 +143,7 @@ VarList.push_back("Mass3Jet1B_");
       TH1F* temp2;
       tempb = (TH1F*) filelist[file]->Get(plotlist[i+plotlist.size()/2].c_str());
       temp2 = (TH1F*) tempb->Rebin(6,"temp2");
-      temp->Add(temp2);
+      //temp->Add(temp2);
       float scale = (1.0/nEvtTot[file])*DataLumi[file]*McXsec[file];
       
       temp->Scale(scale);
@@ -169,16 +174,16 @@ if(file==4) temp->SetLineColor(46);
     TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
     leg->AddEntry(histos[0], namelist[0].c_str(),"lep");
     leg->AddEntry(histos[1], namelist[1].c_str(),"lep");
-    leg->AddEntry(histos[2], namelist[2].c_str(),"lep");
-    leg->AddEntry(histos[3], namelist[3].c_str(),"lep");
-    leg->AddEntry(histos[4], namelist[4].c_str(),"lep");
+    //    leg->AddEntry(histos[2], namelist[2].c_str(),"lep");
+    //leg->AddEntry(histos[3], namelist[3].c_str(),"lep");
+    //leg->AddEntry(histos[4], namelist[4].c_str(),"lep");
     //comment next line in for seeing stacked plots
-    Wp600Stack.Draw("hist");
+    //Wp600Stack.Draw("hist");
      //Wp600Stack.GetXaxis()->SetRangeUser(0,300);
      Wp600Stack.SetTitle(plotlist[i].c_str());
      //comment these in to just make overlayed plots
-     // histos[0]->Draw();
-     //histos[1]->Draw("same");
+     histos[0]->Draw();
+     histos[1]->Draw("same");
      //histos[2]->Draw("same");
      //histos[3]->Draw("same");
      //histos[4]->Draw("same");
@@ -192,7 +197,7 @@ if(file==4) temp->SetLineColor(46);
      c1->SaveAs((gif.str()).c_str());
      
      
-     std::stringstream cn2;
+     /*std::stringstream cn2;
      cn2<<plotlist[i]<<"_Wprime1000";
      TCanvas* c2= new TCanvas(((cn2.str()).c_str()),((cn2.str()).c_str()),800,600);
      TLegend *leg2 = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
@@ -210,8 +215,8 @@ if(file==4) temp->SetLineColor(46);
      std::stringstream gif2;
     gif2<<plotlist[i]<<"_Wprime1000_e_delphi_120.gif";
     c2->Write();
-    c2->SaveAs((gif2.str()).c_str());
-    //      temp_Mjj->Wr
+    c2->SaveAs((gif2.str()).c_str());*/
+    //      temp_Mjj->Wr 
   }
 } 
 } 
