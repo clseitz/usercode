@@ -289,7 +289,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       fnew1.cd(dir);
       c1->Write();
       sOP1<<dir<<".gif";
-      c1->Saves((sOP1.str()).c_str());
+      c1->SaveAs((sOP1.str()).c_str());
 
 	 
     }
