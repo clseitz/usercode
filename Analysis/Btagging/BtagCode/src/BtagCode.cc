@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Wed Jun 15 13:36:24 EDT 2011
-// $Id: BtagCode.cc,v 1.1.1.1 2011/07/13 19:36:10 clseitz Exp $
+// $Id: BtagCode.cc,v 1.2 2011/07/19 14:38:00 clseitz Exp $
 //
 //
 
@@ -744,7 +744,7 @@ if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[1][2]->Fill(d_pt);
 	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[3][1]->Fill(d_pt);
 	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[3][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[3][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[3][0]->Fill(d_eta,d_pt);
+	jet_eta_pt_tagger_flavor[3][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[3][2]->Fill(d_pt);

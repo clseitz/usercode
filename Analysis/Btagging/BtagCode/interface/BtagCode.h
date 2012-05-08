@@ -92,8 +92,12 @@ class BtagCode : public edm::EDAnalyzer {
       //histograms for the different taggers and flavor
       std::vector<std::vector<TH1F*> > discriminator_tagalgo_flavor;
       std::vector<std::vector<TH1F*> > jet_pt_tagger_flavor;
+      std::vector<std::vector<TH1F*> > jet_pt_1p2_2p4_tagger_flavor;
+      std::vector<std::vector<TH1F*> > jet_pt_l1p2_tagger_flavor;
+
       std::vector<std::vector<TH1F*> > jet_eta_tagger_flavor;
-      
+       std::vector<std::vector<TH2F*> > jet_eta_pt_tagger_flavor;
+
       std::vector<std::vector<TH1F*> > triplet_jet_pt_tagger_flavor;
       std::vector<std::vector<TH1F*> > triplet_sumpt_tagger_flavor;
       std::vector<std::vector<TH1F*> > triplet_mass_tagger_flavor;
