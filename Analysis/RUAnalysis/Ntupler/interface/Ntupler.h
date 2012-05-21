@@ -97,6 +97,8 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   std::string _ntuplePlots, _ntupleTree, corStep, corFlvr;   
   std::vector<std::string> _patJetType;
   std::string PatJetType;
+  std::string _primaryVertex;
+  std::string _METtype;
   int _njetsMin, _njetsMax;
   std::string _htTrigger;
   std::vector<std::string>          fTriggerNames;
@@ -113,7 +115,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   vector<int > GoodRuns;
   vector<int > GoodLumiStart;
   vector<int >  GoodLumiEnd;
-  
+     std::vector<pat::Jet>  fCleanPFJets;  
   Int_t nGoodRuns;  
   Bool_t GoodRun;
   Int_t nGoodJets;

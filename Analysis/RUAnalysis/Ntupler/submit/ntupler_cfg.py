@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-
 import string
 import os,sys
 
@@ -12,9 +11,11 @@ dir_list=[]
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/WprimeOffFall11/PAT/Wprime*1200*_v9.root').readlines()
 #gluinos
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/*200*root').readlines()
-#suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/428_patch7/PAT/mb_250_mf_100_ms_90_FAST_PUSumer11_428patch7_TLBSMPAT424_v9_0.root').readlines()
+#stealth sbottoms
+suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/MCProdSLHA_428p7/PAT/*.root').readlines()
 
-suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/test_TTJets_FastSim/MatchingPAT/*root').readlines()
+#suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/test_TTJets_FastSim/MatchingPAT/*root').readlines()
+
 this_fin_nocfi  = "file:"+suffix_list[index]
 
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple_12.04/WprimeTToTTD_M1200_"+str(index)+"_FastSim425_TlBSMv9_RUNtuple_12.04_test_jetPATtest_plots.root"
@@ -25,11 +26,14 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 #this_fout0 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Allplots.root"
 #this_fout1 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Alltree.root"
 
-#this_fout0 = "mb_250_mf_100_ms_90_"+str(index)+"_Allplots.root"
-#this_fout1 = "mb_250_mf_100_ms_90_"+str(index)+"_Alltree.root"
+this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Allplots.root"
+this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Alltree.root"
+#this_fout0 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_plots.root"
+#this_fout1 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_tree.root"
 
-this_fout0 = "TTJets_FASTSim_"+str(index)+"_Allplots.root"
-this_fout1 = "TTJets_FastSim_"+str(index)+"_Alltree.root"
+
+#this_fout0 = "TTJets_FASTSim_"+str(index)+"_Allplots.root"
+#this_fout1 = "TTJets_FastSim_"+str(index)+"_Alltree.root"
 print this_fin_nocfi
 print this_fout0
 print this_fout1
@@ -37,7 +41,7 @@ print this_fout1
 process = cms.Process("data2")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 3000
 
 
 process.maxEvents = cms.untracked.PSet(
@@ -46,8 +50,18 @@ process.maxEvents = cms.untracked.PSet(
      )
 
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring(this_fin_nocfi
-    ),
+                            fileNames = cms.untracked.vstring(
+#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_0.root",
+#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_1.root",
+ #   "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_2.root",
+  #  "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_3.root",
+   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_4.root",
+   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_5.root",
+   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_6.root",
+   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_7.root"
+    
+                                                              this_fin_nocfi
+                                                              ),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
                             )
 
@@ -76,6 +90,8 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                #PatJetType     = cms.untracked.vstring('goodPatJetsPFlow'),
                                #PatJetType     = cms.untracked.vstring('goodPatJetsCA8PF'),
                                PatJetType = cms.untracked.vstring('goodPatJetsPFlow','goodPatJetsCA8PF','goodPatJetsCA8PrunedPF'),
+                               PrimaryVertex = cms.untracked.string('goodOfflinePrimaryVertices'),
+                               METtype = cms.untracked.string('patMETsPFlow'),
                                htTrigger      = cms.untracked.string('HLT_HT360_v2'),
                                IsoMu12_v1     = cms.untracked.string('HLT_IsoMu12_v1'),
                                IsoMu17_v6     = cms.untracked.string('HLT_IsoMu17_v6'),
