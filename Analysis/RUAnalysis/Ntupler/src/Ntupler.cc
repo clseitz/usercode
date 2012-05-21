@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id$
+// $Id: Ntupler.cc,v 1.1.1.1 2012/05/09 15:20:18 clseitz Exp $
 //
 //
 
@@ -104,6 +104,8 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _ntupleTree = iConfig.getUntrackedParameter<string>("NtupleTree", "PatJets_testTree.root");
   //  _patJetType      = iConfig.getUntrackedParameter<string>("PatJetType",      "selectedPatJets");
   _patJetType      = iConfig.getUntrackedParameter<std::vector<std::string> >("PatJetType", std::vector<std::string> ());
+  _primaryVertex   = iConfig.getUntrackedParameter<string> ("PrimaryVertex","goodOfflinePrimarVertices");
+  _METtype   = iConfig.getUntrackedParameter<string> ("METtype","patMETsPFlow");
   _njetsMin        = iConfig.getUntrackedParameter<int>   ("NjetsMin",         4);
   _njetsMax        = iConfig.getUntrackedParameter<int>   ("NjetsMax",         4);
   _etacut          = iConfig.getUntrackedParameter<double>("etacut",           3.0); 
@@ -203,10 +205,16 @@ fCleanMuonsPFIso.clear();
        nGoodPhotons=0; nCleanPhotons=0;
        fGoodVtx.clear();
        nGoodVtx=0; int CountVtx=0;
+       nElectrons=0;
+       nMuons=0;
+       nPhotons=0;
 
        nGoodPFJets=0;       nCleanPFJets=0;
        nGoodCA8PFJets=0;       nCleanCA8PFJets=0;
        nGoodCA8PrunedPFJets=0;       nCleanCA8PrunedPFJets=0;
+       nCA8PrunedPFJets=0;
+       nCA8PFJets=0;
+       nPFJets=0;
 
        for (int i=0; i<200; ++i)
 	 {
@@ -241,34 +249,6 @@ fCleanMuonsPFIso.clear();
        iEvent.getByLabel(_patJetType[2], fCleanCA8PrunedPFJets);
        
 
-       /*	 cout<<fGoodPFJets->size()<<" "<<fGoodCA8PFJets->size()<<" "<<fGoodCA8PrunedPFJets->size()<<endl;
-	 //	 cout<<fGoodPFJetsTest->size()<<" "<<fGoodCA8PFJetsTest->size()<<" "<<fGoodCA8PrunedPFJetsTest->size()<<endl;
-	 ////////TEST
-	 	 edm::Handle< std::vector<pat::Jet> > jets;
-	 //edm::Handle< edm::View<pat::Jet> > jets;
-	 iEvent.getByLabel("goodPatJetsCA8PrunedPF",jets);
-
-	 std::vector<pat::Jet>::const_iterator ibegin = jets->begin();
-	 std::vector<pat::Jet>::const_iterator iend = jets->end();
-	 std::vector<pat::Jet>::const_iterator ijet = ibegin;
-
-	 //edm::View<pat::Jet>::const_iterator ibegin = jets->begin();
-	 //edm::View<pat::Jet>::const_iterator iend = jets->end();
-	 //edm::View<pat::Jet>::const_iterator ijet = ibegin;
-
-	 // Loop over the "hard" jets
-	 for ( ; ijet != iend; ++ijet ) {
-
-
-	   // in your own analysis, and is a configurable parameter.
-	   if ( ijet->numberOfDaughters() >= 2 ) {
-
-	     reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(ijet->daughter(0));
-	     reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(ijet->daughter(1));
-	     cout<<subjet0->mass()<<endl;   
-}}
-       */
-	 
 	 ////////////////////
        DoVertexID(iEvent);
        DoElectronID(iEvent);
@@ -290,18 +270,10 @@ fCleanMuonsPFIso.clear();
        fCleanMuons = fGoodMuons;
        fCleanElectrons = fGoodElectrons;
        fCleanPhotons= fGoodPhotons;
-       /*	fCleanPFJets= fGoodPFJets;
-	 fCleanCA8PFJets= fGoodCA8PFJets;
-	 fCleanCA8PrunedPFJets= fGoodCA8PrunedPFJets;
-       */
 	nCleanMuons = nGoodMuons; 
 	nCleanElectrons = nGoodElectrons;
 	nCleanPhotons= nGoodPhotons;
-	/*
-	nCleanPFJets= fGoodPFJets->size();
-	nCleanCA8PFJets= fGoodCA8PFJets->size();
-	nCleanCA8PrunedPFJets= fGoodCA8PrunedPFJets->size();
-	*/
+
 	nCleanPFJets= fCleanPFJets->size();
 	nCleanCA8PFJets= fCleanCA8PFJets->size();
 	nCleanCA8PrunedPFJets= fCleanCA8PrunedPFJets->size();
@@ -447,32 +419,6 @@ fCleanMuonsPFIso.clear();
 	 */
 	 i++;
 	 }
-       /*       i=0;
-       for (std::vector<reco::Jet>::const_iterator Jet = fCleanRecoCA8PrunedPFJets->begin(); Jet != fCleanRecoCA8PrunedPFJets->end(); ++Jet) {       
-	 ++i;
-	 	 jet_CA8PrunedPF_nJetDaughters[i]=Jet->numberOfDaughters();
-		 reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(Jet->daughter(0));
-		 reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(Jet->daughter(1));
-	  cout<<subjet0->mass()<<endl;
-	 cout<<"----------SubJet masses------------"<<endl;
-
-	 }*/
-
-	 //	   jet_CA8PrunedPF_subJet3_mass[i]=Jet->dau0ghter(2)->mass();
-	 // jet_CA8PrunedPF_subJet2_mass[i]=Jet->daughter(1)->mass();
-	 //jet_CA8PrunedPF_subJet1_mass[i]=Jet->daughter(0)->mass();
-	 /*	 cout<<"before first"<<endl;
-	 Jet const * subjet0 = dynamic_cast<Jet const *>(Jet->daughter(0));
-	 cout<<"before second"<<endl;
-	 Jet const * subjet1 = dynamic_cast<Jet const *>(Jet->daughter(1));
-	 cout<<"before mass"<<endl;
-	 */
-	 //	 cout<<(*fCleanCA8PrunedPFJets)[i]->daughters(0)->mass()<<endl;
-	 //	 cout<<subjet0->mass()<<endl;
-	 //	 cout<<Jet->daughter(2)->mass()<<" "<<Jet->daughter(1)->mass()<<" "<<Jet->daughter(0)->mass()<<endl;
-	 
-
-       
        nElectrons=nCleanElectrons;
        for(int i=0; i<nCleanElectrons; i++){
 	 if(i<6){
@@ -943,7 +889,7 @@ void
 Ntupler::DoVertexID(const edm::Event& iEvent){
 
   edm::Handle<reco::VertexCollection>  recVtxs;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
+  iEvent.getByLabel(_primaryVertex, recVtxs);
   
  
   int CountVtx=0;
@@ -972,7 +918,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
   // Will need the vertices
   edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
+  iEvent.getByLabel(_primaryVertex, primaryVertices);
 
   // Loop over all electrons
   for (std::vector<pat::Electron>::const_iterator Electron = PatElectrons->begin(); Electron != PatElectrons->end(); ++Electron) {
@@ -1092,11 +1038,11 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
   //also get the vertices for some cuts
   edm::Handle<reco::VertexCollection>  recVtxs;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
+  iEvent.getByLabel( _primaryVertex, recVtxs);
 
   // Will need the vertices
   edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
+  iEvent.getByLabel( _primaryVertex, primaryVertices);
 
   // Loop over all Muons 
   for (std::vector<pat::Muon>::const_iterator Muon = PatMuons->begin(); Muon != PatMuons->end(); ++Muon) {
@@ -1219,7 +1165,7 @@ for (size_t im = 0; im != fCleanMuons.size(); ++im) {
 void
 Ntupler::DoMETID(const edm::Event& iEvent){
   Handle< vector<MET> >      MetColl;
-  iEvent.getByLabel("patMETsPFlow",  MetColl);
+  iEvent.getByLabel(_METtype,  MetColl);
   fMET=(*MetColl)[0];
   
   
