@@ -184,7 +184,7 @@ void NtpReader::SetBranches (TTree* Tree)
 
   Tree->Branch("pfMET", &pfMET);
   Tree->Branch("pfMETphi", &pfMETphi);
-
+  /*
   Tree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
   Tree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
   Tree->Branch("triplet_jet3pt[nTriplets]", triplet_jet3pt);
@@ -208,7 +208,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("triplet_jet3py[nTriplets]", triplet_jet3py);
   Tree->Branch("triplet_jet3pz[nTriplets]", triplet_jet3pz);
   Tree->Branch("triplet_jet3e[nTriplets]", triplet_jet3e);
-
+  */
  
 
 
@@ -346,7 +346,7 @@ void NtpReader::SetBranchAddresses ()
 
   fChain.SetBranchAddress("pfMET", &pfMET);
   fChain.SetBranchAddress("pfMETphi", &pfMETphi);
-
+  /*
   fChain.SetBranchAddress("triplet_jet1pt[nTriplets]", triplet_jet1pt);
   fChain.SetBranchAddress("triplet_jet2pt[nTriplets]", triplet_jet2pt);
   fChain.SetBranchAddress("triplet_jet3pt[nTriplets]", triplet_jet3pt);
@@ -370,7 +370,7 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("triplet_jet3py[nTriplets]", triplet_jet3py);
   fChain.SetBranchAddress("triplet_jet3pz[nTriplets]", triplet_jet3pz);
   fChain.SetBranchAddress("triplet_jet3e[nTriplets]", triplet_jet3e);
-
+  */
  
 
 

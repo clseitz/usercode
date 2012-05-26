@@ -14,8 +14,9 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 
 #export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/RUAnalysis/Ntupler/submit/ntupler_Data2011Dan_cfg.py
 
-export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/RUAnalysis/Ntupler/submit/ntupler_cfg.py
-OUTDIR=/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom
+#export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/RUAnalysis/Ntupler/submit/ntupler_cfg.py
+export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/RUAnalysis/Ntupler/submit/ntupler_Includes_cfg.py
+OUTDIR=/cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav
 DIR=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src
 cd $DIR
 eval `scramv1 runtime -sh`

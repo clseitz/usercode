@@ -26,14 +26,14 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 #this_fout0 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Allplots.root"
 #this_fout1 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Alltree.root"
 
-this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Allplots.root"
-this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Alltree.root"
+#this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Allplots.root"
+#this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Alltree.root"
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_plots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_tree.root"
 
 
-#this_fout0 = "TTJets_FASTSim_"+str(index)+"_Allplots.root"
-#this_fout1 = "TTJets_FastSim_"+str(index)+"_Alltree.root"
+this_fout0 = "TEST"+str(index)+"_Allplots.root"
+this_fout1 = "TEST"+str(index)+"_Alltree.root"
 print this_fin_nocfi
 print this_fout0
 print this_fout1

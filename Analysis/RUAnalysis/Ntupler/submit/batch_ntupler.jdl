@@ -1,4 +1,4 @@
-OutDir = /cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom
+OutDir = /cms/data27/clseitz/ThreeJet/RPV/GluinosHeavyFlav
 universe = vanilla
 Requirements = (Arch == "X86_64")
 Executable = run_ntupler.sh
@@ -7,4 +7,4 @@ Output = $(OutDir)/Log/Log_600$(Process).stdout
 Error =  $(OutDir)/Log/Log_600$(Process).stderr
 Log =    $(OutDir)/Log/Log_600$(Process).log
 Arguments = $(cluster) $(process) 
-Queue 10
+Queue 6
