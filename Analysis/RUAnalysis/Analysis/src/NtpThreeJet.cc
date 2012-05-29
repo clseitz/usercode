@@ -48,7 +48,7 @@ void NtpThreeJet::BookHistograms()
   h_MET = new TH1F("MET", "MET",200,0,1000);
   h_HT = new TH1F("HT", "HT",400,0,4000);
   h_nBJet35  = new TH1F("nBJet35", "nBJet35",20,0,20);
-  h_nJet35  = new TH1F("nJet35", "nBJet35",20,0,20);
+  h_nJet35  = new TH1F("nJet20", "nJet20",20,0,20);
   h_Jet0= new TH1F("Jet0", "Jet0",200,0,1000);
   h_Jet1= new TH1F("Jet1", "Jet1",200,0,1000);
   h_Jet2= new TH1F("Jet2", "Jet2",200,0,1000);
@@ -60,7 +60,7 @@ void NtpThreeJet::BookHistograms()
   h_MET_EvtSel = new TH1F("MET_EvtSel", "MET_EvtSel",200,0,1000);
   h_HT_EvtSel = new TH1F("HT_EvtSel", "HT_EvtSel",400,0,4000);
   h_nBJet35_EvtSel  = new TH1F("nBJet35_EvtSel", "nBJet35_EvtSel",20,0,20);
-  h_nJet35_EvtSel  = new TH1F("nJet35_EvtSel", "nBJet35_EvtSel",20,0,20);
+  h_nJet35_EvtSel  = new TH1F("nJet35_EvtSel", "nJet35_EvtSel",20,0,20);
   h_Jet0_EvtSel= new TH1F("Jet0_EvtSel", "Jet0_EvtSel",200,0,1000);
   h_Jet1_EvtSel= new TH1F("Jet1_EvtSel", "Jet1_EvtSel",200,0,1000);
   h_Jet2_EvtSel= new TH1F("Jet2_EvtSel", "Jet2_EvtSel",200,0,1000);
@@ -120,6 +120,7 @@ void NtpThreeJet::WriteHistograms()
    h_Jet0->Write();
    h_Jet1->Write();
    h_Jet2->Write();
+   h_Jet3->Write();
    h_Jet4->Write();
    h_Jet5->Write();
    h_Jet6->Write();
@@ -134,6 +135,7 @@ void NtpThreeJet::WriteHistograms()
    h_Jet0_EvtSel->Write();
    h_Jet1_EvtSel->Write();
    h_Jet2_EvtSel->Write();
+   h_Jet3_EvtSel->Write();
    h_Jet4_EvtSel->Write();
    h_Jet5_EvtSel->Write();
    h_Jet6_EvtSel->Write();
@@ -201,8 +203,8 @@ void NtpThreeJet::Loop ()
       TLorentzVector Jet(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
       TLorentzVector dummyJet(0,0,0,0);
 
-      if (jet_PF_pt[i]>25.0 && fabs(jet_PF_eta[i])<2.5){
-	nJet25=i+1;
+      if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
+	nJet20=i+1;
 	if(jet_PF_pt[i]>45.0){
 	SumptAllJet=SumptAllJet+jet_PF_pt[i];
 	fCleanJets.push_back(Jet);
@@ -278,16 +280,16 @@ void NtpThreeJet::Loop ()
      //  if ( nJet35>=6 && nMuons>=1){
      //     if ( nJet35>=6 && SumptAllJet>800){
 	   h_nBJet35->Fill(nBJet35);
-	   h_nJet35->Fill(nJet35);
+	   h_nJet35->Fill(nJet20);
 	   h_MET->Fill(pfMET);
 	   h_HT->Fill(SumptAllJet);
 	   h_Jet0->Fill(fCleanJets[0].Pt());
 	   h_Jet1->Fill(fCleanJets[1].Pt());
 	   h_Jet2->Fill(fCleanJets[2].Pt());
-	   if(nJet35>=3) h_Jet3->Fill(fCleanJets[3].Pt());
-	   if(nJet35>=4) h_Jet4->Fill(fCleanJets[4].Pt());
-	   if(nJet35>=5) h_Jet5->Fill(fCleanJets[5].Pt());
-	   if(nJet35>=6) h_Jet6->Fill(fCleanJets[6].Pt());
+	   if(nJet20>=3) h_Jet3->Fill(fCleanJets[3].Pt());
+	   if(nJet20>=4) h_Jet4->Fill(fCleanJets[4].Pt());
+	   if(nJet20>=5) h_Jet5->Fill(fCleanJets[5].Pt());
+	   if(nJet20>=6) h_Jet6->Fill(fCleanJets[6].Pt());
 
 
      if ( nJet35>=6){
