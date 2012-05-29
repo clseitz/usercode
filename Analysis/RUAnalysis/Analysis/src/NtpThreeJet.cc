@@ -196,7 +196,7 @@ void NtpThreeJet::Loop ()
 
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
-    int nJet25=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();fCleanJets.clear();
+    int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();fCleanJets.clear();
     float SumptAllJet=0;
     vector<TLorentzVector > fdummyCleanJets;
      for (int i=0; i<nPFJets; i++){
