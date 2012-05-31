@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.1.1.1 2012/05/09 15:20:18 clseitz Exp $
+// $Id: Ntupler.cc,v 1.2 2012/05/21 10:22:37 clseitz Exp $
 //
 //
 
@@ -132,6 +132,10 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   for (std::vector<std::string>::iterator It = fTriggerNames.begin(); It != fTriggerNames.end(); ++It) {
     fTriggerMap[*It] = false;
   }
+  fTriggerNames2 = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNames2", std::vector<std::string>());
+  for (std::vector<std::string>::iterator It = fTriggerNames2.begin(); It != fTriggerNames2.end(); ++It) {
+    fTriggerMap2[*It] = false;
+  }
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
 
 
@@ -178,6 +182,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      // Look for one of the triggers we care about
 
      bool HasTrigger = false;
+     bool HasTrigger2 = false;
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -186,14 +191,27 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   break;
 	 }
        }//triggers
+
+       getTriggerDecision(iEvent, fTriggerMap2);
+       for (std::map<std::string, bool>::iterator It = fTriggerMap2.begin(); It != fTriggerMap2.end(); ++It) {
+         if (It->second) {
+           HasTrigger2 = true;
+           break;
+         }
+       }//triggers
+             
      }//isData
      else {
        HasTrigger= true;
+       HasTrigger2= true;
      }//else isData
     /////////////////////////////////////////////////////
     ////CLEAN UP VARIABLES
     ////////////////////////////////////////////////////
+     HasSelTrigger = HasTrigger;
+     HasBaseTrigger = HasTrigger2;
      if (HasTrigger){
+
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
        fGoodElectrons.clear(); fCleanElectrons.clear();
@@ -792,6 +810,7 @@ Ntupler::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
   iEvent.getByLabel(edm::InputTag("TriggerResults", "", menu), triggerResults);
 
   const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
+
 
   for (std::map<std::string, bool>::iterator It = TriggerMap.begin(); It != TriggerMap.end(); ++It) {
     It->second = false;

@@ -102,7 +102,9 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   int _njetsMin, _njetsMax;
   std::string _htTrigger;
   std::vector<std::string>          fTriggerNames;
+  std::vector<std::string>          fTriggerNames2;
   std::map<std::string, bool>       fTriggerMap;
+  std::map<std::string, bool>       fTriggerMap2;
   
   int countE;  
   
@@ -116,6 +118,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   vector<int > GoodLumiStart;
   vector<int >  GoodLumiEnd;
      std::vector<pat::Jet>  fCleanPFJets;  
+
   Int_t nGoodRuns;  
   Bool_t GoodRun;
   Int_t nGoodJets;

@@ -34,11 +34,12 @@ this_fin_nocfi2  = "file:"+suffix_list[2*index+1]
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_plots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/TLBSMv9/Ntuple/RPVgluino_M-250_7TeV_TLBSM_Ntuple_tree.root"
 
-this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/MultiJet_Run2012A-PromptReco-v1_Quad50_"+str(index)+"_plots.root"
-this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/MultiJet_Run2012A-PromptReco-v1_Quad50_"+str(index)+"_tree.root"
+#this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/MultiJet_Run2012A-PromptReco-v1_Quad50_Quad60_Di20"+str(index)+"_plots.root"
+#this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/MultiJet_Run2012A-PromptReco-v1_Quad50_Quad60_Di20"+str(index)+"_tree.root"
 
-#this_fout0 = "TEST"+str(index)+"_Allplots.root"
-#this_fout1 = "TEST"+str(index)+"_Alltree.root"
+
+this_fout0 = "TEST"+str(index)+"_Allplots.root"
+this_fout1 = "TEST"+str(index)+"_Alltree.root"
 
 print this_fin_nocfi
 print this_fin_nocfi2
@@ -58,28 +59,22 @@ process.maxEvents = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_0.root",
-#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_1.root",
- #   "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_2.root",
-  #  "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_3.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_4.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_5.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_6.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_7.root"
+    #    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_0.root",
+    #    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_1.root",
+    #   "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_2.root",
+    #  "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_3.root",
+    # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_4.root",
+    # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_5.root",
+    # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_6.root",
+    # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_7.root"
     
-                                                              this_fin_nocfi,
-                                                              this_fin_nocfi2
-                                                              )
-                            #,
-                           # duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
-                            )
+    this_fin_nocfi,
+    this_fin_nocfi2))
+#)
+#,
+# duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
-#process.source = cms.Source("PoolSource",
-# replace 'myfile.root' with the source file you want to use
-#                               fileNames = cms.untracked.vstring(this_fin_nocfi)
-#                           duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
-#                          )
 
 ##process.source = cms.Source("PoolSource",
 ##  skipEvents = cms.untracked.uint32(0),
@@ -113,14 +108,14 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                NjetsMax       = cms.untracked.int32(1000),
                                jetptcut       = cms.untracked.double(20),
                                etacut         = cms.untracked.double(3.),
-#                               TriggerNames = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2',
-#                               'HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4',
-#                               'HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6',
-#                               'HLT_QuadJet60_DiJet20_v7'),
-                               TriggerNames = cms.untracked.vstring('HLT_QuadJet50_v1','HLT_QuadJet50_v2',
-                              'HLT_QuadJet50_v3','HLT_QuadJet50_v4',
-                               'HLT_QuadJet50_v5','HLT_QuadJet50_v6',
-                               'HLT_QuadJet50_v7'),
+                               TriggerNames = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2',
+                                                                    'HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4',
+                                                                    'HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6',
+                                                                    'HLT_QuadJet60_DiJet20_v7'),
+                               TriggerNames2 = cms.untracked.vstring('HLT_QuadJet50_v1','HLT_QuadJet50_v2',
+                                                                     'HLT_QuadJet50_v3','HLT_QuadJet50_v4',
+                                                                     'HLT_QuadJet50_v5','HLT_QuadJet50_v6',
+                                                                     'HLT_QuadJet50_v7'),
                                
                                JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-194076_8TeV_PromptReco_Collisions12_JSON.txt'),
                                )

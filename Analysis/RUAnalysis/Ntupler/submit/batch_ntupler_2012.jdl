@@ -1,8 +1,8 @@
 OutDir = /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50
 universe = vanilla
 Requirements = (Arch == "X86_64")
-Executable = run_ntupler.sh
-should_transfer_files_2012 = NO
+Executable = run_ntupler_2012.sh
+should_transfer_files = NO
 Output = $(OutDir)/Log/Log_600$(Process).stdout
 Error =  $(OutDir)/Log/Log_600$(Process).stderr
 Log =    $(OutDir)/Log/Log_600$(Process).log
