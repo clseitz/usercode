@@ -1,4 +1,4 @@
- //#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
+//#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
 #include <iostream>
 #include <fstream>
@@ -68,7 +68,32 @@ void NtpThreeJet::BookHistograms()
   h_Jet4_EvtSel= new TH1F("Jet4_EvtSel", "Jet4_EvtSel",200,0,1000);
   h_Jet5_EvtSel= new TH1F("Jet5_EvtSel", "Jet5_EvtSel",200,0,1000);
   h_Jet6_EvtSel= new TH1F("Jet6_EvtSel", "Jet6_EvtSel",200,0,1000);
+  //TriggerPlots
+  
+  h_MET_Base = new TH1F("MET_Base", "MET_Base",200,0,1000);
+  h_HT_Base = new TH1F("HT_Base", "HT_Base",400,0,4000);
+  h_nBJet35_Base   = new TH1F("nBJet35_Base", "nBJet35_Base",20,0,20);
+  h_nJet35_Base   = new TH1F("nJet20_Base", "nJet20_Base",20,0,20);
+  h_Jet0_Base = new TH1F("Jet0_Base", "Jet0_Base",200,0,1000);
+  h_Jet1_Base = new TH1F("Jet1_Base", "Jet1_Base",200,0,1000);
+  h_Jet2_Base = new TH1F("Jet2_Base", "Jet2_Base",200,0,1000);
+  h_Jet3_Base = new TH1F("Jet3_Base", "Jet3_Base",200,0,1000);
+  h_Jet4_Base = new TH1F("Jet4_Base", "Jet4_Base",200,0,1000);
+  h_Jet5_Base = new TH1F("Jet5_Base", "Jet5_Base",200,0,1000);
+  h_Jet6_Base = new TH1F("Jet6_Base", "Jet6_Base",200,0,1000);
 
+  h_MET_BaseSel = new TH1F("MET_BaseSel", "MET_BaseSel",200,0,1000);
+  h_HT_BaseSel = new TH1F("HT_BaseSel", "HT_BaseSel",400,0,4000);
+  h_nBJet35_BaseSel   = new TH1F("nBJet35_BaseSel", "nBJet35_BaseSel",20,0,20);
+  h_nJet35_BaseSel   = new TH1F("nJet20_BaseSel", "nJet20_BaseSel",20,0,20);
+  h_Jet0_BaseSel = new TH1F("Jet0_BaseSel", "Jet0_BaseSel",200,0,1000);
+  h_Jet1_BaseSel = new TH1F("Jet1_BaseSel", "Jet1_BaseSel",200,0,1000);
+  h_Jet2_BaseSel = new TH1F("Jet2_BaseSel", "Jet2_BaseSel",200,0,1000);
+  h_Jet3_BaseSel = new TH1F("Jet3_BaseSel", "Jet3_BaseSel",200,0,1000);
+  h_Jet4_BaseSel = new TH1F("Jet4_BaseSel", "Jet4_BaseSel",200,0,1000);
+  h_Jet5_BaseSel = new TH1F("Jet5_BaseSel", "Jet5_BaseSel",200,0,1000);
+  h_Jet6_BaseSel = new TH1F("Jet6_BaseSel", "Jet6_BaseSel",200,0,1000);
+  
 
   cout<<"before histos"<<endl;
   for(int b=0; b<5; b++){
@@ -124,6 +149,32 @@ void NtpThreeJet::WriteHistograms()
    h_Jet4->Write();
    h_Jet5->Write();
    h_Jet6->Write();
+   fOutFile->mkdir("Trigger");
+   fOutFile->cd("Trigger");
+
+   h_MET_Base->Write();
+   h_nBJet35_Base->Write();
+   h_nJet35_Base->Write();
+   h_HT_Base->Write();
+   h_Jet0_Base->Write();
+   h_Jet1_Base->Write();
+   h_Jet2_Base->Write();
+   h_Jet3_Base->Write();
+   h_Jet4_Base->Write();
+   h_Jet5_Base->Write();
+   h_Jet6_Base->Write();
+
+   h_MET_BaseSel->Write();
+   h_nBJet35_BaseSel->Write();
+   h_nJet35_BaseSel->Write();
+   h_HT_BaseSel->Write();
+   h_Jet0_BaseSel->Write();
+   h_Jet1_BaseSel->Write();
+   h_Jet2_BaseSel->Write();
+   h_Jet3_BaseSel->Write();
+   h_Jet4_BaseSel->Write();
+   h_Jet5_BaseSel->Write();
+   h_Jet6_BaseSel->Write();
 
 
    TDirectory* triplets=fOutFile->mkdir("Triplets");
@@ -193,22 +244,28 @@ void NtpThreeJet::Loop ()
     if (ientry % 100 == 0) {
       printf("Processing entry: %i\n", ientry);
     }
+    //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
+
 
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
     int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();fCleanJets.clear();
+    fCleanJets20.clear();
     float SumptAllJet=0;
+    float SumptAllJet20=0;
     vector<TLorentzVector > fdummyCleanJets;
      for (int i=0; i<nPFJets; i++){
       TLorentzVector Jet(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
       TLorentzVector dummyJet(0,0,0,0);
 
       if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
-	nJet20=i+1;
-	if(jet_PF_pt[i]>45.0){
+	nJet20++;
+	fCleanJets20.push_back(Jet);
+	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
+	if(jet_PF_pt[i]>35.0){
 	SumptAllJet=SumptAllJet+jet_PF_pt[i];
 	fCleanJets.push_back(Jet);
-	nJet35=i+1;
+	nJet35++;
 	if (bdiscCSV_PF[i] > 0.679)
 	  {
 	    nBJet35++;
@@ -250,8 +307,32 @@ void NtpThreeJet::Loop ()
        }
      }
 
+     ////TRIGGER////////////
+     if(nJet20>=6){
+     if(HasBaseTrigger){
+       h_MET_Base->Fill(pfMET);
+       h_HT_Base->Fill(SumptAllJet20);
+       h_Jet0_Base->Fill(fCleanJets20[0].Pt());
+       h_Jet1_Base->Fill(fCleanJets20[1].Pt());
+       h_Jet2_Base->Fill(fCleanJets20[2].Pt());
+       h_Jet3_Base->Fill(fCleanJets20[3].Pt());
+       h_Jet4_Base->Fill(fCleanJets20[4].Pt());
+       h_Jet5_Base->Fill(fCleanJets20[5].Pt());
+            if(HasSelTrigger){
+	      h_MET_BaseSel->Fill(pfMET);
+	      h_HT_BaseSel->Fill(SumptAllJet20);
+	      h_Jet0_BaseSel->Fill(fCleanJets20[0].Pt());
+	      h_Jet1_BaseSel->Fill(fCleanJets20[1].Pt());
+	      h_Jet2_BaseSel->Fill(fCleanJets20[2].Pt());
+	      h_Jet3_BaseSel->Fill(fCleanJets20[3].Pt());
+	      h_Jet4_BaseSel->Fill(fCleanJets20[4].Pt());
+	      h_Jet5_BaseSel->Fill(fCleanJets20[5].Pt());
+	    }
+     }
+
+     }
      //Possible Triggers selections
-     
+    if (HasSelTrigger){     
      if (nJet35>=6 && nMuons>=1) {
        h_PossibleTrigger->Fill(1);
        if(nBJet35 >= 1) h_PossibleTrigger->Fill(5);
@@ -276,25 +357,27 @@ void NtpThreeJet::Loop ()
        if(nBJet35 >= 4) h_PossibleTrigger->Fill(19);
        }
        }
-     ////TRIGGER////////////
+
+
+
      //  if ( nJet35>=6 && nMuons>=1){
      //     if ( nJet35>=6 && SumptAllJet>800){
 	   h_nBJet35->Fill(nBJet35);
-	   h_nJet35->Fill(nJet20);
+	   h_nJet35->Fill(nJet35);
+	   if(nJet35>=6){
 	   h_MET->Fill(pfMET);
 	   h_HT->Fill(SumptAllJet);
 	   h_Jet0->Fill(fCleanJets[0].Pt());
 	   h_Jet1->Fill(fCleanJets[1].Pt());
 	   h_Jet2->Fill(fCleanJets[2].Pt());
-	   if(nJet20>=3) h_Jet3->Fill(fCleanJets[3].Pt());
-	   if(nJet20>=4) h_Jet4->Fill(fCleanJets[4].Pt());
-	   if(nJet20>=5) h_Jet5->Fill(fCleanJets[5].Pt());
-	   if(nJet20>=6) h_Jet6->Fill(fCleanJets[6].Pt());
-
+	   h_Jet3->Fill(fCleanJets[3].Pt());
+	   h_Jet4->Fill(fCleanJets[4].Pt());
+	   h_Jet5->Fill(fCleanJets[5].Pt());
+	   }
 
      if ( nJet35>=6){
-       //if(fCleanJets[0].Pt() > 85 && fCleanJets[1].Pt() > 80 && fCleanJets[2].Pt() > 65 && fCleanJets[3].Pt() > 65 && fCleanJets[4].Pt() > 25 && fCleanJets[5].Pt() > 25){
-       if(SumptAllJet>900){
+       if(fCleanJets[0].Pt() > 80 && fCleanJets[1].Pt() > 80 && fCleanJets[2].Pt() > 80 && fCleanJets[3].Pt() > 80 && fCleanJets[4].Pt() > 30 && fCleanJets[5].Pt() > 30){
+       //      if(SumptAllJet>900){
 	 if(1==1){//nBJet35 >= 3){
 
 	   h_nBJet35_EvtSel->Fill(nBJet35);
@@ -395,6 +478,7 @@ void NtpThreeJet::Loop ()
 	 }//jetp
      }//minjet
      //lets see if the top branching ratios work
+    }
   }
   return;
 }

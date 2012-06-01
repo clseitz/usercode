@@ -1,4 +1,4 @@
- #./RunThreeJet RPVGluinoM200_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/9May2012/RPVgluino_M-200_7TeV-pythia6_0_Alltree.root
+#./RunThreeJet RPVGluinoM200_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/9May2012/RPVgluino_M-200_7TeV-pythia6_0_Alltree.root
 #./RunThreeJet TTJets_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/9May2012/TTJ*tree*
 #./RunThreeJet data2011B_HT_dan.root /cms/data27/clseitz/ThreeJet/RUNtuple/data/*tree*root
 
@@ -6,7 +6,8 @@
 #./RunThreeJet QCDMC_HT500-1000_dan.root /cms/data27/clseitz/ThreeJet/RUNtuple/16May2012/QCDmcHTbinned/HT500-1000/*tree*root
 #./RunThreeJet QCDMC_HT1000_dan.root /cms/data27/clseitz/ThreeJet/RUNtuple/16May2012/QCDmcHTbinned/HT1000/*tree*root
 
-#./RunThreeJet TEST.root /cms/data27/clseitz/ThreeJet/RUNtuple/9May2012/RPVgluino_M-200_7TeV-pythia6_0_Alltree.root
+#./RunThreeJet TEST.root /home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/TEST0_Alltree.root
+
 #./RunThreeJet TESTThreeB.root  /cms/data27/clseitz/ThreeJet/RUNtuple/9May2012/mb_250_mf_100_ms_90_0_Alltree.root
 
 #./RunThreeJet TEST_RPVGluinoM250_DAN_ANA.root  /cms/data27/clseitz/ThreeJet/DanNtupleTLBSMtest/Dan/RPVgluino_M250_PAT_v17_tree.root
@@ -25,4 +26,7 @@
 #./RunThreeJet RPVGluinoM350_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*350*tree*root
 #./RunThreeJet RPVGluinoM400_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*400*tree*root
 #./RunThreeJet RPVGluinoM450_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*450*tree*root
-./RunThreeJet RPVGluinoM500_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*500*tree*root
+#./RunThreeJet RPVGluinoM500_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*500*tree*root
+#./RunThreeJet data2012_MultiJet_Quad60_Di20_pt20.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad60_Di20/*tree*root
+#./RunThreeJet data2012_MultiJet_Quad50_lead4_100_pt20_triggerSel.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/*tree*root
+./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_pt20_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_NoTrig/*tree*root

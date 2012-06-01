@@ -25,6 +25,7 @@ class NtpThreeJet : public NtpReader
     std::vector<TLorentzVector >      fBJets;
     std::vector<TLorentzVector >      fNoBJets;
     std::vector<TLorentzVector >      fCleanJets;
+    std::vector<TLorentzVector >      fCleanJets20;
     
     TH1F* h_NumEvtCutMuon;
     TH1F* h_NumEvtCutElectron;
@@ -47,6 +48,30 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet5;
     TH1F* h_Jet6;
     TH1F* h_HT;
+
+    TH1F*  h_MET_Base;
+    TH1F* h_nBJet35_Base;
+    TH1F* h_nJet35_Base;
+    TH1F* h_Jet0_Base;
+    TH1F* h_Jet1_Base;
+    TH1F* h_Jet2_Base;
+    TH1F* h_Jet3_Base;
+    TH1F* h_Jet4_Base;
+    TH1F* h_Jet5_Base;
+    TH1F* h_Jet6_Base;
+    TH1F* h_HT_Base;
+
+    TH1F*  h_MET_BaseSel;
+    TH1F* h_nBJet35_BaseSel;
+    TH1F* h_nJet35_BaseSel;
+    TH1F* h_Jet0_BaseSel;
+    TH1F* h_Jet1_BaseSel;
+    TH1F* h_Jet2_BaseSel;
+    TH1F* h_Jet3_BaseSel;
+    TH1F* h_Jet4_BaseSel;
+    TH1F* h_Jet5_BaseSel;
+    TH1F* h_Jet6_BaseSel;
+    TH1F* h_HT_BaseSel;
     
     
     TH1F* h_nBJet35_EvtSel;

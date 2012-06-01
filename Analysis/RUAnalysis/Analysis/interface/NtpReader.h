@@ -16,6 +16,7 @@ class NtpReader
     NtpReader (TTree*);
     NtpReader (std::vector<TString>&, bool const);
     ~NtpReader ();
+
     bool IsData ();
 
     void SetBranches (TTree*);
@@ -37,6 +38,9 @@ class NtpReader
     int   entry;
     int   nTriplets;
     int   nGoodVtx;
+    Bool_t HasBaseTrigger;
+    Bool_t HasSelTrigger;
+
     //TEST
     int NumJetsTest;
     int   mcsize;
