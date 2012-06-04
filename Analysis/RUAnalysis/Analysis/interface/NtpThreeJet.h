@@ -22,11 +22,11 @@ class NtpThreeJet : public NtpReader
     void WriteHistograms();
 
     //some variables needed
-    std::vector<TLorentzVector >      fBJets;
-    std::vector<TLorentzVector >      fNoBJets;
+    /*   std::vector<TLorentzVector >      fBJets;
+   std::vector<TLorentzVector >      fNoBJets;
     std::vector<TLorentzVector >      fCleanJets;
     std::vector<TLorentzVector >      fCleanJets20;
-    
+    */    
     TH1F* h_NumEvtCutMuon;
     TH1F* h_NumEvtCutElectron;
     TH1F* h_NumEvtCut;
@@ -126,12 +126,6 @@ class NtpThreeJet : public NtpReader
     TH1F* h_TopHadMass;
 
 
-
-    ///threejet stuff
-    std::vector<float >   sumScalarPtTriplet;
-    std::vector<float >   massTriplet;
-    std::vector<float >   sumVectorPtTriplet;
-    std::vector <std::vector<TLorentzVector > > Triplet;
 
     //make some plots for the triplets
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag;

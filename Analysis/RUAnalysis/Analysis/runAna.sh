@@ -29,4 +29,9 @@
 #./RunThreeJet RPVGluinoM500_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*500*tree*root
 #./RunThreeJet data2012_MultiJet_Quad60_Di20_pt20.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad60_Di20/*tree*root
 #./RunThreeJet data2012_MultiJet_Quad50_lead4_100_pt20_triggerSel.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/*tree*root
-./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_pt20_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_NoTrig/*tree*root
+./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/*tree*root
+#./RunThreeJet test.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/MultiJet_Run2012B-PromptReco-v1_Quad50_Quad60_Di2020_tree.root
+
+#./RunThreeJet data2012_MultiJet_BQuad50_SQuad70_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad70/*tree*root
+#./RunThreeJet data2012_MultiJet_BQuad70_SQuad80_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad70_SQuad80/*tree*root
+./RunThreeJet data2012_MultiJet_BSix35_SSix45_pt45_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BSix35_SSix45/*tree*root
