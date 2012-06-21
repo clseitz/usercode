@@ -82,6 +82,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   void GetMCTruth(const edm::Event&);
   void MakeTriplets(std::vector<pat::Jet >fCleanJets); 
   void getTriggerDecision(const edm::Event&, std::map<std::string, bool>&);
+  void getTriggerDecision2(const edm::Event&, std::map<std::string, bool>&);
   
   
   // ----------member data ---------------------------
@@ -101,8 +102,8 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   std::string _METtype;
   int _njetsMin, _njetsMax;
   std::string _htTrigger;
-  std::vector<std::string>          fTriggerNames;
-  std::vector<std::string>          fTriggerNames2;
+  std::vector<std::string>          fTriggerNamesSel;
+  std::vector<std::string>          fTriggerNamesBase;
   std::map<std::string, bool>       fTriggerMap;
   std::map<std::string, bool>       fTriggerMap2;
   

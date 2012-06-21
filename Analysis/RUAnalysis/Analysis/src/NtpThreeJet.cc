@@ -398,7 +398,7 @@ void NtpThreeJet::Loop ()
 	      
      if ( nJet35>=6){
        //cout<<nJet35<<" "<<fCleanJets.size()<<" "<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
-       if(fCleanJets[0]->Pt() > 80 && fCleanJets[1]->Pt() > 80 && fCleanJets[2]->Pt() > 80 && fCleanJets[3]->Pt() > 80 && fCleanJets[4]->Pt() > 30 && fCleanJets[5]->Pt() > 30){
+       if(fCleanJets[0]->Pt() > 85 && fCleanJets[1]->Pt() > 85 && fCleanJets[2]->Pt() > 85 && fCleanJets[3]->Pt() > 85 && fCleanJets[4]->Pt() > 50 && fCleanJets[5]->Pt() > 50){
        //      if(SumptAllJet>900){
 	 if(1==1){//nBJet35 >= 3){
 
@@ -457,7 +457,7 @@ void NtpThreeJet::Loop ()
 		 //count njets with the pt cut -> gonna be slow
 		 if(iNjet<=fCleanJets.size()){
 		  
-		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
+		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
 		     {	
 		        Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q]);
 		     }
@@ -473,7 +473,7 @@ void NtpThreeJet::Loop ()
 		     // cout<<fCleanJets.size()<<endl;
 		     // cout<<iNjet-1<<endl;
 		     //}
-		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
+		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
 		       {
 			 //cout<<"after selection"<<endl;
 			 //cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;

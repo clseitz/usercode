@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.2 2012/05/21 10:22:37 clseitz Exp $
+// $Id: Ntupler.cc,v 1.3 2012/05/31 15:21:49 clseitz Exp $
 //
 //
 
@@ -128,12 +128,12 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _nTripletBtagsMax= iConfig.getUntrackedParameter<int>   ("nTripletBtagsMax", 1000);
   _doBtagEff       = iConfig.getUntrackedParameter<bool>   ("doBtagEff", true);
 
-  fTriggerNames = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNames", std::vector<std::string>());
-  for (std::vector<std::string>::iterator It = fTriggerNames.begin(); It != fTriggerNames.end(); ++It) {
+  fTriggerNamesSel = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNamesSel", std::vector<std::string>());
+  for (std::vector<std::string>::iterator It = fTriggerNamesSel.begin(); It != fTriggerNamesSel.end(); ++It) {
     fTriggerMap[*It] = false;
   }
-  fTriggerNames2 = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNames2", std::vector<std::string>());
-  for (std::vector<std::string>::iterator It = fTriggerNames2.begin(); It != fTriggerNames2.end(); ++It) {
+  fTriggerNamesBase = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNamesBase", std::vector<std::string>());
+  for (std::vector<std::string>::iterator It = fTriggerNamesBase.begin(); It != fTriggerNamesBase.end(); ++It) {
     fTriggerMap2[*It] = false;
   }
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
@@ -192,7 +192,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 }
        }//triggers
 
-       getTriggerDecision(iEvent, fTriggerMap2);
+       getTriggerDecision2(iEvent, fTriggerMap2);
        for (std::map<std::string, bool>::iterator It = fTriggerMap2.begin(); It != fTriggerMap2.end(); ++It) {
          if (It->second) {
            HasTrigger2 = true;
@@ -210,7 +210,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
      HasBaseTrigger = HasTrigger2;
-     if (HasTrigger){
+     if (HasTrigger || HasTrigger2){
 
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
@@ -825,6 +825,32 @@ Ntupler::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
   }
   return;
 }
+
+void
+Ntupler::getTriggerDecision2(const edm::Event& iEvent, std::map<std::string, bool>& TriggerMap2)
+{
+  edm::Handle<edm::TriggerResults> triggerResults;
+
+  std::string menu = "HLT";
+  iEvent.getByLabel(edm::InputTag("TriggerResults", "", menu), triggerResults);
+
+  const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
+
+
+  for (std::map<std::string, bool>::iterator It = TriggerMap2.begin(); It != TriggerMap2.end(); ++It) {
+    It->second = false;
+    unsigned int triggerIndex = triggerNames.triggerIndex(It->first);
+
+    if (triggerIndex < triggerResults->size()) {
+      if (triggerResults->accept(triggerIndex)) {
+        It->second = true;
+      }
+    }
+
+  }
+  return;
+}
+
 
 void 
 Ntupler::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup, std::string PatJetType){

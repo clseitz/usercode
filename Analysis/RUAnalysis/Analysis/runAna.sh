@@ -29,9 +29,13 @@
 #./RunThreeJet RPVGluinoM500_TLBSM_ANA.root /cms/data27/clseitz/ThreeJet/RUNtuple/RPV/GluinoHeavyFlav/*500*tree*root
 #./RunThreeJet data2012_MultiJet_Quad60_Di20_pt20.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad60_Di20/*tree*root
 #./RunThreeJet data2012_MultiJet_Quad50_lead4_100_pt20_triggerSel.root /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_Quad50/*tree*root
-./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/*tree*root
+#./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/*tree*root
 #./RunThreeJet test.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/MultiJet_Run2012B-PromptReco-v1_Quad50_Quad60_Di2020_tree.root
 
 #./RunThreeJet data2012_MultiJet_BQuad50_SQuad70_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad70/*tree*root
 #./RunThreeJet data2012_MultiJet_BQuad70_SQuad80_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad70_SQuad80/*tree*root
-./RunThreeJet data2012_MultiJet_BSix35_SSix45_pt45_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BSix35_SSix45/*tree*root
+#./RunThreeJet data2012_MultiJet_BSix35_SSix45_pt80_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BSix35_SSix45/*tree*root
+./RunThreeJet mc2012_TTJets_8TeV_4pt85_6pt50_exactB.root /cms/data27/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
+#./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_pt85_6pt45.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/*tree*root
+
+./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_pt85_6pt45_exactB.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad50_SQuad60_Di20/*tree*root
