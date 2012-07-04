@@ -12,9 +12,10 @@ dir_list=[]
 #gluinos
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/*200*root').readlines()
 #stealth sbottoms
-suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/MCProdSLHA_428p7/PAT/*.root').readlines()
+#suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/MCProdSLHA_428p7/PAT/*.root').readlines()
 
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/test_TTJets_FastSim/MatchingPAT/*root').readlines()
+suffix_list = os.popen('ls -1 /uscms_data/d3/clseitz/T2tt_375_75/*root').readlines()
 
 this_fin_nocfi  = "file:"+suffix_list[index]
 
@@ -51,16 +52,7 @@ process.maxEvents = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_0.root",
-#    "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_1.root",
- #   "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_2.root",
-  #  "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_3.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_4.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_5.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_6.root",
-   # "file:/cms/data27/clseitz/ThreeJet/TopBSMPATv9_RPVSummer11/RPVgluino_M-250_7TeV-2subjet_pythia6_PU_S4_START42_V11-v1_7.root"
-    
-                                                              this_fin_nocfi
+    "file:/uscms_data/d3/clseitz/T2tt_375_75/T2tt_stop375_lsp75.root",
                                                               ),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
                             )

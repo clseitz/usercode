@@ -40,6 +40,8 @@ class NtpReader
     int   nGoodVtx;
     Bool_t HasBaseTrigger;
     Bool_t HasSelTrigger;
+    double MSquark;
+    double MLSP;
 
     //TEST
     int NumJetsTest;

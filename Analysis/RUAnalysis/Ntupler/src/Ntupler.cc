@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.3 2012/05/31 15:21:49 clseitz Exp $
+// $Id: Ntupler.cc,v 1.4 2012/06/21 09:11:55 clseitz Exp $
 //
 //
 
@@ -73,9 +73,17 @@
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
+//filtering susy events
+//#include "UserCode/ModelFilter/interface/ModelFilter.h"
+
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+
 //Own libraries
 #include "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Ntupler/interface/NtpReader.h"
+#include <memory>
+#include <sstream>
+#include <stdlib.h>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -123,6 +131,7 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _nbTagsMin       = iConfig.getUntrackedParameter<int>   ("nbTagsMin",        0);
   _nbTagsMax       = iConfig.getUntrackedParameter<int>   ("nbTagsMax",        1000);
   _isData          = iConfig.getUntrackedParameter<bool>  ("isData",           true);
+  _isSUSY          = iConfig.getUntrackedParameter<bool>  ("isSUSY",           false);
   _noTripletBtag   = iConfig.getUntrackedParameter<bool>  ("noTripletBtag",    false);
   _nTripletBtagsMin= iConfig.getUntrackedParameter<int>   ("nTripletBtagsMin", 0);
   _nTripletBtagsMax= iConfig.getUntrackedParameter<int>   ("nTripletBtagsMax", 1000);
@@ -183,6 +192,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      bool HasTrigger = false;
      bool HasTrigger2 = false;
+ 
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -199,25 +209,29 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
            break;
          }
        }//triggers
-             
+
      }//isData
      else {
        HasTrigger= true;
        HasTrigger2= true;
+       if (_isSUSY){
+	 	 GetSUSYpoint(iEvent,iSetup);
+
+       }//isSUSY
      }//else isData
     /////////////////////////////////////////////////////
     ////CLEAN UP VARIABLES
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
      HasBaseTrigger = HasTrigger2;
-     if (HasTrigger || HasTrigger2){
+     if ((HasTrigger || HasTrigger2)){
 
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
        fGoodElectrons.clear(); fCleanElectrons.clear();
        nGoodElectrons=0; nCleanElectrons=0; 
        fGoodMuons.clear(); fCleanMuons.clear(); 
-fCleanMuonsPFIso.clear(); 
+       fCleanMuonsPFIso.clear(); 
        nGoodMuons=0; nCleanMuons=0;  
        fGoodPhotons.clear(); fCleanPhotons.clear();
        nGoodPhotons=0; nCleanPhotons=0;
@@ -849,6 +863,65 @@ Ntupler::getTriggerDecision2(const edm::Event& iEvent, std::map<std::string, boo
 
   }
   return;
+}
+
+void
+Ntupler::GetSUSYpoint(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+
+       edm::Handle<LHEEventProduct> product;
+       bool commentIsThere = iEvent.getByLabel("source", product);
+       comments_const_iterator comment;
+
+       string tempString;
+       vector<string> tempStrings;
+       vector<string> parameters;
+       for(comment = product->comments_begin(); comment != product->comments_end();
+	   comment++)
+	 {
+	   if(commentIsThere)
+	     {
+	       tempString = comment->substr(0,comment->size());
+	       tempStrings = split(tempString," ");
+	       parameters = split(tempStrings[2], "_");
+	       //cout<<parameters[1]<<" "<<parameters[2]<<endl;
+	       MSquark= atof(parameters[1].c_str());
+	       MLSP=atof(parameters[2].c_str());
+	       
+	     }
+	 }
+
+}
+
+
+vector<string> Ntupler::split(string fstring, string splitter)
+{
+  vector<string> returnVector;
+  size_t cursor;
+  string beforeSplitter;
+  string afterSplitter = fstring;
+  if(fstring.find(splitter) == string::npos)
+    {
+      cout<<"No "<<splitter<<" found"<<endl;
+      returnVector.push_back(fstring);
+      return returnVector;
+    }
+  else
+    {
+      while(afterSplitter.find(splitter) != string::npos)
+	{
+	  cursor = afterSplitter.find(splitter);
+
+	  beforeSplitter = afterSplitter.substr(0, cursor);
+	  afterSplitter = afterSplitter.substr(cursor +1, afterSplitter.size());
+
+	  returnVector.push_back(beforeSplitter);
+
+	  if(afterSplitter.find(splitter) == string::npos)
+            returnVector.push_back(afterSplitter);
+	}
+      return returnVector;
+    }
 }
 
 
