@@ -1,6 +1,6 @@
 //Defines general ntuple objects
 //object selection for leptons
-#include "RUAnalysis/Ntupler/interface/NtpReader.h"
+#include "RUAnalysis/Analysis/interface/NtpReader.h"
 
 
 NtpReader::NtpReader ()
@@ -51,6 +51,8 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("lumis", &lumis);
   Tree->Branch("HasSelTrigger", &HasSelTrigger);
   Tree->Branch("HasBaseTrigger", &HasBaseTrigger);
+  Tree->Branch("MSquark",  &MSquark);
+  Tree->Branch("MLSP",  &MLSP);
 
   Tree->Branch("pdgID[200]",pdgID);
   Tree->Branch("MCpx[200]", MCpx);
@@ -202,6 +204,9 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("lumis", &lumis);
   fChain.SetBranchAddress("HasSelTrigger", &HasSelTrigger);
   fChain.SetBranchAddress("HasBaseTrigger", &HasBaseTrigger);
+  fChain.SetBranchAddress("MSquark",  &MSquark);
+  fChain.SetBranchAddress("MLSP",  &MLSP);
+
 
  
     fChain.SetBranchAddress("pdgID[200]",pdgID);

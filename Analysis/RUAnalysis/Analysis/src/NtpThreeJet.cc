@@ -258,7 +258,7 @@ void NtpThreeJet::Loop ()
       printf("Processing entry: %i\n", ientry);
     }
     //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
-
+if(MSquark == 375 && MLSP ==75){
 
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
@@ -385,15 +385,14 @@ void NtpThreeJet::Loop ()
      //     if ( nJet35>=6 && SumptAllJet>800){
 	   h_nBJet35->Fill(nBJet35);
 	   h_nJet35->Fill(nJet35);
-	   if(nJet35>=6){
 	   h_MET->Fill(pfMET);
 	   h_HT->Fill(SumptAllJet);
-	   h_Jet0->Fill(fCleanJets[0]->Pt());
-	   h_Jet1->Fill(fCleanJets[1]->Pt());
-	   h_Jet2->Fill(fCleanJets[2]->Pt());
-	   h_Jet3->Fill(fCleanJets[3]->Pt());
-	   h_Jet4->Fill(fCleanJets[4]->Pt());
-	   h_Jet5->Fill(fCleanJets[5]->Pt());
+	   if(nJet35>=1)h_Jet0->Fill(fCleanJets[0]->Pt());
+	   if(nJet35>=2)h_Jet1->Fill(fCleanJets[1]->Pt());
+	   if(nJet35>=3)h_Jet2->Fill(fCleanJets[2]->Pt());
+	   if(nJet35>=4)h_Jet3->Fill(fCleanJets[3]->Pt());
+	   if(nJet35>=5)h_Jet4->Fill(fCleanJets[4]->Pt());
+	   if(nJet35>=6)h_Jet5->Fill(fCleanJets[5]->Pt());
 	   
 	      
      if ( nJet35>=6){
@@ -401,7 +400,7 @@ void NtpThreeJet::Loop ()
        if(fCleanJets[0]->Pt() > 85 && fCleanJets[1]->Pt() > 85 && fCleanJets[2]->Pt() > 85 && fCleanJets[3]->Pt() > 85 && fCleanJets[4]->Pt() > 50 && fCleanJets[5]->Pt() > 50){
        //      if(SumptAllJet>900){
 	 if(1==1){//nBJet35 >= 3){
-
+	   cout<<MSquark<<" "<<MLSP<<endl;
 	   h_nBJet35_EvtSel->Fill(nBJet35);
 	   h_nJet35_EvtSel->Fill(nJet35);
 	   h_MET_EvtSel->Fill(pfMET);
@@ -457,7 +456,7 @@ void NtpThreeJet::Loop ()
 		 //count njets with the pt cut -> gonna be slow
 		 if(iNjet<=fCleanJets.size()){
 		  
-		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
+		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
 		     {	
 		        Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q]);
 		     }
@@ -473,7 +472,7 @@ void NtpThreeJet::Loop ()
 		     // cout<<fCleanJets.size()<<endl;
 		     // cout<<iNjet-1<<endl;
 		     //}
-		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
+		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
 		       {
 			 //cout<<"after selection"<<endl;
 			 //cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
@@ -500,9 +499,9 @@ void NtpThreeJet::Loop ()
 	 }//jetp
      }//minjet
      //lets see if the top branching ratios work
-    }
+    
   }
-
-  }
+ }//Msquqark
+ }//get entrye
   return;
 }
