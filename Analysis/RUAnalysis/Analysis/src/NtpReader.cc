@@ -45,21 +45,18 @@ bool NtpReader::IsData ()
 void NtpReader::SetBranches (TTree* Tree)
 {
   // Set the branches for writing
-  Tree->Branch("entry", &entry);
-    Tree->Branch("run", &run);
+
+  Tree->Branch("run", &run);
   Tree->Branch("event", &event);
   Tree->Branch("lumis", &lumis);
-  Tree->Branch("HasSelTrigger", &HasSelTrigger);
-  Tree->Branch("HasBaseTrigger", &HasBaseTrigger);
-  Tree->Branch("MSquark",  &MSquark);
-  Tree->Branch("MLSP",  &MLSP);
+  Tree->Branch("entry", &entry);
 
-  Tree->Branch("pdgID[200]",pdgID);
-  Tree->Branch("MCpx[200]", MCpx);
-  Tree->Branch("MCpy[200]", MCpy);
-  Tree->Branch("MCpz[200]", MCpz);
-  Tree->Branch("MCe[200]", MCe);
-  
+    Tree->Branch("pdgID[200]",pdgID);
+    Tree->Branch("MCpx[200]", MCpx);
+    Tree->Branch("MCpy[200]", MCpy);
+    Tree->Branch("MCpz[200]", MCpz);
+    Tree->Branch("MCe[200]", MCe);
+
  
   Tree->Branch("nElectrons", &nElectrons);
   Tree->Branch("nMuons", &nMuons);
@@ -119,8 +116,8 @@ void NtpReader::SetBranches (TTree* Tree)
   //////////////////////////////////////////////////////////
   //CA8 pruned Jet
   /////////////////////////////////////////////////////////
-  Tree->Branch("nCA8PrunedPFJets", &nCA8PrunedPFJets);
-  Tree->Branch("jet_CA8PrunedPF_pt[nCA8PrunedPFJets]", jet_CA8PrunedPF_pt);
+ Tree->Branch("nCA8PrunedPFJets", &nCA8PrunedPFJets);
+   Tree->Branch("jet_CA8PrunedPF_pt[nCA8PrunedPFJets]", jet_CA8PrunedPF_pt);
   Tree->Branch("jet_CA8PrunedPF_et[nCA8PFJets]", jet_CA8PrunedPF_et);
   Tree->Branch("jet_CA8PrunedPF_eta[nCA8PrunedPFJets]", jet_CA8PrunedPF_eta);
   Tree->Branch("jet_CA8PrunedPF_phi[nCA8PrunedPFJets]", jet_CA8PrunedPF_phi);
@@ -160,8 +157,8 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("bdiscSSSVHP_CA8PrunedPF[nCA8PrunedPFJets]", bdiscSSSVHP_CA8PrunedPF);
    Tree->Branch("bdiscCSV_CA8PrunedPF[nCA8PrunedPFJets]", bdiscCSV_CA8PrunedPF);
   Tree->Branch("bdiscJP_CA8PrunedPF[nCA8PrunedPFJets]", bdiscJP_CA8PrunedPF);
-  
-  
+
+
   Tree->Branch("epx[nElectrons]", epx);
   Tree->Branch("epy[nElectrons]", epy);
   Tree->Branch("epz[nElectrons]", epz);
@@ -184,9 +181,34 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("phpy[nPhotons]", phpy);
   Tree->Branch("phpz[nPhotons]", phpz);
   Tree->Branch("phe[nPhotons]", phe);
-  
+
   Tree->Branch("pfMET", &pfMET);
   Tree->Branch("pfMETphi", &pfMETphi);
+
+  Tree->Branch("triplet_jet1pt[nTriplets]", triplet_jet1pt);
+  Tree->Branch("triplet_jet2pt[nTriplets]", triplet_jet2pt);
+  Tree->Branch("triplet_jet3pt[nTriplets]", triplet_jet3pt);
+  Tree->Branch("triplet_sumScalarPt[nTriplets]",triplet_sumScalarPt);
+  Tree->Branch("triplet_mass[nTriplets]",triplet_mass);
+  Tree->Branch("triplet_sumVectorPt[nTriplets]",triplet_sumVectorPt);
+
+  Tree->Branch("triplet_jet1px[nTriplets]", triplet_jet1px);
+  Tree->Branch("triplet_jet1py[nTriplets]", triplet_jet1py);
+  Tree->Branch("triplet_jet1pz[nTriplets]", triplet_jet1pz);
+  Tree->Branch("triplet_jet1e[nTriplets]", triplet_jet1e);
+
+
+  Tree->Branch("triplet_jet2px[nTriplets]", triplet_jet2px);
+  Tree->Branch("triplet_jet2py[nTriplets]", triplet_jet2py);
+  Tree->Branch("triplet_jet2pz[nTriplets]", triplet_jet2pz);
+  Tree->Branch("triplet_jet2e[nTriplets]", triplet_jet2e);
+
+
+  Tree->Branch("triplet_jet3px[nTriplets]", triplet_jet3px);
+  Tree->Branch("triplet_jet3py[nTriplets]", triplet_jet3py);
+  Tree->Branch("triplet_jet3pz[nTriplets]", triplet_jet3pz);
+  Tree->Branch("triplet_jet3e[nTriplets]", triplet_jet3e);
+
  
 
 
@@ -197,17 +219,11 @@ void NtpReader::SetBranches (TTree* Tree)
 void NtpReader::SetBranchAddresses ()
 {
   // Set the branches for reading
-  fChain.SetBranchAddress("entry", &entry);
-  
+
   fChain.SetBranchAddress("run", &run);
   fChain.SetBranchAddress("event", &event);
   fChain.SetBranchAddress("lumis", &lumis);
-  fChain.SetBranchAddress("HasSelTrigger", &HasSelTrigger);
-  fChain.SetBranchAddress("HasBaseTrigger", &HasBaseTrigger);
-  fChain.SetBranchAddress("MSquark",  &MSquark);
-  fChain.SetBranchAddress("MLSP",  &MLSP);
-
-
+  fChain.SetBranchAddress("entry", &entry);
  
     fChain.SetBranchAddress("pdgID[200]",pdgID);
     fChain.SetBranchAddress("MCpx[200]", MCpx);
@@ -331,7 +347,31 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("pfMET", &pfMET);
   fChain.SetBranchAddress("pfMETphi", &pfMETphi);
 
-    
+  fChain.SetBranchAddress("triplet_jet1pt[nTriplets]", triplet_jet1pt);
+  fChain.SetBranchAddress("triplet_jet2pt[nTriplets]", triplet_jet2pt);
+  fChain.SetBranchAddress("triplet_jet3pt[nTriplets]", triplet_jet3pt);
+  fChain.SetBranchAddress("triplet_sumScalarPt[nTriplets]",triplet_sumScalarPt);
+  fChain.SetBranchAddress("triplet_mass[nTriplets]",triplet_mass);
+  fChain.SetBranchAddress("triplet_sumVectorPt[nTriplets]",triplet_sumVectorPt);
+
+  fChain.SetBranchAddress("triplet_jet1px[nTriplets]", triplet_jet1px);
+  fChain.SetBranchAddress("triplet_jet1py[nTriplets]", triplet_jet1py);
+  fChain.SetBranchAddress("triplet_jet1pz[nTriplets]", triplet_jet1pz);
+  fChain.SetBranchAddress("triplet_jet1e[nTriplets]", triplet_jet1e);
+
+
+  fChain.SetBranchAddress("triplet_jet2px[nTriplets]", triplet_jet2px);
+  fChain.SetBranchAddress("triplet_jet2py[nTriplets]", triplet_jet2py);
+  fChain.SetBranchAddress("triplet_jet2pz[nTriplets]", triplet_jet2pz);
+  fChain.SetBranchAddress("triplet_jet2e[nTriplets]", triplet_jet2e);
+
+
+  fChain.SetBranchAddress("triplet_jet3px[nTriplets]", triplet_jet3px);
+  fChain.SetBranchAddress("triplet_jet3py[nTriplets]", triplet_jet3py);
+  fChain.SetBranchAddress("triplet_jet3pz[nTriplets]", triplet_jet3pz);
+  fChain.SetBranchAddress("triplet_jet3e[nTriplets]", triplet_jet3e);
+
+ 
 
 
   return;

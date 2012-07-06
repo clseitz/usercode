@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.4 2012/06/21 09:11:55 clseitz Exp $
+// $Id$
 //
 //
 
@@ -73,17 +73,9 @@
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
-//filtering susy events
-//#include "UserCode/ModelFilter/interface/ModelFilter.h"
-
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
-
 //Own libraries
 #include "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Ntupler/interface/NtpReader.h"
-#include <memory>
-#include <sstream>
-#include <stdlib.h>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -112,8 +104,6 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _ntupleTree = iConfig.getUntrackedParameter<string>("NtupleTree", "PatJets_testTree.root");
   //  _patJetType      = iConfig.getUntrackedParameter<string>("PatJetType",      "selectedPatJets");
   _patJetType      = iConfig.getUntrackedParameter<std::vector<std::string> >("PatJetType", std::vector<std::string> ());
-  _primaryVertex   = iConfig.getUntrackedParameter<string> ("PrimaryVertex","goodOfflinePrimarVertices");
-  _METtype   = iConfig.getUntrackedParameter<string> ("METtype","patMETsPFlow");
   _njetsMin        = iConfig.getUntrackedParameter<int>   ("NjetsMin",         4);
   _njetsMax        = iConfig.getUntrackedParameter<int>   ("NjetsMax",         4);
   _etacut          = iConfig.getUntrackedParameter<double>("etacut",           3.0); 
@@ -131,19 +121,14 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _nbTagsMin       = iConfig.getUntrackedParameter<int>   ("nbTagsMin",        0);
   _nbTagsMax       = iConfig.getUntrackedParameter<int>   ("nbTagsMax",        1000);
   _isData          = iConfig.getUntrackedParameter<bool>  ("isData",           true);
-  _isSUSY          = iConfig.getUntrackedParameter<bool>  ("isSUSY",           false);
   _noTripletBtag   = iConfig.getUntrackedParameter<bool>  ("noTripletBtag",    false);
   _nTripletBtagsMin= iConfig.getUntrackedParameter<int>   ("nTripletBtagsMin", 0);
   _nTripletBtagsMax= iConfig.getUntrackedParameter<int>   ("nTripletBtagsMax", 1000);
   _doBtagEff       = iConfig.getUntrackedParameter<bool>   ("doBtagEff", true);
 
-  fTriggerNamesSel = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNamesSel", std::vector<std::string>());
-  for (std::vector<std::string>::iterator It = fTriggerNamesSel.begin(); It != fTriggerNamesSel.end(); ++It) {
+  fTriggerNames = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNames", std::vector<std::string>());
+  for (std::vector<std::string>::iterator It = fTriggerNames.begin(); It != fTriggerNames.end(); ++It) {
     fTriggerMap[*It] = false;
-  }
-  fTriggerNamesBase = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNamesBase", std::vector<std::string>());
-  for (std::vector<std::string>::iterator It = fTriggerNamesBase.begin(); It != fTriggerNamesBase.end(); ++It) {
-    fTriggerMap2[*It] = false;
   }
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
 
@@ -191,8 +176,6 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      // Look for one of the triggers we care about
 
      bool HasTrigger = false;
-     bool HasTrigger2 = false;
- 
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -201,52 +184,29 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   break;
 	 }
        }//triggers
-
-       getTriggerDecision2(iEvent, fTriggerMap2);
-       for (std::map<std::string, bool>::iterator It = fTriggerMap2.begin(); It != fTriggerMap2.end(); ++It) {
-         if (It->second) {
-           HasTrigger2 = true;
-           break;
-         }
-       }//triggers
-
      }//isData
      else {
        HasTrigger= true;
-       HasTrigger2= true;
-       if (_isSUSY){
-	 	 GetSUSYpoint(iEvent,iSetup);
-
-       }//isSUSY
      }//else isData
     /////////////////////////////////////////////////////
     ////CLEAN UP VARIABLES
     ////////////////////////////////////////////////////
-     HasSelTrigger = HasTrigger;
-     HasBaseTrigger = HasTrigger2;
-     if ((HasTrigger || HasTrigger2)){
-
+     if (HasTrigger){
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
        fGoodElectrons.clear(); fCleanElectrons.clear();
        nGoodElectrons=0; nCleanElectrons=0; 
        fGoodMuons.clear(); fCleanMuons.clear(); 
-       fCleanMuonsPFIso.clear(); 
+fCleanMuonsPFIso.clear(); 
        nGoodMuons=0; nCleanMuons=0;  
        fGoodPhotons.clear(); fCleanPhotons.clear();
        nGoodPhotons=0; nCleanPhotons=0;
        fGoodVtx.clear();
        nGoodVtx=0; int CountVtx=0;
-       nElectrons=0;
-       nMuons=0;
-       nPhotons=0;
 
        nGoodPFJets=0;       nCleanPFJets=0;
        nGoodCA8PFJets=0;       nCleanCA8PFJets=0;
        nGoodCA8PrunedPFJets=0;       nCleanCA8PrunedPFJets=0;
-       nCA8PrunedPFJets=0;
-       nCA8PFJets=0;
-       nPFJets=0;
 
        for (int i=0; i<200; ++i)
 	 {
@@ -281,6 +241,34 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        iEvent.getByLabel(_patJetType[2], fCleanCA8PrunedPFJets);
        
 
+       /*	 cout<<fGoodPFJets->size()<<" "<<fGoodCA8PFJets->size()<<" "<<fGoodCA8PrunedPFJets->size()<<endl;
+	 //	 cout<<fGoodPFJetsTest->size()<<" "<<fGoodCA8PFJetsTest->size()<<" "<<fGoodCA8PrunedPFJetsTest->size()<<endl;
+	 ////////TEST
+	 	 edm::Handle< std::vector<pat::Jet> > jets;
+	 //edm::Handle< edm::View<pat::Jet> > jets;
+	 iEvent.getByLabel("goodPatJetsCA8PrunedPF",jets);
+
+	 std::vector<pat::Jet>::const_iterator ibegin = jets->begin();
+	 std::vector<pat::Jet>::const_iterator iend = jets->end();
+	 std::vector<pat::Jet>::const_iterator ijet = ibegin;
+
+	 //edm::View<pat::Jet>::const_iterator ibegin = jets->begin();
+	 //edm::View<pat::Jet>::const_iterator iend = jets->end();
+	 //edm::View<pat::Jet>::const_iterator ijet = ibegin;
+
+	 // Loop over the "hard" jets
+	 for ( ; ijet != iend; ++ijet ) {
+
+
+	   // in your own analysis, and is a configurable parameter.
+	   if ( ijet->numberOfDaughters() >= 2 ) {
+
+	     reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(ijet->daughter(0));
+	     reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(ijet->daughter(1));
+	     cout<<subjet0->mass()<<endl;   
+}}
+       */
+	 
 	 ////////////////////
        DoVertexID(iEvent);
        DoElectronID(iEvent);
@@ -302,10 +290,18 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        fCleanMuons = fGoodMuons;
        fCleanElectrons = fGoodElectrons;
        fCleanPhotons= fGoodPhotons;
+       /*	fCleanPFJets= fGoodPFJets;
+	 fCleanCA8PFJets= fGoodCA8PFJets;
+	 fCleanCA8PrunedPFJets= fGoodCA8PrunedPFJets;
+       */
 	nCleanMuons = nGoodMuons; 
 	nCleanElectrons = nGoodElectrons;
 	nCleanPhotons= nGoodPhotons;
-
+	/*
+	nCleanPFJets= fGoodPFJets->size();
+	nCleanCA8PFJets= fGoodCA8PFJets->size();
+	nCleanCA8PrunedPFJets= fGoodCA8PrunedPFJets->size();
+	*/
 	nCleanPFJets= fCleanPFJets->size();
 	nCleanCA8PFJets= fCleanCA8PFJets->size();
 	nCleanCA8PrunedPFJets= fCleanCA8PrunedPFJets->size();
@@ -451,6 +447,32 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 */
 	 i++;
 	 }
+       /*       i=0;
+       for (std::vector<reco::Jet>::const_iterator Jet = fCleanRecoCA8PrunedPFJets->begin(); Jet != fCleanRecoCA8PrunedPFJets->end(); ++Jet) {       
+	 ++i;
+	 	 jet_CA8PrunedPF_nJetDaughters[i]=Jet->numberOfDaughters();
+		 reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(Jet->daughter(0));
+		 reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(Jet->daughter(1));
+	  cout<<subjet0->mass()<<endl;
+	 cout<<"----------SubJet masses------------"<<endl;
+
+	 }*/
+
+	 //	   jet_CA8PrunedPF_subJet3_mass[i]=Jet->dau0ghter(2)->mass();
+	 // jet_CA8PrunedPF_subJet2_mass[i]=Jet->daughter(1)->mass();
+	 //jet_CA8PrunedPF_subJet1_mass[i]=Jet->daughter(0)->mass();
+	 /*	 cout<<"before first"<<endl;
+	 Jet const * subjet0 = dynamic_cast<Jet const *>(Jet->daughter(0));
+	 cout<<"before second"<<endl;
+	 Jet const * subjet1 = dynamic_cast<Jet const *>(Jet->daughter(1));
+	 cout<<"before mass"<<endl;
+	 */
+	 //	 cout<<(*fCleanCA8PrunedPFJets)[i]->daughters(0)->mass()<<endl;
+	 //	 cout<<subjet0->mass()<<endl;
+	 //	 cout<<Jet->daughter(2)->mass()<<" "<<Jet->daughter(1)->mass()<<" "<<Jet->daughter(0)->mass()<<endl;
+	 
+
+       
        nElectrons=nCleanElectrons;
        for(int i=0; i<nCleanElectrons; i++){
 	 if(i<6){
@@ -825,7 +847,6 @@ Ntupler::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
 
   const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
 
-
   for (std::map<std::string, bool>::iterator It = TriggerMap.begin(); It != TriggerMap.end(); ++It) {
     It->second = false;
     unsigned int triggerIndex = triggerNames.triggerIndex(It->first);
@@ -839,91 +860,6 @@ Ntupler::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
   }
   return;
 }
-
-void
-Ntupler::getTriggerDecision2(const edm::Event& iEvent, std::map<std::string, bool>& TriggerMap2)
-{
-  edm::Handle<edm::TriggerResults> triggerResults;
-
-  std::string menu = "HLT";
-  iEvent.getByLabel(edm::InputTag("TriggerResults", "", menu), triggerResults);
-
-  const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
-
-
-  for (std::map<std::string, bool>::iterator It = TriggerMap2.begin(); It != TriggerMap2.end(); ++It) {
-    It->second = false;
-    unsigned int triggerIndex = triggerNames.triggerIndex(It->first);
-
-    if (triggerIndex < triggerResults->size()) {
-      if (triggerResults->accept(triggerIndex)) {
-        It->second = true;
-      }
-    }
-
-  }
-  return;
-}
-
-void
-Ntupler::GetSUSYpoint(const edm::Event& iEvent, const edm::EventSetup& iSetup)
-{
-
-       edm::Handle<LHEEventProduct> product;
-       bool commentIsThere = iEvent.getByLabel("source", product);
-       comments_const_iterator comment;
-
-       string tempString;
-       vector<string> tempStrings;
-       vector<string> parameters;
-       for(comment = product->comments_begin(); comment != product->comments_end();
-	   comment++)
-	 {
-	   if(commentIsThere)
-	     {
-	       tempString = comment->substr(0,comment->size());
-	       tempStrings = split(tempString," ");
-	       parameters = split(tempStrings[2], "_");
-	       //cout<<parameters[1]<<" "<<parameters[2]<<endl;
-	       MSquark= atof(parameters[1].c_str());
-	       MLSP=atof(parameters[2].c_str());
-	       
-	     }
-	 }
-
-}
-
-
-vector<string> Ntupler::split(string fstring, string splitter)
-{
-  vector<string> returnVector;
-  size_t cursor;
-  string beforeSplitter;
-  string afterSplitter = fstring;
-  if(fstring.find(splitter) == string::npos)
-    {
-      cout<<"No "<<splitter<<" found"<<endl;
-      returnVector.push_back(fstring);
-      return returnVector;
-    }
-  else
-    {
-      while(afterSplitter.find(splitter) != string::npos)
-	{
-	  cursor = afterSplitter.find(splitter);
-
-	  beforeSplitter = afterSplitter.substr(0, cursor);
-	  afterSplitter = afterSplitter.substr(cursor +1, afterSplitter.size());
-
-	  returnVector.push_back(beforeSplitter);
-
-	  if(afterSplitter.find(splitter) == string::npos)
-            returnVector.push_back(afterSplitter);
-	}
-      return returnVector;
-    }
-}
-
 
 void 
 Ntupler::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup, std::string PatJetType){
@@ -1007,7 +943,7 @@ void
 Ntupler::DoVertexID(const edm::Event& iEvent){
 
   edm::Handle<reco::VertexCollection>  recVtxs;
-  iEvent.getByLabel(_primaryVertex, recVtxs);
+  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
   
  
   int CountVtx=0;
@@ -1036,7 +972,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
   // Will need the vertices
   edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel(_primaryVertex, primaryVertices);
+  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
 
   // Loop over all electrons
   for (std::vector<pat::Electron>::const_iterator Electron = PatElectrons->begin(); Electron != PatElectrons->end(); ++Electron) {
@@ -1156,11 +1092,11 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
   //also get the vertices for some cuts
   edm::Handle<reco::VertexCollection>  recVtxs;
-  iEvent.getByLabel( _primaryVertex, recVtxs);
+  iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
 
   // Will need the vertices
   edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel( _primaryVertex, primaryVertices);
+  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
 
   // Loop over all Muons 
   for (std::vector<pat::Muon>::const_iterator Muon = PatMuons->begin(); Muon != PatMuons->end(); ++Muon) {
@@ -1283,7 +1219,7 @@ for (size_t im = 0; im != fCleanMuons.size(); ++im) {
 void
 Ntupler::DoMETID(const edm::Event& iEvent){
   Handle< vector<MET> >      MetColl;
-  iEvent.getByLabel(_METtype,  MetColl);
+  iEvent.getByLabel("patMETsPFlow",  MetColl);
   fMET=(*MetColl)[0];
   
   

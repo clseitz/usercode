@@ -22,11 +22,10 @@ class NtpThreeJet : public NtpReader
     void WriteHistograms();
 
     //some variables needed
-    /*   std::vector<TLorentzVector >      fBJets;
-   std::vector<TLorentzVector >      fNoBJets;
+    std::vector<TLorentzVector >      fBJets;
+    std::vector<TLorentzVector >      fNoBJets;
     std::vector<TLorentzVector >      fCleanJets;
-    std::vector<TLorentzVector >      fCleanJets20;
-    */    
+    
     TH1F* h_NumEvtCutMuon;
     TH1F* h_NumEvtCutElectron;
     TH1F* h_NumEvtCut;
@@ -38,54 +37,15 @@ class NtpThreeJet : public NtpReader
     TH1F*  h_mindRMuonJet;
     TH2F*  h_mindRMuonJet_mPFIso;
     TH1F*  h_MET;
-    TH1F* h_nBJet35;
-    TH1F* h_nJet35;
     TH1F* h_Jet0;
     TH1F* h_Jet1;
     TH1F* h_Jet2;
-    TH1F* h_Jet3;
     TH1F* h_Jet4;
     TH1F* h_Jet5;
-    TH1F* h_Jet6;
+
     TH1F* h_HT;
-
-    TH1F*  h_MET_Base;
-    TH1F* h_nBJet35_Base;
-    TH1F* h_nJet35_Base;
-    TH1F* h_Jet0_Base;
-    TH1F* h_Jet1_Base;
-    TH1F* h_Jet2_Base;
-    TH1F* h_Jet3_Base;
-    TH1F* h_Jet4_Base;
-    TH1F* h_Jet5_Base;
-    TH1F* h_Jet6_Base;
-    TH1F* h_HT_Base;
-
-    TH1F*  h_MET_BaseSel;
-    TH1F* h_nBJet35_BaseSel;
-    TH1F* h_nJet35_BaseSel;
-    TH1F* h_Jet0_BaseSel;
-    TH1F* h_Jet1_BaseSel;
-    TH1F* h_Jet2_BaseSel;
-    TH1F* h_Jet3_BaseSel;
-    TH1F* h_Jet4_BaseSel;
-    TH1F* h_Jet5_BaseSel;
-    TH1F* h_Jet6_BaseSel;
-    TH1F* h_HT_BaseSel;
     
     
-    TH1F* h_nBJet35_EvtSel;
-    TH1F* h_nJet35_EvtSel;
-    TH1F* h_HT_EvtSel;
-    TH1F* h_MET_EvtSel;
-    TH1F* h_Jet0_EvtSel;
-    TH1F* h_Jet1_EvtSel;
-    TH1F* h_Jet2_EvtSel;
-    TH1F* h_Jet3_EvtSel;
-    TH1F* h_Jet4_EvtSel;
-    TH1F* h_Jet5_EvtSel;
-    TH1F* h_Jet6_EvtSel;
-
 
     //MC plots
     TH1F* h_MCwprimeMassPos;
@@ -127,9 +87,15 @@ class NtpThreeJet : public NtpReader
 
 
 
+    ///threejet stuff
+    std::vector<float >   sumScalarPtTriplet;
+    std::vector<float >   massTriplet;
+    std::vector<float >   sumVectorPtTriplet;
+    std::vector <std::vector<TLorentzVector > > Triplet;
+
     //make some plots for the triplets
-    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag;
-    std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > > Mjjj_pt_njet_diag;
+    std::vector <std::vector<TH2F* > >Mjjj_sumpt_pt_njet;
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
 

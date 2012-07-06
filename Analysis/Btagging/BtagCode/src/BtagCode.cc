@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Wed Jun 15 13:36:24 EDT 2011
-// $Id: BtagCode.cc,v 1.2 2011/07/19 14:38:00 clseitz Exp $
+// $Id$
 //
 //
 
@@ -141,34 +141,22 @@ BtagCode::beginJob()
   for(float iOP=0; iOP<op_name.size(); iOP++)
     {
       jet_pt_tagger_flavor.push_back(std::vector<TH1F*> ());
-      jet_pt_1p2_2p4_tagger_flavor.push_back(std::vector<TH1F*> ());
-      jet_pt_l1p2_tagger_flavor.push_back(std::vector<TH1F*> ());
       jet_eta_tagger_flavor.push_back(std::vector<TH1F*> ());
-      
-      jet_eta_pt_tagger_flavor.push_back(std::vector<TH2F*> ());
-      
       triplet_jet_pt_tagger_flavor.push_back(std::vector<TH1F*> ());
       triplet_sumpt_tagger_flavor.push_back(std::vector<TH1F*> ());
       triplet_mass_tagger_flavor.push_back(std::vector<TH1F*> ());
       
       for(int iFlavor=0; iFlavor<3; iFlavor++)
 	{
-	  std::stringstream sjetpt,sjetpt_1p2_2p4,sjetpt_l1p2,sjeteta,sjetetapt,sTagFlav_Tjetpt,sTagFlav_Tmass,sTagFlav_Tsumpt;
+	  std::stringstream sjetpt,sjeteta,sTagFlav_Tjetpt,sTagFlav_Tmass,sTagFlav_Tsumpt;
 	  sjetpt<<"jet_pt_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
-	  sjetpt_1p2_2p4<<"jet_pt_1p2_2p4_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
-	  sjetpt_l1p2<<"jet_pt_l1p2_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
 	  sjeteta<<"jet_eta_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
-	  sjetetapt<<"jet_2D_eta_pt_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
 	  sTagFlav_Tjetpt<<"triplet_jet_pt_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
 	  sTagFlav_Tsumpt<<"triplet_sumpt_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
 	  sTagFlav_Tmass<<"triplet_mass_"<<op_name[iOP]<<"_"<<flavor_name[iFlavor];
 	  
 	  jet_pt_tagger_flavor[iOP].push_back(new TH1F(( sjetpt.str()).c_str(),(sjetpt.str()).c_str(), 500, 0, 1000));
-	  jet_pt_1p2_2p4_tagger_flavor[iOP].push_back(new TH1F(( sjetpt_1p2_2p4.str()).c_str(),(sjetpt_1p2_2p4.str()).c_str(), 500, 0, 1000));
-	  jet_pt_l1p2_tagger_flavor[iOP].push_back(new TH1F(( sjetpt_l1p2.str()).c_str(),(sjetpt_l1p2.str()).c_str(), 500, 0, 1000));
 	  jet_eta_tagger_flavor[iOP].push_back(new TH1F(( sjeteta.str()).c_str(),(sjeteta.str()).c_str(), 200, 0, 4));
-
-	  jet_eta_pt_tagger_flavor[iOP].push_back(new TH2F(( sjetetapt.str()).c_str(),(sjetetapt.str()).c_str(), 200, 0, 4,500, 0, 1000));
 	  triplet_jet_pt_tagger_flavor[iOP].push_back(new TH1F((sTagFlav_Tjetpt.str()).c_str(),(sTagFlav_Tjetpt.str()).c_str(), 500, 0, 1000));
 	  triplet_sumpt_tagger_flavor[iOP].push_back(new TH1F((sTagFlav_Tsumpt.str()).c_str(),(sTagFlav_Tsumpt.str()).c_str(), 500, 0, 1000));
 	  triplet_mass_tagger_flavor[iOP].push_back(new TH1F((sTagFlav_Tmass.str()).c_str(),(sTagFlav_Tmass.str()).c_str(), 500, 0, 1000));
@@ -263,10 +251,8 @@ BtagCode::endJob()
 	  for(int iFlavor=0; iFlavor<3; iFlavor++)
 	    {
 	      jet_pt_tagger_flavor[iOP][iFlavor]->Write();
-	      jet_pt_1p2_2p4_tagger_flavor[iOP][iFlavor]->Write();
-	      jet_pt_l1p2_tagger_flavor[iOP][iFlavor]->Write();
 	       jet_eta_tagger_flavor[iOP][iFlavor]->Write();
-	       jet_eta_pt_tagger_flavor[iOP][iFlavor]->Write();
+	      
 	    }
 	}
     for(float iTagger=0; iTagger<8;iTagger++)
@@ -623,10 +609,7 @@ void BtagCode::BtagEff(std::vector<pat::Jet >fCleanJets, int nCleanJets){
     if (flavor==5){
       //count number of bjets in the event
       jet_pt_tagger_flavor[7][0]->Fill(d_pt);
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][0]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][0]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][0]->Fill(d_eta);
-      jet_eta_pt_tagger_flavor[7][0]->Fill(d_eta,d_pt);
+ jet_eta_tagger_flavor[7][0]->Fill(d_eta);
       MCbcount++;
       discriminator_tagalgo_flavor[0][0]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][0]->Fill(d_bDis_TCHP);
@@ -635,21 +618,15 @@ void BtagCode::BtagEff(std::vector<pat::Jet >fCleanJets, int nCleanJets){
     }
     if (flavor==4){
       jet_pt_tagger_flavor[7][1]->Fill(d_pt);
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][1]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][1]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][1]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[7][1]->Fill(d_eta,d_pt);
+ jet_eta_tagger_flavor[7][1]->Fill(d_eta);
       discriminator_tagalgo_flavor[0][1]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][1]->Fill(d_bDis_TCHP);
       discriminator_tagalgo_flavor[2][1]->Fill(d_bDis_SSVHE);
       discriminator_tagalgo_flavor[3][1]->Fill(d_bDis_SSVHP);
     }
     if (flavor==21 || (flavor >0 && flavor<4)){
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][2]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][2]->Fill(d_pt);
       jet_pt_tagger_flavor[7][2]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][2]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[7][2]->Fill(d_eta,d_pt);
+ jet_eta_tagger_flavor[7][1]->Fill(d_eta);
       discriminator_tagalgo_flavor[0][2]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][2]->Fill(d_bDis_TCHP);
       discriminator_tagalgo_flavor[2][2]->Fill(d_bDis_SSVHE);
@@ -661,72 +638,45 @@ jet_eta_pt_tagger_flavor[7][2]->Fill(d_eta,d_pt);
     if (d_bDis_TCHE>operating_point[0]){
       if (flavor==5){
 	jet_pt_tagger_flavor[0][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[0][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[0][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[0][0]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[0][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[0][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[0][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[0][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[0][1]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[0][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[0][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[0][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[0][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[0][2]->Fill(d_eta); 
-	jet_eta_pt_tagger_flavor[0][2]->Fill(d_eta,d_pt);
       }
     }
     //TCHEM
     if (d_bDis_TCHE>operating_point[1]){
       if (flavor==5){
 	jet_pt_tagger_flavor[1][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[1][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[1][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[1][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[1][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[1][1]->Fill(d_pt);
-if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[1][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[1][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[1][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[1][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[1][2]->Fill(d_pt);
-if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[1][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[1][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[1][2]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[1][2]->Fill(d_eta,d_pt);
       }
     }
     //TCHPM
     if (d_bDis_TCHP>operating_point[2]){
       if (flavor==5){
 	jet_pt_tagger_flavor[2][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[2][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[2][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[2][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[2][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[2][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[2][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[2][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[2][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[2][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[2][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[2][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[2][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[2][2]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[2][2]->Fill(d_eta,d_pt);
 	
       }
     }
@@ -734,97 +684,61 @@ if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[1][2]->Fill(d_pt);
     if (d_bDis_TCHP>operating_point[3]){
       if (flavor==5){
 	jet_pt_tagger_flavor[3][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[3][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[3][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[3][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[3][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[3][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[3][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[3][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[3][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[3][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[3][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[3][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[3][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[3][2]->Fill(d_eta); 
-	jet_eta_pt_tagger_flavor[3][2]->Fill(d_eta,d_pt);
       }
     }
     //SSVHEM
     if (d_bDis_SSVHE>operating_point[4]){
       if (flavor==5){
 	jet_pt_tagger_flavor[4][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[4][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[4][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[4][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[4][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[4][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[4][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[4][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[4][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[4][1]->Fill(d_eta,d_pt);
       }		  
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[4][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[4][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[4][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[4][2]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[4][2]->Fill(d_eta,d_pt);
       }
     }
     //SSVHEM
     if (d_bDis_SSVHE>operating_point[5]){
       if (flavor==5){
 	jet_pt_tagger_flavor[5][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[5][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[5][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[5][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[5][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[5][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[5][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[5][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[5][1]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[5][1]->Fill(d_eta,d_pt);
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[5][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[5][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[5][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[5][2]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[5][2]->Fill(d_eta,d_pt);
       }
     }
     //SSVHPT
     if (d_bDis_SSVHP>operating_point[6]){
       if (flavor==5){
 	jet_pt_tagger_flavor[6][0]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[6][0]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[6][0]->Fill(d_pt);
 	jet_eta_tagger_flavor[6][0]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[6][0]->Fill(d_eta,d_pt);
       }
       if (flavor==4){
 	jet_pt_tagger_flavor[6][1]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[6][1]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[6][1]->Fill(d_pt);
 	jet_eta_tagger_flavor[6][1]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[6][1]->Fill(d_eta,d_pt);
 	
       }
       if (flavor==21 || (flavor >0 && flavor<4)){
 	jet_pt_tagger_flavor[6][2]->Fill(d_pt);
-	if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[6][2]->Fill(d_pt);
-	if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[6][2]->Fill(d_pt);
 	jet_eta_tagger_flavor[6][2]->Fill(d_eta);
-	jet_eta_pt_tagger_flavor[6][2]->Fill(d_eta,d_pt);
       }
     }
     

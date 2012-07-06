@@ -4,43 +4,20 @@ import string
 import os,sys
 
 print sys.argv[2]
-index = int (sys.argv[2])
-                                                
-#suffix_list.append("Wp600_CMS_1")
-#suffix_list.append("Wp600_CMS_2")
-#suffix_list.append("Wp1000_CMS_1")
-#suffix_list.append("Wp1000_CMS_2")
-#suffix_list.append("Wp400PU_1")
-#suffix_list.append("Wp400PU_2")
-#suffix_list.append("Wp800PU_1")
-#suffix_list.append("Wp800PU_2")
-
 suffix_list=[]
-output_list=[]
-dir_list=[]
-#suffix_list.append("Wp800_2")
+                                                
+suffix_list.append("Wp600_CMS_1")
+suffix_list.append("Wp600_CMS_2")
+suffix_list.append("Wp1000_CMS_1")
+suffix_list.append("Wp1000_CMS_2")
 
 
 
-#suffix_list = os.popen('ls -1 /cms/data26/clseitz/Wp425/TEST/*v9*root').readlines()
-#2012 restart with Wp PatTuples
-suffix_list = os.popen('ls -1 /cms/data27/clseitz/WprimeOffFall11/PAT/WprimeTToTTD_M600_52_v9.root').readlines()
+this_fin_nocfi  = "file:/cms/data24/clseitz/MC_4_2_4/Wprime2/ttbsm_42x_mc"+suffix_list[string.atoi(sys.argv[2])]+".root"
+this_fout0 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_e_vec.root"
+this_fout1 = suffix_list[string.atoi(sys.argv[2])]+"_LeptonANA_e_vec_tree.root"
 
 
-this_fin_nocfi  = "file:"+suffix_list[index]
-this_fout0 = "/cms/data27/clseitz/RUNtuple_12.04/WprimeTToTTD_M600_"+str(index)+"_FastSim425_TlBSMv9_RUNtuple_12.04_plots.root"
-this_fout1 = "/cms/data27/clseitz/RUNtuple_12.04/WprimeTToTTD_M600_"+str(index)+"_FastSim425_TlBSMv9_RUNtuple_12.04_tree.root"
-
-print this_fin_nocfi
-print this_fout0
-print this_fout1
-
-#this_fin_nocfi  = "file:/cms/data24/clseitz/MC_4_2_4/Wprime2/ttbsm_42x_mc"+suffix_list[string.atoi(sys.argv[2])]+".root"
-#this_fin_nocfi  = "file:/cms/data24/clseitz/ttbsmPat4_2_4/ttbsm_42x_mc"+suffix_list[string.atoi(sys.argv[2])]+"_fat.root" 
-#this_fout0 = "/cms/data24/clseitz/Ntuples/"+suffix_list[string.atoi(sys.argv[2])]+"_PFselect_plots_fat_20l.root"
-#this_fout1 = "/cms/data24/clseitz/Ntuples/"+suffix_list[string.atoi(sys.argv[2])]+"_PFselect_tree_fat_20l.root"
-#this_fout0 = "test_plots.root"
-#this_fout1 = "test_tree.root"
 process = cms.Process("data2")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -48,21 +25,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 process.maxEvents = cms.untracked.PSet( 
-  #input = cms.untracked.int32(200)
+  #input = cms.untracked.int32(2000)
  input = cms.untracked.int32(-1) 
 )
-
 process.source = cms.Source("PoolSource",
-                    fileNames = cms.untracked.vstring(this_fin_nocfi),
-                    duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
-                    )
-
-#process.source = cms.Source("PoolSource",
                                 # replace 'myfile.root' with the source file you want to use
- #                               fileNames = cms.untracked.vstring(this_fin_nocfi)
-  #                           duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
-                                                         
-   #                          )
+                                fileNames = cms.untracked.vstring(this_fin_nocfi)
+                            )
 
 ##process.source = cms.Source("PoolSource",
 ##  skipEvents = cms.untracked.uint32(0), 
@@ -105,6 +74,5 @@ process.data2 = cms.EDAnalyzer('TopXana',
                         
   JSONFilename = cms.untracked.string('/users/h1/clseitz/MyCMS/CMSSW_4_2_4/src/TopBSM/TopXana/submit/Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt'),                             
 )                               
-
 
 process.p = cms.Path(process.data2)

@@ -1,6 +1,3 @@
-
-
-
 //#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
 #include <iostream>
@@ -35,97 +32,48 @@ NtpThreeJet::~NtpThreeJet ()
 
 void NtpThreeJet::BookHistograms()
 {
-
-
   char hNAME[99];
  
-  //before cuts, just the ones that where already in the ntuple
-  h_PossibleTrigger  = new TH1F("PossibleTrigger", "PossibleTrigger",30,0,30);   h_PossibleTrigger->Sumw2();
-
-  h_mindRMuonJet = new TH1F("mindRMuonJet", "mindRMuonJet",100,0,5);   h_mindRMuonJet->Sumw2();
-  h_mindRMuonJet_mPFIso = new TH2F("mindRMuonJet_mPFIso", "mindRMuonJet_mPFIso",200,0,10,100,0,5);  h_mindRMuonJet_mPFIso->Sumw2();
-  h_ept= new TH1F("ept", "ept",200,0,1000); h_ept->Sumw2();
-  h_mpt= new TH1F("mpt", "mpt",200,0,1000); h_mpt->Sumw2();
-  h_mPFIso= new TH1F("mPFIso", "mPFIso",200,0,10); h_mPFIso->Sumw2();
-  //befor cuts
-  h_MET = new TH1F("MET", "MET",200,0,1000); h_MET->Sumw2();
-  h_HT = new TH1F("HT", "HT",400,0,4000); h_HT->Sumw2();
-  h_nBJet35  = new TH1F("nBJet35", "nBJet35",20,0,20); h_nBJet35->Sumw2();
-  h_nJet35  = new TH1F("nJet20", "nJet20",20,0,20); h_nJet35->Sumw2();
-  h_Jet0= new TH1F("Jet0", "Jet0",200,0,1000); h_Jet0->Sumw2();
-  h_Jet1= new TH1F("Jet1", "Jet1",200,0,1000); h_Jet1->Sumw2();
-  h_Jet2= new TH1F("Jet2", "Jet2",200,0,1000); h_Jet2->Sumw2();
-  h_Jet3= new TH1F("Jet3", "Jet3",200,0,1000); h_Jet3->Sumw2();
-  h_Jet4= new TH1F("Jet4", "Jet4",200,0,1000); h_Jet4->Sumw2();
-  h_Jet5= new TH1F("Jet5", "Jet5",200,0,1000); h_Jet5->Sumw2();
-  h_Jet6= new TH1F("Jet6", "Jet6",200,0,1000); h_Jet6->Sumw2();
-  //after cuts
-  h_MET_EvtSel = new TH1F("MET_EvtSel", "MET_EvtSel",200,0,1000); h_MET_EvtSel->Sumw2();
-  h_HT_EvtSel = new TH1F("HT_EvtSel", "HT_EvtSel",400,0,4000); h_HT_EvtSel->Sumw2();
-  h_nBJet35_EvtSel  = new TH1F("nBJet35_EvtSel", "nBJet35_EvtSel",20,0,20); h_nBJet35_EvtSel->Sumw2();
-  h_nJet35_EvtSel  = new TH1F("nJet35_EvtSel", "nJet35_EvtSel",20,0,20); h_nJet35_EvtSel->Sumw2();
-  h_Jet0_EvtSel= new TH1F("Jet0_EvtSel", "Jet0_EvtSel",200,0,1000); h_Jet0_EvtSel->Sumw2();
-  h_Jet1_EvtSel= new TH1F("Jet1_EvtSel", "Jet1_EvtSel",200,0,1000); h_Jet1_EvtSel->Sumw2();
-  h_Jet2_EvtSel= new TH1F("Jet2_EvtSel", "Jet2_EvtSel",200,0,1000); h_Jet2_EvtSel->Sumw2();
-  h_Jet3_EvtSel= new TH1F("Jet3_EvtSel", "Jet3_EvtSel",200,0,1000); h_Jet3_EvtSel->Sumw2();
-  h_Jet4_EvtSel= new TH1F("Jet4_EvtSel", "Jet4_EvtSel",200,0,1000); h_Jet4_EvtSel->Sumw2();
-  h_Jet5_EvtSel= new TH1F("Jet5_EvtSel", "Jet5_EvtSel",200,0,1000); h_Jet5_EvtSel->Sumw2();
-  h_Jet6_EvtSel= new TH1F("Jet6_EvtSel", "Jet6_EvtSel",200,0,1000); h_Jet6_EvtSel->Sumw2();
-  //TriggerPlots
+  h_NumEvtCutMuon = new TH1F("NumEvtCutMuon", "NumEvtCutMuon",20,0,20);
+  h_NumEvtCutElectron = new TH1F("NumEvtCutElectron", "NumEvtCutElectron",20,0,20);
+  h_NumEvtCut = new TH1F("NumEvtCut", "NumEvtCut",20,0,20);
+  h_PossibleTrigger  = new TH1F("PossibleTrigger", "PossibleTrigger",20,0,20);
+  h_MET = new TH1F("MET", "MET",200,0,1000);
+  h_HT = new TH1F("HT", "HT",200,0,1000);
+  h_mindRMuonJet = new TH1F("mindRMuonJet", "mindRMuonJet",100,0,5);
+  h_mindRMuonJet_mPFIso = new TH2F("mindRMuonJet_mPFIso", "mindRMuonJet_mPFIso",200,0,10,100,0,5);
+  h_ept= new TH1F("ept", "ept",200,0,1000);
+  h_mpt= new TH1F("mpt", "mpt",200,0,1000);
+  h_mPFIso= new TH1F("mPFIso", "mPFIso",200,0,10);
   
-  h_MET_Base = new TH1F("MET_Base", "MET_Base",200,0,1000); h_MET_Base->Sumw2();
-  h_HT_Base = new TH1F("HT_Base", "HT_Base",400,0,4000); h_HT_Base->Sumw2();
-  h_nBJet35_Base   = new TH1F("nBJet35_Base", "nBJet35_Base",20,0,20); h_nBJet35_Base->Sumw2();
-  h_nJet35_Base   = new TH1F("nJet20_Base", "nJet20_Base",20,0,20); h_nJet35_Base->Sumw2();
-  h_Jet0_Base = new TH1F("Jet0_Base", "Jet0_Base",200,0,1000); h_Jet0_Base->Sumw2();
-  h_Jet1_Base = new TH1F("Jet1_Base", "Jet1_Base",200,0,1000); h_Jet1_Base->Sumw2();
-  h_Jet2_Base = new TH1F("Jet2_Base", "Jet2_Base",200,0,1000); h_Jet2_Base->Sumw2();
-  h_Jet3_Base = new TH1F("Jet3_Base", "Jet3_Base",200,0,1000); h_Jet3_Base->Sumw2();
-  h_Jet4_Base = new TH1F("Jet4_Base", "Jet4_Base",200,0,1000); h_Jet4_Base->Sumw2();
-  h_Jet5_Base = new TH1F("Jet5_Base", "Jet5_Base",200,0,1000); h_Jet5_Base->Sumw2();
-  h_Jet6_Base = new TH1F("Jet6_Base", "Jet6_Base",200,0,1000); h_Jet6_Base->Sumw2();
-
-  h_MET_BaseSel = new TH1F("MET_BaseSel", "MET_BaseSel",200,0,1000); h_MET_BaseSel->Sumw2();
-  h_HT_BaseSel = new TH1F("HT_BaseSel", "HT_BaseSel",400,0,4000); h_HT_BaseSel->Sumw2();
-  h_nBJet35_BaseSel   = new TH1F("nBJet35_BaseSel", "nBJet35_BaseSel",20,0,20); h_nBJet35_BaseSel->Sumw2();
-  h_nJet35_BaseSel   = new TH1F("nJet20_BaseSel", "nJet20_BaseSel",20,0,20); h_nJet35_BaseSel->Sumw2();
-  h_Jet0_BaseSel = new TH1F("Jet0_BaseSel", "Jet0_BaseSel",200,0,1000); h_Jet0_BaseSel->Sumw2();
-  h_Jet1_BaseSel = new TH1F("Jet1_BaseSel", "Jet1_BaseSel",200,0,1000); h_Jet1_BaseSel->Sumw2();
-  h_Jet2_BaseSel = new TH1F("Jet2_BaseSel", "Jet2_BaseSel",200,0,1000); h_Jet2_BaseSel->Sumw2();
-  h_Jet3_BaseSel = new TH1F("Jet3_BaseSel", "Jet3_BaseSel",200,0,1000); h_Jet3_BaseSel->Sumw2();
-  h_Jet4_BaseSel = new TH1F("Jet4_BaseSel", "Jet4_BaseSel",200,0,1000); h_Jet4_BaseSel->Sumw2();
-  h_Jet5_BaseSel = new TH1F("Jet5_BaseSel", "Jet5_BaseSel",200,0,1000); h_Jet5_BaseSel->Sumw2();
-  h_Jet6_BaseSel = new TH1F("Jet6_BaseSel", "Jet6_BaseSel",200,0,1000); h_Jet6_BaseSel->Sumw2();
-  
-
-  cout<<"before histos"<<endl;
-  for(int b=0; b<5; b++){
+  h_Jet0= new TH1F("Jet0", "Jet0",200,0,1000);
+  h_Jet1= new TH1F("Jet1", "Jet1",200,0,1000);
+  h_Jet2= new TH1F("Jet2", "Jet2",200,0,1000);
+  h_Jet4= new TH1F("Jet3", "Jet3",200,0,1000);
+  h_Jet5= new TH1F("Jet4", "Jet4",200,0,1000);
   for (int i=0; i<7; i++){
-    int iPt=30+i*10;
-    Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
-    Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    for(int k=0; k<3; k++){
-      int iNjet=k+6;
+    int iPt=20+i*10;
 
-      Mjjj_sumpt_bjet_pt_njet[b].push_back(std::vector<TH2F*> ());
-      sprintf(hNAME, "Mjjj_sumpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
-      Mjjj_sumpt_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
-      Mjjj_sumpt_bjet_pt_njet[b][i][k]->Sumw2();
-      Mjjj_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+    for(int k=0; k<4; k++){
+      int iNjet=k+3;
+
+      Mjjj_sumpt_pt_njet.push_back(std::vector<TH2F*> ());
+      sprintf(hNAME, "Mjjj_sumpt_pt%i_GE%ijet", iPt,iNjet);
+      Mjjj_sumpt_pt_njet[i].push_back(new TH2F(hNAME,hNAME,100,0,1000,100,0,1000));
+      Mjjj_pt_njet_diag.push_back(std::vector<std::vector<TH1F*> > ());
 
       for(int j=0; j<20; j++){
 	
 	int iDiag=j*10+40;
 	
-	Mjjj_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
-	Mjjj_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+	Mjjj_pt_njet_diag[i].push_back(std::vector<TH1F*> ());
+	sprintf(hNAME, "Mjjj_pt%i_diag%i_GE%ijet", iPt,iDiag,iNjet);
+	Mjjj_pt_njet_diag[i][k].push_back(new TH1F(hNAME,hNAME,100,0,1000));
       }
     }
   }
-  }
-  cout<<"after histos"<<endl;
+
+
  return;
 }
  
@@ -136,83 +84,41 @@ void NtpThreeJet::WriteHistograms()
 
    fOutFile->mkdir("Events");
    fOutFile->cd("Events");
+
+   h_NumEvtCutMuon->Write();
+   h_NumEvtCutElectron->Write();
+   h_NumEvtCut->Write();
    h_PossibleTrigger->Write();
+   h_MET->Write();
+   h_HT->Write();
 
    h_ept->Write();
    h_mpt->Write();
    h_mPFIso->Write();
    h_mindRMuonJet->Write();
    h_mindRMuonJet_mPFIso->Write();
-   h_MET->Write();
-   h_nBJet35->Write();
-   h_nJet35->Write();
-   h_HT->Write();
    h_Jet0->Write();
    h_Jet1->Write();
    h_Jet2->Write();
-   h_Jet3->Write();
    h_Jet4->Write();
    h_Jet5->Write();
-   h_Jet6->Write();
-   fOutFile->mkdir("Trigger");
-   fOutFile->cd("Trigger");
-
-   h_MET_Base->Write();
-   h_nBJet35_Base->Write();
-   h_nJet35_Base->Write();
-   h_HT_Base->Write();
-   h_Jet0_Base->Write();
-   h_Jet1_Base->Write();
-   h_Jet2_Base->Write();
-   h_Jet3_Base->Write();
-   h_Jet4_Base->Write();
-   h_Jet5_Base->Write();
-   h_Jet6_Base->Write();
-
-   h_MET_BaseSel->Write();
-   h_nBJet35_BaseSel->Write();
-   h_nJet35_BaseSel->Write();
-   h_HT_BaseSel->Write();
-   h_Jet0_BaseSel->Write();
-   h_Jet1_BaseSel->Write();
-   h_Jet2_BaseSel->Write();
-   h_Jet3_BaseSel->Write();
-   h_Jet4_BaseSel->Write();
-   h_Jet5_BaseSel->Write();
-   h_Jet6_BaseSel->Write();
-
-
-   TDirectory* triplets=fOutFile->mkdir("Triplets");
+   TDirectory* now=fOutFile->mkdir("Triplets");
    fOutFile->cd("Triplets");
-   h_MET_EvtSel->Write();
-   h_nBJet35_EvtSel->Write();
-   h_nJet35_EvtSel->Write();
-   h_HT_EvtSel->Write();
-   h_Jet0_EvtSel->Write();
-   h_Jet1_EvtSel->Write();
-   h_Jet2_EvtSel->Write();
-   h_Jet3_EvtSel->Write();
-   h_Jet4_EvtSel->Write();
-   h_Jet5_EvtSel->Write();
-   h_Jet6_EvtSel->Write();
-   for (int b=0; b<5; b++){
-     sprintf(FOLDER, "bjet_%i", b);
-     TDirectory* now=triplets->mkdir(FOLDER);
-     triplets->cd(FOLDER);
-       for (int i=0; i<7; i++){
-	 sprintf(FOLDER, "jetpt_%i", i*10+30);
-	 now->mkdir(FOLDER);
-	 now->cd(FOLDER);
-	 for (int k=0; k<3; k++){
-	   Mjjj_sumpt_bjet_pt_njet[b][i][k]->Write();
-	   for(int j=0; j<20; j++){ 
-	   
-	     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Write();  
-	   }
-	 }
+
+   for (int i=0; i<7; i++){
+     sprintf(FOLDER, "jetpt_%i", i*10+20);
+     now->mkdir(FOLDER);
+     now->cd(FOLDER);
+     for (int k=0; k<4; k++){
+       Mjjj_sumpt_pt_njet[i][k]->Write();
+       for(int j=0; j<20; j++){ 
+	 //cout<<"Mjjj_pt"<<i*10+20<<"_njet"<<k+3<<"_diag"<<j*10+40<<"  "<<Mjjj_pt_njet_diag[i][k][j]->GetEntries()<<endl;
+	 Mjjj_pt_njet_diag[i][k][j]->Write();  
        }
+     }
    }
-   
+
+
   return;
 }
   
@@ -236,61 +142,42 @@ void NtpThreeJet::Loop ()
   int countsemilep=0;
 
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-
     
   ///////////////////Clear out variables/////////////////////
-    std::vector<TLorentzVector* >      fBJets;
-    std::vector<TLorentzVector* >      fNoBJets;
-    std::vector<TLorentzVector* >      fCleanJets;
-    std::vector<TLorentzVector* >      fTestJets;
-    std::vector<TLorentzVector* >      fCleanJets20;  
-    std::vector<float >   sumScalarPtTriplet;
-    std::vector<float >   massTriplet;
-    std::vector<float >   sumVectorPtTriplet;
-    std::vector <std::vector<TLorentzVector* > > Triplet;
-
-  Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
-  fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear(); 
+  Triplet.clear();  
+  sumScalarPtTriplet.clear();
+  sumVectorPtTriplet.clear();
+  massTriplet.clear();
+  
   ////////////////////////////////////////////////////////////
     
 
     if (ientry % 100 == 0) {
       printf("Processing entry: %i\n", ientry);
     }
-    //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
-if(MSquark == 375 && MLSP ==75){
 
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
-    int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; 
-
+    int nJet25=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; fBJets.clear(); fNoBJets.clear();fCleanJets.clear();
     float SumptAllJet=0;
-    float SumptAllJet20=0;
-    vector<TLorentzVector* > fdummyCleanJets;
-    int dummycounter=0;     
-    //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
-        for (int i=0; i<nPFJets; i++){
-	  //cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
-      TLorentzVector* Jet= new TLorentzVector(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-      TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
+    vector<TLorentzVector > fdummyCleanJets;
+     for (int i=0; i<nPFJets; i++){
+      TLorentzVector Jet(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
+      TLorentzVector dummyJet(0,0,0,0);
 
-      if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
-	nJet20++;
-	fCleanJets20.push_back(Jet);
-	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
-
+      if (jet_PF_pt[i]>25.0){
+	nJet25=i+1;
 	if(jet_PF_pt[i]>35.0){
 	SumptAllJet=SumptAllJet+jet_PF_pt[i];
 	fCleanJets.push_back(Jet);
-	nJet35++;
-	dummycounter++;
-	if (bdiscCSV_PF[i] > 0.679)
+	nJet35=i+1;
+	if (bdiscSSVHE_PF[i] > 1.74)
 	  {
 	    nBJet35++;
 	    fBJets.push_back(Jet);
 	    fdummyCleanJets.push_back(dummyJet);
 	  }
-	if (bdiscCSV_PF[i] <= 0.679)
+	if (bdiscSSVHE_PF[i] <= 1.74)
 	  {
 	    nNoBJet35++;
 	    fNoBJets.push_back(Jet);
@@ -299,13 +186,11 @@ if(MSquark == 375 && MLSP ==75){
 	  }
 	}
       }
-      }
-
-
+    }
      //MUON/////
      //make some plots for the muons
-    vector<TLorentzVector* > fdummyCleanMuons;
-    for (int i=0; i<nMuons; i++){
+    vector<TLorentzVector > fdummyCleanMuons;
+     for (int i=0; i<nMuons; i++){
        TLorentzVector Muon(mpx[i],mpy[i],mpz[i],me[i]);
        //lets look at the leading muon for now
        if(i==0){
@@ -314,8 +199,8 @@ if(MSquark == 375 && MLSP ==75){
        //calcualte the minimum dR to one of the jets
        float mindRMuonJet=9999;
        for (int j=0; j<nJet35; j++){
-	 TLorentzVector Jet1(fCleanJets[j]->Px(),fCleanJets[j]->Py(),fCleanJets[j]->Pz(),fCleanJets[j]->E());
-	 float dRMuonJet=Jet1.DeltaR(Muon);
+	 TLorentzVector Jet(fCleanJets[j].Px(),fCleanJets[j].Py(),fCleanJets[j].Pz(),fCleanJets[j].E());
+	 float dRMuonJet=Jet.DeltaR(Muon);
 	 if (dRMuonJet < mindRMuonJet) mindRMuonJet=dRMuonJet;
 	 //	 cout<<"All: "<<dRMuonJet<<endl;
 
@@ -326,110 +211,42 @@ if(MSquark == 375 && MLSP ==75){
        h_mindRMuonJet_mPFIso->Fill(mPFIso[i],mindRMuonJet);
        }
      }
-    
-     ////TRIGGER////////////
-     if(nJet20>=6){
-     if(HasBaseTrigger){
-       h_MET_Base->Fill(pfMET);
-       h_HT_Base->Fill(SumptAllJet20);
-       h_Jet0_Base->Fill(fCleanJets20[0]->Pt());
-       h_Jet1_Base->Fill(fCleanJets20[1]->Pt());
-       h_Jet2_Base->Fill(fCleanJets20[2]->Pt());
-       h_Jet3_Base->Fill(fCleanJets20[3]->Pt());
-       if(nJet20>=5) h_Jet4_Base->Fill(fCleanJets20[4]->Pt());
-       if(nJet20>=6) h_Jet5_Base->Fill(fCleanJets20[5]->Pt());
-            if(HasSelTrigger){
-	      h_MET_BaseSel->Fill(pfMET);
-	      h_HT_BaseSel->Fill(SumptAllJet20);
-	      h_Jet0_BaseSel->Fill(fCleanJets20[0]->Pt());
-	      h_Jet1_BaseSel->Fill(fCleanJets20[1]->Pt());
-	      h_Jet2_BaseSel->Fill(fCleanJets20[2]->Pt());
-	      h_Jet3_BaseSel->Fill(fCleanJets20[3]->Pt());
-	      if(nJet20>=5) h_Jet4_BaseSel->Fill(fCleanJets20[4]->Pt());
-	      if(nJet20>=6) h_Jet5_BaseSel->Fill(fCleanJets20[5]->Pt());
-	    }
-     }
 
-     }
      //Possible Triggers selections
-	
-    if (HasSelTrigger){     
-     if (nJet35>=6 && nMuons>=1) {
-       h_PossibleTrigger->Fill(1);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(5);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(9);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(13);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(17);
-     }
-     if (nJet35>=6 && SumptAllJet>900)
-       { h_PossibleTrigger->Fill(2);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(6);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(10);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(14);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(18);
-       }
-     if (nJet35>=6){
-       if(fCleanJets[0]->Pt() > 85 && fCleanJets[1]->Pt() > 80 && fCleanJets[2]->Pt() > 65 && fCleanJets[3]->Pt() > 65 && fCleanJets[4]->Pt() > 25 &&
-	  fCleanJets[5]->Pt() > 25){
-	 h_PossibleTrigger->Fill(3);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(7);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(11);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(15);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(19);
-       }
-       }
 
+     if (nJet35>=6 && nMuons>=1) h_PossibleTrigger->Fill(1);
+     if (nJet35>=6 && SumptAllJet>800) h_PossibleTrigger->Fill(2);
+     if (nJet25>=6)
+     if(fCleanJets[0].Pt() > 85 && fCleanJets[1].Pt() > 80 && fCleanJets[2].Pt() > 65 && fCleanJets[3].Pt() > 65 && fCleanJets[4].Pt() > 25 &&
+	fCleanJets[5].Pt() > 25) h_PossibleTrigger->Fill(3);
 
-
+     ////TRIGGER////////////
      //  if ( nJet35>=6 && nMuons>=1){
      //     if ( nJet35>=6 && SumptAllJet>800){
-	   h_nBJet35->Fill(nBJet35);
-	   h_nJet35->Fill(nJet35);
-	   h_MET->Fill(pfMET);
-	   h_HT->Fill(SumptAllJet);
-	   if(nJet35>=1)h_Jet0->Fill(fCleanJets[0]->Pt());
-	   if(nJet35>=2)h_Jet1->Fill(fCleanJets[1]->Pt());
-	   if(nJet35>=3)h_Jet2->Fill(fCleanJets[2]->Pt());
-	   if(nJet35>=4)h_Jet3->Fill(fCleanJets[3]->Pt());
-	   if(nJet35>=5)h_Jet4->Fill(fCleanJets[4]->Pt());
-	   if(nJet35>=6)h_Jet5->Fill(fCleanJets[5]->Pt());
-	   
-	      
-     if ( nJet35>=6){
-       //cout<<nJet35<<" "<<fCleanJets.size()<<" "<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
-       if(fCleanJets[0]->Pt() > 85 && fCleanJets[1]->Pt() > 85 && fCleanJets[2]->Pt() > 85 && fCleanJets[3]->Pt() > 85 && fCleanJets[4]->Pt() > 50 && fCleanJets[5]->Pt() > 50){
-       //      if(SumptAllJet>900){
-	 if(1==1){//nBJet35 >= 3){
-	   cout<<MSquark<<" "<<MLSP<<endl;
-	   h_nBJet35_EvtSel->Fill(nBJet35);
-	   h_nJet35_EvtSel->Fill(nJet35);
-	   h_MET_EvtSel->Fill(pfMET);
-	   h_HT_EvtSel->Fill(SumptAllJet);
-	   h_Jet0_EvtSel->Fill(fCleanJets[0]->Pt());
-	   h_Jet1_EvtSel->Fill(fCleanJets[1]->Pt());
-	   h_Jet2_EvtSel->Fill(fCleanJets[2]->Pt());
-	   if(nJet35>=4) h_Jet3_EvtSel->Fill(fCleanJets[3]->Pt());
-	   if(nJet35>=5) h_Jet4_EvtSel->Fill(fCleanJets[4]->Pt());
-	   if(nJet35>=6) h_Jet5_EvtSel->Fill(fCleanJets[5]->Pt());
-	   if(nJet35>=7) h_Jet6_EvtSel->Fill(fCleanJets[6]->Pt());
-	   //all the jets make triplets
-	   //	   int numJetForTriplet=fCleanJets.size();
-	   //only the six leading jets make triplets
-       unsigned int numJetForTriplet=6;
+
+     if ( nJet25>=6){
+       if(fCleanJets[0].Pt() > 85 && fCleanJets[1].Pt() > 80 && fCleanJets[2].Pt() > 65 && fCleanJets[3].Pt() > 65 && fCleanJets[4].Pt() > 25 &&
+	  fCleanJets[5].Pt() > 25){
+       h_MET->Fill(pfMET);
+       h_Jet0->Fill(fCleanJets[0].Pt());
+       h_Jet1->Fill(fCleanJets[1].Pt());
+       h_Jet2->Fill(fCleanJets[2].Pt());
+       h_HT->Fill(SumptAllJet);
+
        int nTriplets=0;
-       for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
-	 for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
-	   for (unsigned int k=j+1; k<numJetForTriplet-0; ++k) {
-	     Triplet.push_back(std::vector<TLorentzVector* > ());
+       for (unsigned int i=0+0; i<fCleanJets.size()-2; ++i) {
+	 for (unsigned int j=i+1; j<fCleanJets.size()-1; ++j) {
+	   for (unsigned int k=j+1; k<fCleanJets.size()-0; ++k) {
+	     Triplet.push_back(std::vector<TLorentzVector > ());
 	     
-	     TLorentzVector* Jet1; TLorentzVector* Jet2; TLorentzVector* Jet3;
+	     TLorentzVector Jet1; TLorentzVector Jet2; TLorentzVector Jet3;
 	     Jet1=fCleanJets[i]; Jet2=fCleanJets[j]; Jet3=fCleanJets[k];
-	     TLorentzVector Triplet123; Triplet123=(*Jet1+*Jet2+*Jet3);
-	     TLorentzVector Doublet12; Doublet12=*Jet1+*Jet2;
-	     TLorentzVector Doublet13; Doublet13=*Jet1+*Jet3;
-	     TLorentzVector Doublet23; Doublet23=*Jet2+*Jet3;
+	     TLorentzVector Triplet123; Triplet123=Jet1+Jet2+Jet3;
+	     TLorentzVector Doublet12; Doublet12=Jet1+Jet2;
+	     TLorentzVector Doublet13; Doublet13=Jet1+Jet3;
+	     TLorentzVector Doublet23; Doublet23=Jet2+Jet3;
 	     
-	     sumScalarPtTriplet.push_back(Jet1->Pt()+Jet2->Pt()+Jet3->Pt());
+	     sumScalarPtTriplet.push_back(Jet1.Pt()+Jet2.Pt()+Jet3.Pt());
 	     massTriplet.push_back(Triplet123.M());
 	     sumVectorPtTriplet.push_back(Triplet123.Pt());
 
@@ -442,23 +259,21 @@ if(MSquark == 375 && MLSP ==75){
 	 }
        }
      
-       
+
      for(unsigned int q=0; q<massTriplet.size(); q++)
        {
-	 for(int b=0; b<5; b++){
-
 	 for (int i=0; i<7; i++)
 	   {
-	     float iPt=30.0+i*10.0;
-	     for(int k=0; k<3; k++)
+	     float iPt=20.0+i*10.0;
+	     for(int k=0; k<4; k++)
 	       { 
-		 unsigned int iNjet=k+6;
+		 unsigned int iNjet=k+3;
 		 //count njets with the pt cut -> gonna be slow
 		 if(iNjet<=fCleanJets.size()){
 		  
-		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
+		   if(Triplet[q][2].Pt()>iPt && fCleanJets[iNjet-1].Pt()>iPt)
 		     {	
-		        Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q]);
+		        Mjjj_sumpt_pt_njet[i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q]);
 		     }
 		   for(int j=0; j<20; j++){
 		        
@@ -472,14 +287,14 @@ if(MSquark == 375 && MLSP ==75){
 		     // cout<<fCleanJets.size()<<endl;
 		     // cout<<iNjet-1<<endl;
 		     //}
-		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
+		     if(Triplet[q][2].Pt()>iPt && fCleanJets[njetsMin-1].Pt()>iPt && fCleanJets[iNjet-1].Pt()>iPt)
 		       {
 			 //cout<<"after selection"<<endl;
 			 //cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
 			 if(massTriplet[q]<(sumScalarPtTriplet[q]-iDiag))
 			   {
 			     float countT=0;
-			     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q]);
+			     Mjjj_pt_njet_diag[i][k][j]->Fill(massTriplet[q]);
 			     //if(countT==0 && massTriplet[q]>160 && massTriplet[q]<190){
 			    
 			     countT++;
@@ -493,15 +308,10 @@ if(MSquark == 375 && MLSP ==75){
 		 }//diag cut loop
 	       }//njetloop
 	   }//pt loop
-	 }//bjet loop
-	   }//triplet loop
-	 }//3 or more b jets
-	 }//jetp
+       }//triplet loop
+       }//jetp
      }//minjet
      //lets see if the top branching ratios work
-    
   }
- }//Msquqark
- }//get entrye
   return;
 }

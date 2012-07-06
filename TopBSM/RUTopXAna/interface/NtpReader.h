@@ -13,25 +13,28 @@ class NtpReader
 {
   public:
     NtpReader ();
-    NtpReader (TTree*);
-    NtpReader (std::vector<TString>&, bool const);
+    NtpReader (TString const);
+    NtpReader (std::vector<TString>&, bool);
     ~NtpReader ();
 
     bool IsData ();
 
-    void SetBranches (TTree*);
+    void SetBranches ();
     void SetBranchAddresses ();
     int  GetEntry (int const);
 
+    void FillTree ();
 
   private:
     TChain fChain;
     bool   fIsData;
+    TFile* fOutFile;
+    TTree* fOutTree;
 
 
 
   // These members are in the ntuple
-  public:
+  protected:
     int   run;
     int   event;
     int   lumis;
@@ -47,38 +50,38 @@ class NtpReader
     float MCe[200];
     // int MaxSize=500;
     int   nJets; 
-    float jetpx[200];
-    float jetpy[200];
-    float jetpz[200];
-    float jete[200];
-    float jetpt[200];
-    float bdiscTCHE[200];
-    float bdiscTCHP[200];
-    float bdiscSSVHE[200];
-    float bdiscSSSVHP[200];
+    float jetpx[500];
+    float jetpy[500];
+    float jetpz[500];
+    float jete[500];
+    float jetpt[500];
+    float bdiscTCHE[500];
+    float bdiscTCHP[500];
+    float bdiscSSVHE[500];
+    float bdiscSSSVHP[500];
 
     int   nElectrons;
-    float epx[200];
-    float epy[200];
-    float epz[200];
-    float ee[200];
-    float ept[200];
-    int   echarge[200];
+    float epx[500];
+    float epy[500];
+    float epz[500];
+    float ee[500];
+    float ept[500];
+    int   echarge[500];
 
     int   nMuons;
-    float mpx[200];
-    float mpy[200];
-    float mpz[200];
-    float me[200];
-    float mpt[200];
-    float mcharge[200];
+    float mpx[500];
+    float mpy[500];
+    float mpz[500];
+    float me[500];
+    float mpt[500];
+    float mcharge[500];
 
     int   nPhotons;
-    float phpx[200];
-    float phpy[200];
-    float phpz[200];
-    float phe[200];
-    float phpt[200];
+    float phpx[500];
+    float phpy[500];
+    float phpz[500];
+    float phe[500];
+    float phpt[500];
 
     float pfMET;
     float pfMETphi;

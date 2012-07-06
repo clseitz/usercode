@@ -38,11 +38,6 @@ class NtpReader
     int   entry;
     int   nTriplets;
     int   nGoodVtx;
-    Bool_t HasBaseTrigger;
-    Bool_t HasSelTrigger;
-    double MSquark;
-    double MLSP;
-
     //TEST
     int NumJetsTest;
     int   mcsize;

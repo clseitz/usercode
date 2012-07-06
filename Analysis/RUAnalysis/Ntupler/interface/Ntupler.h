@@ -82,13 +82,6 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   void GetMCTruth(const edm::Event&);
   void MakeTriplets(std::vector<pat::Jet >fCleanJets); 
   void getTriggerDecision(const edm::Event&, std::map<std::string, bool>&);
-  void getTriggerDecision2(const edm::Event&, std::map<std::string, bool>&);
-
-  void GetSUSYpoint(const edm::Event&, const edm::EventSetup&);
- bool SUSYfilter(const edm::Event&, const edm::EventSetup&);
- std::vector<std::string> split(std::string fstring, std::string splitter);
- typedef std::vector<std::string>::const_iterator comments_const_iterator;
-
   
   
   // ----------member data ---------------------------
@@ -96,7 +89,6 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   
   double _sumPtMin, _etacut, _jetptcut, _eeta,_ept,_meta,_mpt,_pheta,_phpt;
   bool _isData;
-  bool _isSUSY;
   bool _noTripletBtag;
   bool _debug;
   int _nbTagsMin; 
@@ -105,14 +97,10 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   std::string _ntuplePlots, _ntupleTree, corStep, corFlvr;   
   std::vector<std::string> _patJetType;
   std::string PatJetType;
-  std::string _primaryVertex;
-  std::string _METtype;
   int _njetsMin, _njetsMax;
   std::string _htTrigger;
-  std::vector<std::string>          fTriggerNamesSel;
-  std::vector<std::string>          fTriggerNamesBase;
+  std::vector<std::string>          fTriggerNames;
   std::map<std::string, bool>       fTriggerMap;
-  std::map<std::string, bool>       fTriggerMap2;
   
   int countE;  
   
@@ -125,8 +113,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   vector<int > GoodRuns;
   vector<int > GoodLumiStart;
   vector<int >  GoodLumiEnd;
-     std::vector<pat::Jet>  fCleanPFJets;  
-
+  
   Int_t nGoodRuns;  
   Bool_t GoodRun;
   Int_t nGoodJets;

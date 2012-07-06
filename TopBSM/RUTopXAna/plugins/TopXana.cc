@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Fri Jun 17 12:26:54 EDT 2011
-// $Id: TopXana.cc,v 1.4 2011/10/12 09:13:55 clseitz Exp $
+// $Id: RUTopXAna.cc,v 1.11 2011/08/12 19:00:51 clseitz Exp $
 //
 //
 
@@ -39,13 +39,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/PatCandidates/interface/Jet.h" // based on DataFormats/Candidate/interface/Particle.h
-
-#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
-#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
-
 #include "TTree.h"
 #include "TopXana.h"
 #include "TopBSM/RUTopXAna/interface/NtpReader.h"
@@ -54,7 +48,6 @@
 #include "DataFormats/PatCandidates/interface/Muon.h" 
 #include "DataFormats/PatCandidates/interface/MET.h" 
 #include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/PatCandidates/interface/Isolation.h"
 
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -76,7 +69,7 @@ using namespace std;
 // class declaration
 
 
-TopXana::TopXana(const edm::ParameterSet& iConfig)
+TopXana::TopXana(const edm::ParameterSet& iConfig) : NtpReader(iConfig.getUntrackedParameter<string>("outputFilename2", "PatJets_testTree.root"))
 
 {
   _sumPtMin        = iConfig.getUntrackedParameter<double>("sumPtMin",         300.0);
@@ -115,6 +108,7 @@ TopXana::TopXana(const edm::ParameterSet& iConfig)
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
    //now do what ever initialization is needed
 
+  std::cout << "Begin job finishing" << std::endl;
 }
 
 
@@ -184,9 +178,6 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   nGoodMuons=0; nCleanMuons=0;  
   fGoodPhotons.clear(); fCleanPhotons.clear();
   nGoodPhotons=0; nCleanPhotons=0;
-  fGoodVtx.clear();
-  nGoodVtx=0; int CountVtx=0;
-
   for (int i=0; i<200; ++i)
     {
       pdgID[i] = -99;
@@ -201,7 +192,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    sumVectorPtTriplet.clear();
    massTriplet.clear();
    nTriplets=0; q=0; //basically just triplet counting
-   IsVtxGood = 0; 
+   IsVtxGood = 0; nGoodVtx = 0;
 
   
   
@@ -209,13 +200,13 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    /////DO OBJECT ID
    //////////////////
    //Select all the objects int the event (vertex function makes some plots)
-   DoJetID(iEvent,iSetup);
+   DoJetID(iEvent);
    DoVertexID(iEvent);
    DoElectronID(iEvent);
    DoMuonID(iEvent);
    //DoPhotonID(iEvent);
    DoMETID(iEvent);
-  
+
    //make some plots before cleanup 
    h_nGoodJets->Fill(nGoodJets);
    h_nGoodElectrons->Fill(nGoodElectrons);  
@@ -233,7 +224,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    h_nCleanMuons->Fill(nCleanMuons);
    h_nCleanPhotons->Fill(nCleanPhotons);
    h_nCleanJets->Fill(nCleanJets);
-   
+
    /////////////////
    //////KINEMATIC PLOTS OF OBJECTS + STUFF FOR THE TREE
    ////////////////
@@ -303,7 +294,6 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      phe[i]=fCleanPhotons[i].energy();	 
      
    }
-   nGoodVtx=CountVtx;
    h_MET->Fill(fMET.et());
    pfMET= fMET.et();
    pfMETphi=fMET.phi();
@@ -722,7 +712,7 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
       nTriplets=0;
       
-      //MakeTriplets(fCleanJets); 
+      MakeTriplets(fCleanJets); 
       
   
   if(enoughCleanLeptons){
@@ -788,9 +778,8 @@ TopXana::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    //fill the tree use golden JSON file
    //GetMCTruth(iEvent);
-
-    MyTree->Fill();
-    entry++;
+   FillTree();
+   entry++;
    
     }
  }
@@ -844,14 +833,8 @@ TopXana::beginJob()
 
   char hTITLE[99];
   char hNAME[99];
-  outputFile2 = new TFile(_outputFilename2.data(),"recreate");
-  outputFile2->cd();
-  MyTree = new TTree("EvTree", "EvTree");
-  SetBranches(MyTree);
   //create output file
   outputFile = new TFile(_outputFilename.data(),"recreate");
-
-
   //initialize event counter
   entry = 0;
   h_NumEvtCut = new TH1F("NumEvtCut", "NumEvtCut",20,0,20);
@@ -1075,7 +1058,6 @@ TopXana::beginJob()
   }
 
 
-  std::cout << "Begin job finishing" << std::endl;
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -1243,9 +1225,6 @@ TopXana::endJob()
     }
   }
 
-  MyTree->GetCurrentFile()->Write();
-  MyTree->GetCurrentFile()->Close();
-
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -1317,11 +1296,10 @@ TopXana::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool
 
 
 void 
-TopXana::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup){
+TopXana::DoJetID(const edm::Event& iEvent){
    // Jet Handle  
   Handle< vector<Jet> > PatJets; 
   iEvent.getByLabel(_patJetType, PatJets); 
-
    //lets do some JetID
   
   for (unsigned int j=0; j<PatJets->size(); j++) {
@@ -1377,15 +1355,6 @@ TopXana::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup){
        }//JetKinematics
    }//JetLoop
  if (_debug) std::cout << "Found "<< nGoodJets << " Jets" << std::endl;
- //JEC uncertainty doesn't work
- // const JetCorrector* corrector = JetCorrector::getJetCorrector("JetCorrectionService",iSetup);
- //JetCorrectionUncertainty *jecUnc(0);
- // JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("Jec11_V2_AK5PF_Uncertainty.txt");
- //  edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
- //(iSetup).get<JetCorrectionsRecord>().get("AK5PF",JetCorParColl);
- //JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
- //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
-
 return;
 }
 
@@ -1396,226 +1365,190 @@ TopXana::DoVertexID(const edm::Event& iEvent){
   iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
   
  
-  int CountVtx=0;
+  
   for (size_t i=0; i<recVtxs->size(); ++i)
     if (!((*recVtxs)[i].isFake())) {
       if ( ((*recVtxs)[i].ndof() > 4) &&
            (fabs( (*recVtxs)[i].z()) <= 24) &&
            ((*recVtxs)[i].position().rho() <= 2) ){
-        CountVtx++;
+        nGoodVtx++;
 	h_zPosGoodVtx->Fill((*recVtxs)[i].z());
       }
     }
   
-  if (CountVtx > 0) IsVtxGood = 1;
-  h_nGoodVtx->Fill(CountVtx);
-  cout<<CountVtx<<" "<< recVtxs->size()<<endl;
+  if (nGoodVtx > 0) IsVtxGood = 1;
+  h_nGoodVtx->Fill(nGoodVtx);
+  
   return;
 }
 
 void 
 TopXana::DoElectronID(const edm::Event& iEvent){
+  
+  Handle< vector<Electron> > PatElectrons;
+  iEvent.getByLabel("selectedPatElectrons", PatElectrons);
 
-  // Get the PF electrons
-  edm::Handle< std::vector<pat::Electron> > PatElectrons;
-  iEvent.getByLabel("selectedPatElectronsLoosePFlow", PatElectrons);
-
-  // Will need the vertices
-  edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
-
-  // Loop over all electrons
-  for (std::vector<pat::Electron>::const_iterator Electron = PatElectrons->begin(); Electron != PatElectrons->end(); ++Electron) {
-
-    // Grab the PF caldidate reference
-    reco::PFCandidateRef PFElectron = Electron->pfCandidateRef();
-
-    // Get the PFGamma isolation
-    float PFGammaIso = -999;
-    const reco::IsoDeposit * PFGammaIsolation = Electron->isoDeposit(pat::PfGammaIso);
-    if (PFGammaIsolation) {
-      PFGammaIso = PFGammaIsolation->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfGammaIso" << std::endl;
-    }
-
-    // Get the PFNeutralHad isolation
-    float PFNeutralHadronIso = -999;
-    const reco::IsoDeposit * PFNeutralHadronIsolaton = Electron->isoDeposit(pat::PfNeutralHadronIso);
-    if (PFNeutralHadronIsolaton) {
-      PFNeutralHadronIso = PFNeutralHadronIsolaton->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfNeutralHadronIso" << std::endl;
-    }
-
-    // Get the PFChargedHad isolation
-    float PFChargedHadronIso = -999;
-    const reco::IsoDeposit * PFChargedHadronIsolaton = Electron->isoDeposit(pat::PfChargedHadronIso);
-    if (PFChargedHadronIsolaton) {
-      PFChargedHadronIso = PFChargedHadronIsolaton->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfChargedHadronIso" << std::endl;
-    }
-
-    // The isolation we will use for selection
-    float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-                        (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / PFElectron->pt() : 99999;
-
-
-    // find minimum distance to a prim vert
-    float minVtxDist3D = 999;
-    float vtxDistZ = 999;
-    float vtxDistXY = 999;
-    if (primaryVertices.isValid()) {
-      for (reco::VertexCollection::const_iterator v_it = primaryVertices->begin(); v_it != primaryVertices->end(); ++v_it) {
-
-        double distXY = Electron->gsfTrack()->dxy(v_it->position());
-        double distZ =  Electron->gsfTrack()->dz(v_it->position());
-        double dist3D = sqrt(pow(distXY, 2) + pow(distZ, 2));
-
-        if (dist3D < minVtxDist3D) {
-          minVtxDist3D = dist3D;
-          vtxDistXY = distXY;
-          vtxDistZ = distZ;
-        }
-      }
-    }
-
-    // Global cuts
-    if (PFIso > 0.1) continue;
-    if (PFElectron->pt() < 20.0) continue;
-    if (fabs(Electron->superCluster()->eta()) > 2.5) continue;
-    if (fabs(Electron->superCluster()->eta()) > 1.4442 && fabs(Electron->superCluster()->eta())< 1.566) continue;
-    //if (fabs(Electron->gsfTrack()->d0()) > 0.02) continue;
-    if (fabs(Electron->gsfTrack()->dxy((*primaryVertices)[0].position())) > 0.02) continue;
-    if (vtxDistZ > 1.0) continue;
-
-
-    // Barrel & endcap.. if in between say bye bye
-    if (fabs(Electron->superCluster()->eta()) < 1.4442) {
-      if (Electron->scSigmaIEtaIEta() > 0.01) continue;
-      if (fabs(Electron->deltaPhiSuperClusterTrackAtVtx()) > 0.03) continue;
-      if (fabs(Electron->deltaEtaSuperClusterTrackAtVtx()) > 0.004) continue;
-      if (Electron->hcalOverEcal() > 0.025) continue;
-    } else if (fabs(Electron->superCluster()->eta()) > 1.566) {
-      if (Electron->scSigmaIEtaIEta() > 0.03) continue;
-      if (fabs(Electron->deltaPhiSuperClusterTrackAtVtx()) > 0.02) continue;
-      if (fabs(Electron->deltaEtaSuperClusterTrackAtVtx()) > 0.005) continue;
-      if (Electron->hcalOverEcal() > 0.025) continue;
-    } else {
-      // crackhead
-      std::cerr << "ERROR: Electron selection.  you should never see this message" << std::endl;
-      continue;
-    }
-
+// begin electron loop                                                                                                                                   
+  //cout<<"------------new event --------------"<<endl;        
+  for (unsigned int j=0; j<PatElectrons->size(); j++) {
+    //Fill all electrons  
+    //continue actually skips all the rest and moves on to the next loop entry
+    //eta cuts
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 2.5) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.442 && fabs((*PatElectrons)[j].superCluster()->eta())< 1.566) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.442 && (*PatElectrons)[j].scSigmaIEtaIEta()<0.001) continue;
+   
     // Spike clean: kTime || kWeird || kBad  
-    if(Electron->userInt("electronUserData:seedSeverityLevel")==3 || Electron->userInt("electronUserData:seedSeverityLevel")==4 
-        || Electron->userInt("electronUserData:seedSeverityLevel")==5) continue;
-
+    if((*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==3 || (*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==4 
+       || (*PatElectrons)[j].userInt("electronUserData:seedSeverityLevel")==5) continue;
+   
     //coversion
-    const reco::Track *eleTrk = (const reco::Track*)( Electron->gsfTrack().get());  
+    const reco::Track *eleTrk = (const reco::Track*)( (*PatElectrons)[j].gsfTrack().get());  
     const reco::HitPattern& p_inner = eleTrk->trackerExpectedHitsInner(); 
     int NumberOfExpectedInnerHits = p_inner.numberOfHits();
-
+    //DOUBLE CHECK YURI HAS !=0 but twiki says
     //If NumberOfExpectedInnerHits is greater than 1, then the electron is 
     //vetoed as from a converted photon and should be rejected in an analysis looking for prompt photons.
     if (NumberOfExpectedInnerHits != 0) continue;
-    if (fabs(Electron->convDist()) < 0.02 && fabs(Electron->convDcot()) < 0.02) continue;
 
-    //passes electron Id
-    fGoodElectrons.push_back(*Electron);
-    nGoodElectrons++;
+   if (fabs((*PatElectrons)[j].convDist()) < 0.02 && fabs((*PatElectrons)[j].convDcot()) < 0.02) continue;
+    // H2WW WP80 for barrel   
+    edm::Handle<double> rhoH;
+    iEvent.getByLabel(edm::InputTag("kt6PFJets","rho"),rhoH);
+    double rho = *(rhoH.product());
+
+
+    float hcalDepth1TowerSumEt03 = (*PatElectrons)[j].dr03HcalDepth1TowerSumEt();
+    float hcalDepth2TowerSumEt03 = (*PatElectrons)[j].dr03HcalDepth2TowerSumEt();
+     
+     float HCALFullConeSum = hcalDepth1TowerSumEt03+hcalDepth2TowerSumEt03;
+     //cout<<HCALFullConeSum<<endl;
+
+                                                
+    //BARREL
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 &&
+	(max((float)0., (*PatElectrons)[j].dr03EcalRecHitSumEt() - 1) + HCALFullConeSum + 
+	 (*PatElectrons)[j].dr03TkSumPt()  - rho*3.1415927*0.3*0.3)/(*PatElectrons)[j].pt() > 0.04) continue;
+   
+    
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 &&  (*PatElectrons)[j].scSigmaIEtaIEta() > 0.01) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 && fabs((*PatElectrons)[j].deltaPhiSuperClusterTrackAtVtx()) > 0.027) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) < 1.4442 && fabs((*PatElectrons)[j].deltaEtaSuperClusterTrackAtVtx()) > 0.005) continue;
+    
+    //ENDCAP
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&
+	((*PatElectrons)[j].dr03TkSumPt() + (*PatElectrons)[j].dr03EcalRecHitSumEt() + HCALFullConeSum - rho*3.1415927*0.3*0.3) / (*PatElectrons)[j].pt() > 0.033) continue;
+    
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  (*PatElectrons)[j].scSigmaIEtaIEta() > 0.031) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 &&  fabs((*PatElectrons)[j].deltaPhiSuperClusterTrackAtVtx()) > 0.021) continue;
+    if (fabs((*PatElectrons)[j].superCluster()->eta()) > 1.566 && fabs((*PatElectrons)[j].deltaEtaSuperClusterTrackAtVtx())  > 0.006) continue;
+
+
+
+ if ((*PatElectrons)[j].pt()>20.0 && fabs((*PatElectrons)[j].eta())<2.1) {
+        //passes electron Id                                                                                                                                           
+          fGoodElectrons.push_back((*PatElectrons)[j]);
+	  nGoodElectrons++;
+ }
 
 
   } // pat electron loop     
-
+ 
   return;
 }
 
 void
 TopXana::DoMuonID(const edm::Event& iEvent){
 
-  // Get muon collection
-  edm::Handle< std::vector<pat::Muon> > PatMuons; 
-  iEvent.getByLabel("selectedPatMuonsPFlow", PatMuons);
-
+  Handle< vector<Muon> > PatMuons; 
+  iEvent.getByLabel("selectedPatMuons", PatMuons);
   //also get the vertices for some cuts
-  edm::Handle<reco::VertexCollection>  recVtxs;
+   edm::Handle<reco::VertexCollection>  recVtxs;
   iEvent.getByLabel("goodOfflinePrimaryVertices", recVtxs);
+  //Get rho for isolations 
+  edm::Handle<double> rhoH;
+  iEvent.getByLabel(edm::InputTag("kt6PFJets","rho"),rhoH);
+  double rho = *(rhoH.product());
+  for (unsigned int j=0; j<PatMuons->size(); j++) {
+    
+    double relIso = ((*PatMuons)[j].trackIso()  +
+                     (*PatMuons)[j].ecalIso()   +
+                     (*PatMuons)[j].hcalIso()- rho*3.1415927*0.3*0.3) / (*PatMuons)[j].pt();
 
-  // Will need the vertices
-  edm::Handle<reco::VertexCollection>  primaryVertices;
-  iEvent.getByLabel("goodOfflinePrimaryVertices", primaryVertices);
-
-  // Loop over all Muons 
-  for (std::vector<pat::Muon>::const_iterator Muon = PatMuons->begin(); Muon != PatMuons->end(); ++Muon) {
-
-    // Very first check that this is a global muon so tracking doesn't barf
-    if (!Muon->isGlobalMuon()) continue;
-
-    // Grab the PF caldidate reference
-    reco::PFCandidateRef PFMuon = Muon->pfCandidateRef();
-
-    // Get the PFGamma isolation
-    float PFGammaIso = -999;
-    const reco::IsoDeposit * PFGammaIsolation = Muon->isoDeposit(pat::PfGammaIso);
-    if (PFGammaIsolation) {
-      PFGammaIso = PFGammaIsolation->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfGammaIso" << std::endl;
+    int    nValidHits        = -1;
+    int    nValidTrackerHits = -1;
+    int    nValidPixelHits   = -1;
+    ////EVA ORIGINAL
+    
+    if ((*PatMuons)[j].globalTrack().isNonnull()) {
+      nValidHits        = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidMuonHits();
+      nValidTrackerHits = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidTrackerHits();
+      nValidPixelHits   = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidPixelHits();
+      }
+    ///////DEAN
+    /*if ((*PatMuons)[j].globalTrack().isNonnull()) {
+      nValidHits = (*PatMuons)[j].globalTrack()->hitPattern().numberOfValidMuonHits();
     }
 
-    // Get the PFNeutralHad isolation
-    float PFNeutralHadronIso = -999;
-    const reco::IsoDeposit * PFNeutralHadronIsolaton = Muon->isoDeposit(pat::PfNeutralHadronIso);
-    if (PFNeutralHadronIsolaton) {
-      PFNeutralHadronIso = PFNeutralHadronIsolaton->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfNeutralHadronIso" << std::endl;
+    if ((*PatMuons)[j].innerTrack().isNonnull()) {
+      nValidTrackerHits = (*PatMuons)[j].innerTrack()->numberOfValidHits();
+      nValidPixelHits   = (*PatMuons)[j].innerTrack()->hitPattern().pixelLayersWithMeasurement();
     }
+    */
+    int stations = 0;
+    unsigned stationMask((*PatMuons)[j].stationMask());
+    for(unsigned i=0; i < 8; ++i)
+      if(stationMask & 1 << i) ++stations;
 
-    // Get the PFChargedHad isolation
-    float PFChargedHadronIso = -999;
-    const reco::IsoDeposit * PFChargedHadronIsolaton = Muon->isoDeposit(pat::PfChargedHadronIso);
-    if (PFChargedHadronIsolaton) {
-      PFChargedHadronIso = PFChargedHadronIsolaton->depositWithin(0.3);
-    } else {
-      std::cerr << "ERROR: Cannot find pat::PfChargedHadronIso" << std::endl;
-    }
+    if ((*PatMuons)[j].pt()>20.0 && fabs((*PatMuons)[j].eta())<2.1) {
+     
+       if((*PatMuons)[j].isGlobalMuon()  &&
+	 (*PatMuons)[j].isTrackerMuon() && 
+	 nValidHits                >  0 && 
+	 nValidTrackerHits         > 10 &&
+	 nValidPixelHits           >  0 &&
+	 (*PatMuons)[j].globalTrack()->dxy((*recVtxs)[0].position())<0.02 &&
+	 (*PatMuons)[j].globalTrack()->dz((*recVtxs)[0].position())<0.1 &&
+	 //(*PatMuons)[j].dB()       <  0.02 &&
+	 (*PatMuons)[j].globalTrack()->normalizedChi2() < 10 && 
+	 stations                > 1) {
 
-    // The isolation we will use for selection
-    float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-                        (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / PFMuon->pt() : 99999;
+	if( relIso  <  0.1) { // is good muon
+	  //fill cut muon for all good muons that pass reliso
 
-    // find minimum distance to a prim vert
-    float minVtxDist3D = 999;
-    float vtxDistZ = 999;
-    float vtxDistXY = 999;
-    if (primaryVertices.isValid()) {
-      for (reco::VertexCollection::const_iterator v_it = primaryVertices->begin(); v_it != primaryVertices->end(); ++v_it) {
+	 fGoodMuons.push_back((*PatMuons)[j]);
+	 nGoodMuons++;
 
-        double distXY = Muon->globalTrack()->dxy(v_it->position());
-        double distZ =  Muon->globalTrack()->dz(v_it->position());
-        double dist3D = sqrt(pow(distXY, 2) + pow(distZ, 2));
+	  
+	} // reliso
+	} // global, tracker muons
+    } // eta pt of muon
+  } // muon loop 
+  
+  return;
+}
+void
+TopXana::DoPhotonID(const edm::Event& iEvent){
+  Handle< vector<Photon> > PatPhotons;
+  iEvent.getByLabel("selectedPatPhotons", PatPhotons);
 
-        if (dist3D < minVtxDist3D) {
-          minVtxDist3D = dist3D;
-          vtxDistXY = distXY;
-          vtxDistZ = distZ;
+  // Photon Selection
+  for (size_t i = 0; i != PatPhotons->size(); ++i) {
+    if ((*PatPhotons)[i].et()>20.0 && fabs((*PatPhotons)[i].superCluster()->position().eta())<1.45) {
+        // tight photons
+        if ( ((*PatPhotons)[i].ecalRecHitSumEtConeDR04()< 4.2+0.006*(*PatPhotons)[i].et()) &&
+            ((*PatPhotons)[i].hcalTowerSumEtConeDR04()< 2.2+0.0025*(*PatPhotons)[i].et()) && 
+            ((*PatPhotons)[i].hadronicOverEm() < 0.05) &&
+            ((*PatPhotons)[i].trkSumPtHollowConeDR04() < 2+0.001*(*PatPhotons)[i].et()) &&
+            ((*PatPhotons)[i].sigmaIetaIeta() <0.013) &&
+            (!((*PatPhotons)[i].hasPixelSeed()))) { 
+          fGoodPhotons.push_back((*PatPhotons)[i]);
+	  nGoodPhotons++;
         }
       }
-    }
-
-    // global cuts
-    if (PFIso > 0.1) continue;
-    if (PFMuon->pt() < 20.0) continue;
-    if (fabs(Muon->eta()) > 2.1) continue;
-    if (fabs(Muon->globalTrack()->dxy((*primaryVertices)[0].position())) > 0.02) continue;
-    if (vtxDistZ > 1.0) continue;
-
-    fGoodMuons.push_back(*Muon);
-    nGoodMuons++;
   }
+
+  
 
   return;
 }
@@ -1701,17 +1634,16 @@ TopXana::DoCleanUp(vector<Muon >fGoodMuons,vector<Electron >fGoodElectrons,vecto
 
   return;
 }
-void 
+/*void 
 TopXana::GetMCTruth(const edm::Event& iEvent){
   if(!_isData){
     
     Handle< vector<reco::GenParticle> > GenParticles; 
-    iEvent.getByLabel("genParticles", GenParticles);  
-    for (unsigned int p=0; p<40; p++) { 
+    iEvent.getByLabel("GenParticles", GenParticles);  
+    for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
       //cout<<p<<endl; 
       //use only that hard process
       if(p<200){
-	if((*GenParticles)[p].status()==3){
 	pdgID[p]=(*GenParticles)[p].pdgId();
        
 	MCpx[p]=(*GenParticles)[p].px();
@@ -1719,7 +1651,6 @@ TopXana::GetMCTruth(const edm::Event& iEvent){
 	MCpz[p]=(*GenParticles)[p].pz();
 	MCe[p]=(*GenParticles)[p].energy();
 	//cout<<MCpx[p]<<" "<<MCpy[p]<<" "<<MCpz[p]<<" "<<MCe[p]<<endl;
-	}
       }
 
      
@@ -1727,7 +1658,7 @@ TopXana::GetMCTruth(const edm::Event& iEvent){
   }
   return;
 }
-
+*/
 void
 TopXana::MakeTriplets(vector<Jet >fCleanJets){
    const int nCombs = TMath::Factorial(nCleanJets)/(TMath::Factorial(nCleanJets - 3)*TMath::Factorial(3));

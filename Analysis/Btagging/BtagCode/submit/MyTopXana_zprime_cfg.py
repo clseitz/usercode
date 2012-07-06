@@ -59,7 +59,7 @@ process.data2 = cms.EDAnalyzer('BtagCode',
   NjetsMin       = cms.untracked.int32(3),
   NjetsMax       = cms.untracked.int32(1000),
   jetptcut       = cms.untracked.double(20),
-  etacut         = cms.untracked.double(2.4),
+  etacut         = cms.untracked.double(3.),
   doBtagEff       = cms.untracked.bool(True),                             
   JSONFilename = cms.untracked.string('/users/h1/clseitz/MyCMS/CMSSW_4_2_4/src/TopBSM/TopXana/submit/Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt'),                             
 )                               

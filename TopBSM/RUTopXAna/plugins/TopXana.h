@@ -64,7 +64,7 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
   virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
   void UseJson( vector<int > GoodRuns, vector<int > GoodLumiStart,  vector<int > GoodLumiEnd,  Int_t nGoodRuns, int run, int lumis );
-  void DoJetID(const edm::Event&,const edm::EventSetup& iSetup);
+  void DoJetID(const edm::Event&);
   void DoVertexID(const edm::Event&);
   void DoElectronID(const edm::Event&);
   void DoMuonID(const edm::Event&);
@@ -97,6 +97,10 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   
   TFile* outputFile; 
   TFile* outputFile2; 
+  Int_t   entry;
+  int  run;
+  int   event;
+  int   lumis;
   //varibales to test for the JSON file                                                                                            
   bool isdata;
   string JSONFilename;
@@ -215,6 +219,7 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   pat::Jet AntiTripletHighestJet;
   pat::Jet Jet1; pat::Jet Jet2; pat::Jet Jet3; pat::Jet Jet4; 
 
+  Int_t nTriplets;
   Int_t q;
   //define our own jet collection (just in case if we want to clean up also)
   std::vector<pat::Jet >      fGoodJets;
@@ -234,8 +239,6 @@ class TopXana : public edm::EDAnalyzer, public NtpReader {
   std::vector<pat::Photon>     fGoodPhotons;
   std::vector<pat::Photon>      fCleanPhotons;
   
-  //vertices
-  std::vector<reco::VertexCollection>     fGoodVtx;
   //MET
   //TLorentzVector  fMET;
   pat::MET  fMET;
