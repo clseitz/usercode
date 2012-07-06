@@ -7,10 +7,11 @@ index = int (sys.argv[2])
 suffix_list=[]
 output_list=[]
 dir_list=[]
-
+#CS this is the input cfi file that contains all the files to run over (we have 3 different samples)
 thisFin_cfi = "RUAnalysis.Ntupler.SingleMu_Run2012_TLBSM522v003_"+str(index)+"_cfi"
-
+#CS output directory change here where you want to put it please keep the last two folders the same for bookeeping
 outdir = "/uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu40_SHT750/"
+#CS filename adjust here the Trigger selection you are running Bblabla and Sblabla (match folder name above)
 thisFout = outdir+"SingleMu_Run2012_8TeV_BMu40_SHT750"+str(index)
 this_fout0 = thisFout+"_plots.root"
 this_fout1 = thisFout+"_tree.root"
@@ -72,6 +73,10 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                NjetsMax       = cms.untracked.int32(1000),
                                jetptcut       = cms.untracked.double(20),
                                etacut         = cms.untracked.double(3.),
+                               #CS for trigger efficienyc studies Base trigger is either Mu40 or another one whihc matches the given trigger we want to look at
+                               #for exampel SelectionTrigger Quad80, BaseTrigger Quad70
+
+                               #CS comment in wich trigger should be the Selection Trigger (match folder and filname above)
                                #selection trigger
                                #Qua60_Di20
                              # TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3',
@@ -85,7 +90,8 @@ process.data2 = cms.EDAnalyzer('Ntupler',
 
                               # TriggerNamesSel = cms.untracked.vstring('HLT_SixJet45_v1','HLT_SixJet45_v2','HLT_SixJet45_v3','HLT_SixJet45_v4'),
                                TriggerNamesSel = cms.untracked.vstring('HLT_HT750_v1','HLT_HT750_v2','HLT_HT750_v3','HLT_HT750_v4','HLT_HT750_v5','HLT_HT750_v6'),
-                               
+
+                               #CS base trigger we keep Mu40 for now
                                #base trigger
                                #TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet50_v9','HLT_QuadJet50_v8'),
                                #,'HLT_QuadJet50_v3','HLT_QuadJet50_v4',
