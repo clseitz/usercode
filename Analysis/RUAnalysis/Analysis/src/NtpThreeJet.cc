@@ -328,7 +328,7 @@ if(MSquark == 375 && MLSP ==75){
      }
     
      ////TRIGGER////////////
-     if(nJet20>=6){
+     if(nJet20>=4){
      if(HasBaseTrigger){
        h_MET_Base->Fill(pfMET);
        h_HT_Base->Fill(SumptAllJet20);

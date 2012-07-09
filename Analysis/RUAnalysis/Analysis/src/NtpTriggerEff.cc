@@ -1,4 +1,3 @@
-\
 
 //#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Analysis/interface/NtpTriggerEff.h"
@@ -144,7 +143,7 @@ void NtpTriggerEff::Loop ()
 
 
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-
+    if(1==1){//run > 194270){
     
   ///////////////////Clear out variables/////////////////////
 
@@ -157,14 +156,16 @@ void NtpTriggerEff::Loop ()
     if (ientry % 500 == 0) {
       printf("Processing entry: %i\n", ientry);
     }
+
    int nJet20=0; int nJet35=0; 
-   int nBJet20=0;
+   int nBJet20=0; float HT20=0;
    for (int i=0; i<nPFJets; i++){
      TLorentzVector* Jet= new TLorentzVector(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
      
-     if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
+     if (jet_PF_pt[i]>45.0 && fabs(jet_PF_eta[i])<2.5){
        nJet20++;
        fCleanJets20.push_back(Jet);
+       HT20=HT20+jet_PF_pt[i];
        if (bdiscCSV_PF[i] > 0.679)
 	 {
 	   nBJet20++;
@@ -197,34 +198,39 @@ void NtpTriggerEff::Loop ()
 	 }
        }
      }
+   }//6jet
+   if(nJet20>=6){
      if(HasSelTrigger){
        h_RunNumber_Sel->Fill(run);
-}
-if(HasBaseTrigger){
+     }
+     if(HasBaseTrigger){
        if(1==1){
-	 //if(fCleanJets20[0]->Pt()>85 && fCleanJets20[1]->Pt()>85 && fCleanJets20[2]->Pt()>85 && fCleanJets20[3]->Pt()>85 && fCleanJets20[4]->Pt()>50 && fCleanJets20[5]->Pt()>50){
+	 
 	 h_RunNumber_Base->Fill(run);
-       h_MET_Base->Fill(pfMET);
-       h_Jet0_Base->Fill(fCleanJets20[0]->Pt());
-       h_Jet1_Base->Fill(fCleanJets20[1]->Pt());
-       h_Jet2_Base->Fill(fCleanJets20[2]->Pt());
-       h_Jet3_Base->Fill(fCleanJets20[3]->Pt());
-       if(nJet20>=5) h_Jet4_Base->Fill(fCleanJets20[4]->Pt());
-       if(nJet20>=6) h_Jet5_Base->Fill(fCleanJets20[5]->Pt());
-            if(HasSelTrigger){
-	      h_RunNumber_BaseSel->Fill(run);
-	      h_MET_BaseSel->Fill(pfMET);
-	      h_Jet0_BaseSel->Fill(fCleanJets20[0]->Pt());
-	      h_Jet1_BaseSel->Fill(fCleanJets20[1]->Pt());
-	      h_Jet2_BaseSel->Fill(fCleanJets20[2]->Pt());
-	      h_Jet3_BaseSel->Fill(fCleanJets20[3]->Pt());
-	      if(nJet20>=5) h_Jet4_BaseSel->Fill(fCleanJets20[4]->Pt());
-	      if(nJet20>=6) h_Jet5_BaseSel->Fill(fCleanJets20[5]->Pt());
-	    }
+	 h_MET_Base->Fill(pfMET);
+	 h_HT_Base->Fill(HT20);
+	 h_Jet0_Base->Fill(fCleanJets20[0]->Pt());
+	 h_Jet1_Base->Fill(fCleanJets20[1]->Pt());
+	 h_Jet2_Base->Fill(fCleanJets20[2]->Pt());
+	 h_Jet3_Base->Fill(fCleanJets20[3]->Pt());
+	 if(nJet20>=5) h_Jet4_Base->Fill(fCleanJets20[4]->Pt());
+	 if(nJet20>=6) h_Jet5_Base->Fill(fCleanJets20[5]->Pt());
+	 if(HasSelTrigger){
+	   h_RunNumber_BaseSel->Fill(run);
+	   h_MET_BaseSel->Fill(pfMET);
+	   h_HT_BaseSel->Fill(HT20);
+	   h_Jet0_BaseSel->Fill(fCleanJets20[0]->Pt());
+	   h_Jet1_BaseSel->Fill(fCleanJets20[1]->Pt());
+	   h_Jet2_BaseSel->Fill(fCleanJets20[2]->Pt());
+	   h_Jet3_BaseSel->Fill(fCleanJets20[3]->Pt());
+	   if(nJet20>=5) h_Jet4_BaseSel->Fill(fCleanJets20[4]->Pt());
+	   if(nJet20>=6) h_Jet5_BaseSel->Fill(fCleanJets20[5]->Pt());
+	 }
        }
      }
+   }//4jet
 
-     }
-  }   
+    }//run number if   
+  }//get entry 
   return;
 }
