@@ -42,7 +42,7 @@ class NtpReader
     Bool_t HasSelTrigger;
     double MSquark;
     double MLSP;
-
+    float nTruePileUp;
     //TEST
     int NumJetsTest;
     int   mcsize;
@@ -63,6 +63,7 @@ class NtpReader
     float  jet_PF_phi[200];
     float  jet_PF_theta[200];
     float jet_PF_mass[200];
+    float jet_PF_NeutralHad[200];
     float jet_PF_area[200];
     float jet_PF_nJetDaughters[200];
     float bdiscCSV_PF[200];

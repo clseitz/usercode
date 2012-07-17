@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.4 2012/06/21 09:11:55 clseitz Exp $
+// $Id: Ntupler.cc,v 1.5 2012/07/04 10:35:11 clseitz Exp $
 //
 //
 
@@ -77,6 +77,8 @@
 //#include "UserCode/ModelFilter/interface/ModelFilter.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+//pile upt stuff
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 //Own libraries
 #include "RUAnalysis/Ntupler/interface/Ntupler.h"
@@ -282,6 +284,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        
 
 	 ////////////////////
+       if(!_isData) GetTruePileUp(iEvent);
        DoVertexID(iEvent);
        DoElectronID(iEvent);
        DoMuonID(iEvent);
@@ -333,6 +336,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   v_PFjet_m[i]->Fill(Jet->mass()); 
 	 }
 
+
 	 jet_PF_pt[i]=Jet->pt();
 	 jet_PF_px[i]=Jet->px();
 	 jet_PF_py[i]=Jet->py();
@@ -343,6 +347,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 jet_PF_phi[i]=Jet->phi();
 	 jet_PF_theta[i]=Jet->theta();
 	 jet_PF_mass[i]=Jet->mass();
+	 jet_PF_NeutralHad[i]=Jet->correctedJet("Uncorrected").neutralHadronEnergyFraction();
 	 jet_PF_area[i]=Jet->jetArea();
 	 jet_PF_nJetDaughters[i]=Jet->numberOfDaughters();
  
@@ -1000,6 +1005,32 @@ Ntupler::DoJetID(const edm::Event& iEvent,const edm::EventSetup& iSetup, std::st
   //JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
   //     }
+  return;
+}
+
+
+void 
+Ntupler::GetTruePileUp(const edm::Event& iEvent){
+
+  Handle<std::vector< PileupSummaryInfo > >  PupInfo;
+  iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
+
+  std::vector<PileupSummaryInfo>::const_iterator PVI;
+
+  nTruePileUp = -1;
+  for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
+
+    int BX = PVI->getBunchCrossing();
+
+    if(BX == 0) { 
+      nTruePileUp = PVI->getTrueNumInteractions();
+ 
+      continue;
+
+    }
+
+  }
+
   return;
 }
 

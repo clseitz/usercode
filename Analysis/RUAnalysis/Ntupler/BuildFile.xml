@@ -5,6 +5,7 @@
 <use name="DataFormats/PatCandidates"/>
 <use name="CondFormats/JetMETObjects"/>
 <use name="JetMETCorrections/Objects"/>
+<use  name="SimDataFormats/PileupSummaryInfo"/>
 <use name="root" />
 <export>
    <lib name="1"/>

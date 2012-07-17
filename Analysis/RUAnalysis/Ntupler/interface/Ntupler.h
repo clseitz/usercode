@@ -72,6 +72,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   // ----------member data ---------------------------                                                                                                                         
   void UseJson( vector<int > GoodRuns, vector<int > GoodLumiStart,  vector<int > GoodLumiEnd,  Int_t nGoodRuns, int run, int lumis );
   void DoJetID(const edm::Event&,const edm::EventSetup& iSetup, std::string PatJetType);
+  void GetTruePileUp(const edm::Event& iEvent);
   void DoVertexID(const edm::Event&);
   void DoElectronID(const edm::Event&);
   void DoMuonID(const edm::Event&);
