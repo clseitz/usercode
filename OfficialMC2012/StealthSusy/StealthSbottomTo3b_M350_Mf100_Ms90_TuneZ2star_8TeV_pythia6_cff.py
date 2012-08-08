@@ -19,7 +19,7 @@ generator = cms.EDFilter("Pythia6GeneratorFilter",
 		'IMSS(11) = 1             ! Make gravitino the LSP', 
 		'IMSS(21) = 33            ! LUN number for SLHA File (must be 33) ',
 		'IMSS(22) = 33            ! Read-in SLHA decay table '),
-        SLHAParameters = cms.vstring('SLHAFILE = StealthSbottomTo3b_M350_Mf100_Ms90.slha'),
+        SLHAParameters = cms.vstring('SLHAFILE = Configuration/Generator/data/StealthSbottomTo3b_M350_Mf100_Ms90.slha'),
         parameterSets = cms.vstring('pythiaUESettings', 
             'processParameters','SLHAParameters')
     )
