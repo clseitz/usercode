@@ -8,11 +8,12 @@ suffix_list=[]
 output_list=[]
 dir_list=[]
 #CS this is the input cfi file that contains all the files to run over (we have 3 different samples)
-thisFin_cfi = "RUAnalysis.Ntupler.SingleMu_Run2012_TLBSM522v003_"+str(index)+"_cfi"
+#thisFin_cfi = "RUAnalysis.Ntupler.SingleMu_Run2012_TLBSM522v003_"+str(index)+"_cfi"
+thisFin_cfi = "RUAnalysis.Ntupler.JetHT_Run2012_TLBSM522v003_"+str(index)+"_cfi"
 #CS output directory change here where you want to put it please keep the last two folders the same for bookeeping
-outdir = "/uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu40_SHT750/"
+outdir = "/uscms_data/d3/clseitz/ThreeJet/RUNtuple/JetHT/BHT650_SHT750/"
 #CS filename adjust here the Trigger selection you are running Bblabla and Sblabla (match folder name above)
-thisFout = outdir+"SingleMu_Run2012_8TeV_BMu40_SHT750"+str(index)
+thisFout = outdir+"SingleMu_Run2012_8TeV_BHT650_SHT750_"+str(index)
 this_fout0 = thisFout+"_plots.root"
 this_fout1 = thisFout+"_tree.root"
 
@@ -79,8 +80,8 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                #CS comment in wich trigger should be the Selection Trigger (match folder and filname above)
                                #selection trigger
                                #Qua60_Di20
-                             # TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3',
-                             #  'HLT_QuadJet60_DiJet20_v4','HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6','HLT_QuadJet60_DiJet20_v7'),
+                              #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3',
+                             #'HLT_QuadJet60_DiJet20_v4','HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6','HLT_QuadJet60_DiJet20_v7'),
                                #Quad80
                                #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet80_v1','HLT_QuadJet80_v2','HLT_QuadJet80_v3','HLT_QuadJet80_v4',
                                #'HLT_QuadJet80_v5','HLT_QuadJet80_v6','HLT_QuadJet80_v7'),
@@ -107,12 +108,14 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                #                                        'HLT_Mu12_v13','HLT_Mu12_v14','HLT_Mu12_v15','HLT_Mu12_v16',
                                #                                         'HLT_Mu12_v17','HLT_Mu12_v18','HLT_Mu12_v19','HLT_Mu12_v20',
                                #                                         ),
-                               TriggerNamesBase = cms.untracked.vstring('HLT_Mu40_v1','HLT_Mu40_v2','HLT_Mu40_v3','HLT_Mu40_v4',
-                                                                        'HLT_Mu40_v5','HLT_Mu40_v6','HLT_Mu40_v7','HLT_Mu40_v8',
-                                                                        'HLT_Mu40_v9','HLT_Mu40_v10','HLT_Mu40_v11','HLT_Mu40_v12',
-                                                                        'HLT_Mu40_v13','HLT_Mu40_v14','HLT_Mu40_v15','HLT_Mu40_v16',
-                                                                        'HLT_Mu40_v17','HLT_Mu40_v18','HLT_Mu40_v19','HLT_Mu40_v20',
-                                                                        ),
+                               #TriggerNamesBase = cms.untracked.vstring('HLT_Mu40_v1','HLT_Mu40_v2','HLT_Mu40_v3','HLT_Mu40_v4',
+                               #                                         'HLT_Mu40_v5','HLT_Mu40_v6','HLT_Mu40_v7','HLT_Mu40_v8',
+                               #                                         'HLT_Mu40_v9','HLT_Mu40_v10','HLT_Mu40_v11','HLT_Mu40_v12',
+                               #                                         'HLT_Mu40_v13','HLT_Mu40_v14','HLT_Mu40_v15','HLT_Mu40_v16',
+                               #                                         'HLT_Mu40_v17','HLT_Mu40_v18','HLT_Mu40_v19','HLT_Mu40_v20',
+                               #                                         ),
+                               TriggerNamesBase = cms.untracked.vstring('HLT_HT650_v1','HLT_HT650_v2','HLT_HT650_v3','HLT_HT650_v4','HLT_HT650_v5','HLT_HT650_v6'
+                                                                        ,'HLT_HT650_v7','HLT_HT650_v8','HLT_HT650_v9'),
                                #JSON file 900/pb May18
                                #JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-194076_8TeV_PromptReco_Collisions12_JSON.txt'),
                                #JSON File 2.42/fb Jun01

@@ -11,8 +11,10 @@ dir_list=[]
 #suffix_list = os.popen('ls -1 /pnfs/cms/WAX/11/store/user/lpctlbsm/crsilk/SMS-T2tt_Mstop-225to1200_mLSP-50to1025_7TeV-Pythia6Z/ttbsm_v9_Summer11-PU_S4_START42_V11-v1/2f45e7f986681f9c0bbcc7cc31425dac/*root').readlines()
 
 
+
 masslist = [200,250,300,350,400,450,500]
-thisFin_cfi = "RUAnalysis.Ntupler.T2tt_TLBSMv9_crsilk_FNAL_"+str(index)+"_cfi"
+#thisFin_cfi = "RUAnalysis.Ntupler.T2tt_TLBSMv9_crsilk_FNAL_"+str(index)+"_cfi"
+thisFin_cfi = "RUAnalysis.Ntupler.T1tttt_TLBSM52v003_LPC_"+str(index)+"_cfi"
 #outdir = "/uscms_data/d3/clseitz/T2tt_375_75/"
 #thisFout = outdir+"T2tt_7TeV_mstop375_mlsp75_7Tev_FastSim_RuNtuple"+str(index)
 #this_fout0 = thisFout+"_plots.root"
@@ -20,8 +22,12 @@ thisFin_cfi = "RUAnalysis.Ntupler.T2tt_TLBSMv9_crsilk_FNAL_"+str(index)+"_cfi"
 
 
 #this_fin_nocfi  =suffix_list[index]
-this_fout0 = "/uscms_data/d3/clseitz/T2tt/T2tt_7TeV_mstop225to1200_mLSP50to1025_"+str(index)+"_plots.root"
-this_fout1 = "/uscms_data/d3/clseitz/T2tt/T2tt_7TeV_mstop225to1200_mLSP50to1025_"+str(index)+"_tree.root"
+#this_fout0 = "/uscms_data/d3/clseitz/T1tttt/T1tttt_8TeV_Mgluino-350to1200_mLSP-0to850_"+str(index)+"_plots.root"
+#this_fout1 = "/uscms_data/d3/clseitz/T1tttt/T1tttt_8TeV_Mgluino-350to1200_mLSP-0to850_"+str(index)+"_tree.root"
+
+this_fout0 = "QCD_ntuple_test_plots.root"
+this_fout1 = "QCD_ntuple_test_tree.root"
+
 
 print thisFin_cfi
 print this_fout0
@@ -34,13 +40,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 3000
 
 
 process.maxEvents = cms.untracked.PSet(
-      #input = cms.untracked.int32(200)
-     input = cms.untracked.int32(-1)
+      input = cms.untracked.int32(200)
+     #input = cms.untracked.int32(-1)
      )
-process.load(thisFin_cfi)
-#process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring(this_fin_nocfi),
-#                                                        duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
-#                                                        )
+#process.load(thisFin_cfi)
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring("file:/uscms/home/clseitz/MyCMS/TopBSMPat/52xv5/CMSSW_5_2_5/src/TopQuarkAnalysis/TopPairBSM/test/ttbsm_52x_mc.root"),
+                                                        duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
+                                                        )
 
 
 process.data2 = cms.EDAnalyzer('Ntupler',
@@ -62,7 +68,7 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                meta           =  cms.untracked.double(2.1),
                                mpt            = cms.untracked.double(20.0),
                                isData         =  cms.untracked.bool(False),
-                               isSUSY         =  cms.untracked.bool(True),
+                               isSUSY         =  cms.untracked.bool(False),
                                NjetsMin       = cms.untracked.int32(4),
                                NjetsMax       = cms.untracked.int32(1000),
                                jetptcut       = cms.untracked.double(20),
