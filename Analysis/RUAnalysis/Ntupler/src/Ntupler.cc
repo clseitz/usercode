@@ -1,4 +1,4 @@
-// -*- C++ -*-
+ // -*- C++ -*-
 //
 // Package:    Ntupler
 // Class:      Ntupler
@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.5 2012/07/04 10:35:11 clseitz Exp $
+// $Id: Ntupler.cc,v 1.6 2012/07/17 06:22:51 clseitz Exp $
 //
 //
 
@@ -1063,7 +1063,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
   // Get the PF electrons
   edm::Handle< std::vector<pat::Electron> > PatElectrons;
-  iEvent.getByLabel("selectedPatElectronsLoosePFlow", PatElectrons);
+  iEvent.getByLabel("selectedPatElectronsPFlow", PatElectrons);
 
   // Will need the vertices
   edm::Handle<reco::VertexCollection>  primaryVertices;
@@ -1073,7 +1073,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
   for (std::vector<pat::Electron>::const_iterator Electron = PatElectrons->begin(); Electron != PatElectrons->end(); ++Electron) {
 
     // Grab the PF caldidate reference
-    reco::PFCandidateRef PFElectron = Electron->pfCandidateRef();
+    //    reco::PFCandidateRef PFElectron = Electron->pfCandidateRef();
 
     // Get the PFGamma isolation
     float PFGammaIso = -999;
@@ -1104,7 +1104,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
     // The isolation we will use for selection
     float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / PFElectron->pt() : 99999;
+      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / Electron->pt() : 99999;
 
 
     // find minimum distance to a prim vert
@@ -1128,7 +1128,7 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
     // Global cuts
     if (PFIso > 0.1) continue;
-    if (PFElectron->pt() < 20.0) continue;
+    if (Electron->pt() < 20.0) continue;
     if (fabs(Electron->superCluster()->eta()) > 2.5) continue;
     if (fabs(Electron->superCluster()->eta()) > 1.4442 && fabs(Electron->superCluster()->eta())< 1.566) continue;
     //if (fabs(Electron->gsfTrack()->d0()) > 0.02) continue;
@@ -1182,8 +1182,8 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
   // Get muon collection
   edm::Handle< std::vector<pat::Muon> > PatMuons; 
-  //iEvent.getByLabel("selectedPatMuonsPFlow", PatMuons);
-  iEvent.getByLabel("selectedPatMuonsLoosePFlow", PatMuons);
+  iEvent.getByLabel("selectedPatMuonsPFlow", PatMuons);
+  //  iEvent.getByLabel("selectedPatMuonsLoosePFlow", PatMuons);
 
   //also get the vertices for some cuts
   edm::Handle<reco::VertexCollection>  recVtxs;
@@ -1200,7 +1200,7 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
     if (!Muon->isGlobalMuon()) continue;
 
     // Grab the PF caldidate reference
-    reco::PFCandidateRef PFMuon = Muon->pfCandidateRef();
+    //reco::PFCandidateRef PFMuon = Muon->pfCandidateRef();
 
     // Get the PFGamma isolation
     float PFGammaIso = -999;
@@ -1231,7 +1231,7 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
     // The isolation we will use for selection
     float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / PFMuon->pt() : 99999;
+      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / Muon->pt() : 99999;
 
     // find minimum distance to a prim vert
     float minVtxDist3D = 999;
@@ -1254,7 +1254,7 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
     // global cuts
     // if (PFIso > 0.1) continue;
-    // if (PFMuon->pt() < 20.0) continue;
+    // if (Muon->pt() < 20.0) continue;
     if (fabs(Muon->eta()) > 2.1) continue;
     if (fabs(Muon->globalTrack()->dxy((*primaryVertices)[0].position())) > 0.02) continue;
     if (vtxDistZ > 1.0) continue;
@@ -1274,7 +1274,7 @@ Ntupler::GetPFIso(vector<Muon >fCleanMuons){
 for (size_t im = 0; im != fCleanMuons.size(); ++im) {
     // Get the PFGamma isolation                                                                                                                                                                                                
   pat::Muon Muon=fCleanMuons[im];
-  reco::PFCandidateRef PFMuon = Muon.pfCandidateRef();
+  //  reco::PFCandidateRef PFMuon = Muon.pfCandidateRef();
     float PFGammaIso = -999;
     const reco::IsoDeposit * PFGammaIsolation = Muon.isoDeposit(pat::PfGammaIso);
     if (PFGammaIsolation) {
@@ -1303,7 +1303,7 @@ for (size_t im = 0; im != fCleanMuons.size(); ++im) {
 
     // The isolation we will use for selection                                                                                                                                                                                  
     float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / PFMuon->pt() : 99999;
+      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / Muon.pt() : 99999;
 
     fCleanMuonsPFIso.push_back(PFIso);
 
