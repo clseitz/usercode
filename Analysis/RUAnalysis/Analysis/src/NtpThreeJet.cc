@@ -468,7 +468,7 @@ void NtpThreeJet::Loop ()
      if ( nJet35>=6){
        //cout<<nJet35<<" "<<fCleanJets.size()<<" s"<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
        if(fCleanJets[0]->Pt() > 80.0 && fCleanJets[1]->Pt() > 80. && fCleanJets[2]->Pt() > 80.0 && fCleanJets[3]->Pt() > 80.0 && 
-fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0 && nBJet35==0){
+fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
        //      if(SumptAllJet>900){
 	 if(1==1){//nBJet35 >= 3){
 
