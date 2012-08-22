@@ -1,6 +1,6 @@
 //Defines general ntuple objects
 //object selection for leptons
-#include "RUAnalysis/Analysis/interface/NtpReader.h"
+#include "RUAnalysis/Ntupler/interface/NtpReader.h"
 
 
 NtpReader::NtpReader ()
@@ -53,7 +53,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("HasBaseTrigger", &HasBaseTrigger);
   Tree->Branch("MSquark",  &MSquark);
   Tree->Branch("MLSP",  &MLSP);
-
+  Tree->Branch("nTruePileUp",  &nTruePileUp);
   Tree->Branch("pdgID[200]",pdgID);
   Tree->Branch("MCpx[200]", MCpx);
   Tree->Branch("MCpy[200]", MCpy);
@@ -78,6 +78,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("jet_PF_phi[nPFJets]", jet_PF_phi);
   Tree->Branch("jet_PF_theta[nPFJets]", jet_PF_theta);
   Tree->Branch("jet_PF_mass[nPFJets]", jet_PF_mass);
+  Tree->Branch("jet_PF_NeutralHad[nPFJets]", jet_PF_NeutralHad);
   Tree->Branch("jet_PF_area[nPFJets]", jet_PF_area);
   Tree->Branch("jet_PF_nJetDaughters[nPFJets]", jet_PF_nJetDaughters);
 
@@ -206,7 +207,7 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("HasBaseTrigger", &HasBaseTrigger);
   fChain.SetBranchAddress("MSquark",  &MSquark);
   fChain.SetBranchAddress("MLSP",  &MLSP);
-
+ fChain.SetBranchAddress("nTruePileUp",  &nTruePileUp);
 
  
     fChain.SetBranchAddress("pdgID[200]",pdgID);
@@ -229,6 +230,7 @@ void NtpReader::SetBranchAddresses ()
    fChain.SetBranchAddress("jet_PF_phi[nPFJets]", jet_PF_phi);
    fChain.SetBranchAddress("jet_PF_theta[nPFJets]", jet_PF_theta);
    fChain.SetBranchAddress("jet_PF_mass[nPFJets]", jet_PF_mass);
+   fChain.SetBranchAddress("jet_PF_NeutralHad[nPFJets]", jet_PF_NeutralHad);
    fChain.SetBranchAddress("jet_PF_area[nPFJets]", jet_PF_area);
    fChain.SetBranchAddress("jet_PF_mass[nPFJets]", jet_PF_nJetDaughters);
 

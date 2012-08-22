@@ -35,7 +35,32 @@
 #./RunThreeJet data2012_MultiJet_BQuad50_SQuad70_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad70/*tree*root
 #./RunThreeJet data2012_MultiJet_BQuad70_SQuad80_triggerBaseSel.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad70_SQuad80/*tree*root
 #./RunThreeJet data2012_MultiJet_BSix35_SSix45_pt80_triggerBaseSel_vectorbugfix.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BSix35_SSix45/*tree*root
-./RunThreeJet mc2012_TTJets_8TeV_4pt85_6pt50_exactB.root /cms/data27/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
-#./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_pt85_6pt45.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/MultiJet_BQuad50_SQuad60_Di20/*tree*root
+#./RunThreeJet mc2012_Sb250_100_90_8TeV_FastSim_4pt85_6pt60_geqB.root /cms/data27/clseitz/ThreeJet/Ruderman_3b/CMSSW52x/ThreeB_2012_FastSim/RU/*tree*root
+#./RunThreeJet mc2012_Sb250_100_90_8TeV_FastSim526_4pt85_6pt60_geqB.root /cms/data27/clseitz/ThreeJet/Ruderman_3b/CMSSW52x/ThreeB_2012_FastSim526/RU/*tree*root
+#./RunThreeJet mc2012_Sb250_100_90_8TeV_FullSim_4pt80_6pt60_geqB_Dalitz.root /cms/clseitz/ThreeJet/Ruderman_3b/CMSSW52x/ThreeB_2012_FullSim/RU/*tree*root
+#./RunThreeJet mc2012_Sb250_100_90_8TeV_FastSim_PF2Patpatch_4pt85_6pt60_geqB.root /cms/data27/clseitz/ThreeJet/Ruderman_3b/CMSSW52x/ThreeB_2012_FastSim_PF2Patpatch/RU/*tree*root
 
-./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_pt85_6pt45_exactB.root  /cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad50_SQuad60_Di20/*tree*root
+
+#./RunThreeJet mc2012_RPVGluino250_113_223_8TeV_FullSim_4pt80_6pt60_geqB_Dalitz.root /cms/karen/clseitz/ThreeJet/rpvhv250ntuple/*tree*root
+#./RunThreeJet mc2012_test.root /cms/karen/clseitz/ThreeJet/rpvhv250ntuple/*tree*root
+
+
+#Running Everything with exactb on Aug15
+#./RunThreeJet mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_exactB_Aug15.root /cms/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
+#./RunThreeJet mc2012_QCD_HT500-1000_Summer12_8TeV_4pt80_6pt60_exactB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT500-1000/RU/*tree*
+#./RunThreeJet mc2012_QCD_HT250-500_Summer12_8TeV_4pt80_6pt60_exactB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT250-500/RU/*tree*
+#./RunThreeJet mc2012_QCD_HT1000-Inf_Summer12_8TeV_4pt80_6pt60_exactB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT1000-Inf/RU/*tree*
+#./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4pt80_6pt60_exactB_Aug15.root  /cms/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad50_SQuad60_Di20_jun19/*tree*
+
+
+#./RunThreeJet mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root /cms/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
+#./RunThreeJet mc2012_QCD_HT500-1000_Summer12_8TeV_4pt80_6pt60_geqB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT500-1000/RU/*tree*
+#./RunThreeJet mc2012_QCD_HT250-500_Summer12_8TeV_4pt80_6pt60_geqB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT250-500/RU/*tree*
+#./RunThreeJet mc2012_QCD_HT1000-Inf_Summer12_8TeV_4pt80_6pt60_geqB_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT1000-Inf/RU/*tree*
+#./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4pt80_6pt60_geqB_Aug15.root  /cms/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad50_SQuad60_Di20_jun19/*tree*
+
+./RunThreeJet mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_exact0BEvSel_Aug15.root /cms/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
+./RunThreeJet mc2012_QCD_HT500-1000_Summer12_8TeV_4pt80_6pt60_exact0BEvSel_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT500-1000/RU/*tree*
+./RunThreeJet mc2012_QCD_HT250-500_Summer12_8TeV_4pt80_6pt60_exact0BEvSel_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT250-500/RU/*tree*
+./RunThreeJet mc2012_QCD_HT1000-Inf_Summer12_8TeV_4pt80_6pt60_exact0BEvSel_Aug15.root /cms/clseitz/ThreeJet/TLBSM52xv5/QCD_HT1000-Inf/RU/*tree*
+./RunThreeJet  data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4pt80_6pt60_exact0BEvSel_Aug15.root  /cms/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad50_SQuad60_Di20_jun19/*tree*

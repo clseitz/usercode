@@ -38,6 +38,7 @@ class NtpThreeJet : public NtpReader
     TH1F*  h_mindRMuonJet;
     TH2F*  h_mindRMuonJet_mPFIso;
     TH1F*  h_MET;
+    TH1F*  h_nTruePileUp;
     TH1F* h_nBJet35;
     TH1F* h_nJet35;
     TH1F* h_Jet0;
@@ -60,7 +61,7 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet5_Base;
     TH1F* h_Jet6_Base;
     TH1F* h_HT_Base;
-
+    TH2F* h_NeutralHad_JetPt;
     TH1F*  h_MET_BaseSel;
     TH1F* h_nBJet35_BaseSel;
     TH1F* h_nJet35_BaseSel;
@@ -129,6 +130,13 @@ class NtpThreeJet : public NtpReader
 
     //make some plots for the triplets
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjHigh_MjjMid_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjHigh_MjjLow_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjMid_MjjLow_bjet_pt_njet_diag;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M12_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M13_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M23_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_bjet_pt_njet;
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
