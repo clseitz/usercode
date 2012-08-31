@@ -85,6 +85,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   void getTriggerDecision(const edm::Event&, std::map<std::string, bool>&);
   void getTriggerDecision2(const edm::Event&, std::map<std::string, bool>&);
 
+
   void GetSUSYpoint(const edm::Event&, const edm::EventSetup&);
  bool SUSYfilter(const edm::Event&, const edm::EventSetup&);
  std::vector<std::string> split(std::string fstring, std::string splitter);

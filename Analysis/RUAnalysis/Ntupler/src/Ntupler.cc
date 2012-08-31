@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.6 2012/07/17 06:22:51 clseitz Exp $
+// $Id: Ntupler.cc,v 1.7 2012/08/11 15:36:52 clseitz Exp $
 //
 //
 
@@ -350,8 +350,8 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 jet_PF_NeutralHad[i]=Jet->correctedJet("Uncorrected").neutralHadronEnergyFraction();
 	 jet_PF_area[i]=Jet->jetArea();
 	 jet_PF_nJetDaughters[i]=Jet->numberOfDaughters();
- 
-	 bdiscTCHE_PF[i]=Jet->bDiscriminator("trackCountingHighEffBJetTags");
+	 jet_PF_PartonFlav[i]=Jet->partonFlavour();
+     	 bdiscTCHE_PF[i]=Jet->bDiscriminator("trackCountingHighEffBJetTags");
 	 bdiscTCHP_PF[i]=Jet->bDiscriminator("trackCountingHighPurBJetTags");
 	 bdiscSSVHE_PF[i]=Jet->bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
 	 bdiscSSSVHP_PF[i]=Jet->bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
@@ -508,8 +508,9 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        h_MET->Fill(fMET.et());
        pfMET= fMET.et();
        pfMETphi=fMET.phi();
-
-       MyTree->Fill();
+       GetMCTruth(iEvent);
+       cout<<"--------------------"<<endl;
+MyTree->Fill();
        entry++;
 
      }//HasTrigger
@@ -1392,6 +1393,33 @@ Ntupler::DoCleanUp(vector<Muon >fGoodMuons,vector<Electron >fGoodElectrons,vecto
 
   return;
 }
+void 
+Ntupler::GetMCTruth(const edm::Event& iEvent){
+  if(!_isData){
+    
+    Handle< vector<reco::GenParticle> > GenParticles; 
+    iEvent.getByLabel("prunedGenParticles", GenParticles);  
+    for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
+      if((*GenParticles)[p].status()==3){
+      //cout<<p<<endl; 
+      //use only that hard process
+      if(p<200){
+      pdgID[p]=(*GenParticles)[p].pdgId();
+       
+      MCpx[p]=(*GenParticles)[p].px();
+      MCpy[p]=(*GenParticles)[p].py();
+      MCpz[p]=(*GenParticles)[p].pz();
+      MCe[p]=(*GenParticles)[p].energy();
+      //      cout<<pdgID[p]<<"   "<<(*GenParticles)[p].status()<<"               "<<MCpx[p]<<" "<<MCpy[p]<<" "<<MCpz[p]<<" "<<MCe[p]<<endl;
+      }
+      }
+
+     
+    }
+  }
+  return;
+}
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(Ntupler);

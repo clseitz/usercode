@@ -15,10 +15,10 @@ dir_list=[]
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/MCProdSLHA_428p7/PAT/*.root').readlines()
 
 #data2012
-suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012*-PromptReco-v1_Json0601/*.root').readlines()
+#suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012*-PromptReco-v1_Json0601/*.root').readlines()
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/test_TTJets_FastSim/MatchingPAT/*root').readlines()
 #suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012B-PromptReco-v1_Json0601/ttbsm_52x_data_205_1_LJP.root').readlines()
-
+suffix_list = os.popen('ls -1 /cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/TLBSM/*root').readlines()
 this_fin_nocfi  = "file:"+suffix_list[index]
 
 #this_fin_nocfi  = "file:"+suffix_list[3*index]
@@ -50,8 +50,13 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad70_SQuad80/MultiJet_Run2012-PromptReco-v1_Json0601_BQuad70_SQuad80_"+str(index)+"_plots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BQuad70_SQuad80/MultiJet_Run2012-PromptReco-v1_Json0601_BQuad70_SQuad80_"+str(index)+"_tree.root"
 
-this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BSix35_SSix45/MultiJet_Run2012-PromptReco-v1_Json0601_BSix35_SSix45_"+str(index)+"_plots.root"
-this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BSix35_SSix45/MultiJet_Run2012-PromptReco-v1_Json0601_BSix35_SSix45_"+str(index)+"_tree.root"
+#this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BSix35_SSix45/MultiJet_Run2012-PromptReco-v1_Json0601_BSix35_SSix45_"+str(index)+"_plots.root"
+#this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Data2012/Run2012A-PromptReco-v1_Json0601/MultiJet_BSix35_SSix45/MultiJet_Run2012-PromptReco-v1_Json0601_BSix35_SSix45_"+str(index)+"_tree.root"
+
+
+
+this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
+this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
 
 
 
@@ -121,25 +126,28 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                etacut         = cms.untracked.double(3.),
                                #selection trigger
                                #Qua60_Di20
-                               #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4',
-                               #                                     'HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6','HLT_QuadJet60_DiJet20_v7'),
+                               TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3',
+                                                                       'HLT_QuadJet60_DiJet20_v4','HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6',
+                                                                       'HLT_QuadJet60_DiJet20_v7','HLT_QuadJet60_DiJet20_v8','HLT_QuadJet60_DiJet20_v9'),
                                #Quad70
                                #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet80_v1','HLT_QuadJet80_v2','HLT_QuadJet80_v3','HLT_QuadJet80_v4',
                                #'HLT_QuadJet80_v5','HLT_QuadJet80_v6','HLT_QuadJet80_v7'),
 
-                               TriggerNamesSel = cms.untracked.vstring('HLT_SixJet45_v1','HLT_SixJet45_v2','HLT_SixJet45_v3','HLT_SixJet45_v4'),
+                               #TriggerNamesSel = cms.untracked.vstring('HLT_SixJet45_v1','HLT_SixJet45_v2','HLT_SixJet45_v3','HLT_SixJet45_v4'),
                                
                                #base trigger
                                #TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet50_v9','HLT_QuadJet50_v8'),
                                #,'HLT_QuadJet50_v3','HLT_QuadJet50_v4',
                                #                                      'HLT_QuadJet50_v5','HLT_QuadJet50_v6','HLT_QuadJet50_v7'),
-                               #TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet70_v1','HLT_QuadJet70_v2','HLT_QuadJet70_v3','HLT_QuadJet70_v4',
-                               #                                   'HLT_QuadJet70_v5','HLT_QuadJet70_v6','HLT_QuadJet70_v7'),
-                               TriggerNamesBase = cms.untracked.vstring('HLT_SixJet35_v1','HLT_SixJet35_v2','HLT_SixJet35_v3','HLT_SixJet35_v4'),
+                               TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet70_v1','HLT_QuadJet70_v2','HLT_QuadJet70_v3','HLT_QuadJet70_v4',
+                                                                  'HLT_QuadJet70_v5','HLT_QuadJet70_v6','HLT_QuadJet70_v7'),
+                               #TriggerNamesBase = cms.untracked.vstring('HLT_SixJet35_v1','HLT_SixJet35_v2','HLT_SixJet35_v3','HLT_SixJet35_v4'),
                                #JSON file 900/pb May18
 #                               JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-194076_8TeV_PromptReco_Collisions12_JSON.txt'),
                                #JSON File 2.42/fb Jun01
-                               JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-195016_8TeV_PromptReco_Collisions12_JSON.txt'),
+                               #JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-195016_8TeV_PromptReco_Collisions12_JSON.txt'),
+                               #JSON 8/fb
+                                JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/JSON/Cert_190456-200601_8TeV_PromptReco_Collisions12_JSON.txt'),
                                )
 
 

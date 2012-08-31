@@ -66,7 +66,9 @@ class NtpReader
     float jet_PF_NeutralHad[200];
     float jet_PF_area[200];
     float jet_PF_nJetDaughters[200];
+    int jet_PF_PartonFlav[200];
     float bdiscCSV_PF[200];
+
     float  bdiscJP_PF[200];
     float bdiscTCHE_PF[200];
     float bdiscTCHP_PF[200];

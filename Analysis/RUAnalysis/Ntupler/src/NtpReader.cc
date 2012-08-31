@@ -81,6 +81,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("jet_PF_NeutralHad[nPFJets]", jet_PF_NeutralHad);
   Tree->Branch("jet_PF_area[nPFJets]", jet_PF_area);
   Tree->Branch("jet_PF_nJetDaughters[nPFJets]", jet_PF_nJetDaughters);
+  Tree->Branch("jet_PF_PartonFlav[nPFJets]", jet_PF_PartonFlav);
 
   Tree->Branch("jet_PF_px[nPFJets]", jet_PF_px);
   Tree->Branch("jet_PF_py[nPFJets]", jet_PF_py);
@@ -93,6 +94,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("bdiscSSSVHP_PF[nPFJets]", bdiscSSSVHP_PF);
   Tree->Branch("bdiscCSV_PF[nPFJets]", bdiscCSV_PF);
   Tree->Branch("bdiscJP_PF[nPFJets]", bdiscJP_PF);
+
   ///////////////////////////////////////////////////
   //CA8 jets
   ///////////////////////////////////////////////////
@@ -233,6 +235,7 @@ void NtpReader::SetBranchAddresses ()
    fChain.SetBranchAddress("jet_PF_NeutralHad[nPFJets]", jet_PF_NeutralHad);
    fChain.SetBranchAddress("jet_PF_area[nPFJets]", jet_PF_area);
    fChain.SetBranchAddress("jet_PF_mass[nPFJets]", jet_PF_nJetDaughters);
+   fChain.SetBranchAddress("jet_PF_PartonFlav[nPFJets]", jet_PF_PartonFlav);
 
   fChain.SetBranchAddress("jet_PF_px[nPFJets]", jet_PF_px);
   fChain.SetBranchAddress("jet_PF_py[nPFJets]", jet_PF_py);
