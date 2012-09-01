@@ -1,4 +1,4 @@
-OutDir = /cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/TLBSM/RU
+OutDir = /cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU
 universe = vanilla
 Requirements = (Arch == "X86_64")
 Executable = run_ntupler_2012.sh

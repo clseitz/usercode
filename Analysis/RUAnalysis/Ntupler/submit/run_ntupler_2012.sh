@@ -17,8 +17,8 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 #export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/ntupler_MC2012_cfg.py
 export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/ntupler_data2012_cfg.py
 #export MYSCRIPT=/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/RUAnalysis/Ntupler/submit/ntupler_Includes_cfg.py
-OUTDIR=/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/TLBSM/RU
-DIR=/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src
+OUTDIR=/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU
+DIR=/users/h2/clseitz/MyCMS/RU/CMSSW_5_3_2_patch4/src
 cd $DIR
 eval `scramv1 runtime -sh`
 #---------------------------------------------------------------

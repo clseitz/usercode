@@ -24,14 +24,10 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 #this_fin_nocfi  = "file:"+suffix_list[3*index]
 #this_fin_nocfi2  = "file:"+suffix_list[3*index+1]
 #this_fin_nocfi3  = "file:"+suffix_list[3*index+2]
-
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple_12.04/WprimeTToTTD_M1200_"+str(index)+"_FastSim425_TlBSMv9_RUNtuple_12.04_test_jetPATtest_plots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple_12.04/WprimeTToTTD_M1200_"+str(index)+"_FastSim425_TlBSMv9_RUNtuple_12.04_test_jetPATtest_tree.root"
-
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple_12.04/RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_plots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple_12.04/RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_tree.root"
-#this_fout0 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Allplots.root"
-#this_fout1 = "RPVgluino_M-200_7TeV-pythia6_"+str(index)+"_Alltree.root"
 
 #this_fout0 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Allplots.root"
 #this_fout1 = "/cms/data27/clseitz/ThreeJet/RUNtuple/Sbottom/mb_250_mf_100_ms_90_"+str(index)+"_Alltree.root"
@@ -55,8 +51,8 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 
 
 
-this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
-this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
+this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
+this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
 
 
 

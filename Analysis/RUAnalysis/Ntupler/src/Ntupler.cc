@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.7 2012/08/11 15:36:52 clseitz Exp $
+// $Id: Ntupler.cc,v 1.8 2012/08/31 14:35:30 clseitz Exp $
 //
 //
 
@@ -509,7 +509,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        pfMET= fMET.et();
        pfMETphi=fMET.phi();
        GetMCTruth(iEvent);
-       cout<<"--------------------"<<endl;
+       //       cout<<"--------------------"<<endl;
 MyTree->Fill();
        entry++;
 
