@@ -9,7 +9,7 @@
 #include "TLorentzVector.h"
 #include "TFile.h"
 #include "math.h"
-
+#include "../interface/BTagSFUtil.h"
 using namespace std;
 
 NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName) : NtpReader(InFileNames, IsData)
@@ -353,13 +353,39 @@ void NtpThreeJet::Loop ()
 	nJet35++;
 	h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
 	dummycounter++;
-	if (bdiscCSV_PF[i] > 0.679)
+	//implementing b-tagging scale factors
+	int jet_flavor =jet_PF_PartonFlav[i];
+	float jet_pt = jet_PF_pt[i];
+	float jet_phi = jet_PF_phi[i];
+        float jet_eta = jet_PF_eta[i];
+	bool isTagged = false;
+	if (bdiscCSV_PF[i] > 0.679) isTagged = true;
+	//Add isData check here (need to add variable to the ntuple first)
+	//set a unique seed                                                                                                                                                 
+	//	cout<<"before function:"<<isTagged<<" CSV:"<<bdiscCSV_PF[i]<<endl;
+	if(!DataIs){
+        double phi = jet_phi;
+        double sin_phi = sin(phi*1000000);
+        double seed = abs(static_cast<int>(sin_phi*100000));
+	//Initialize class                                                                                                                                                
+        BTagSFUtil* btsfutil = new BTagSFUtil( seed );
+        bool temp=isTagged;
+	//modify tags                                                                                                                                                      
+	double BTagSF =  btsfutil->GetBTagSF(jet_pt,jet_eta,0);
+        double BTageff =  btsfutil->GetBTageff();
+        double LightJetSF =  btsfutil->GetLightJetSF(jet_pt,jet_eta,0);
+        double LightJeteff =  btsfutil->GetLightJeteff(jet_pt,jet_eta,0); //no uncertainties given                                                                           
+
+	btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
+	if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	}
+	if (isTagged)
 	  {
 	    nBJet35++;
 	    fBJets.push_back(Jet);
 	    fdummyCleanJets.push_back(dummyJet);
 	  }
-	if (bdiscCSV_PF[i] <= 0.679)
+	if (!isTagged)
 	  {
 	    nNoBJet35++;
 	    fNoBJets.push_back(Jet);

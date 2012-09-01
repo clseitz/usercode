@@ -51,6 +51,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("lumis", &lumis);
   Tree->Branch("HasSelTrigger", &HasSelTrigger);
   Tree->Branch("HasBaseTrigger", &HasBaseTrigger);
+  Tree->Branch("DataIs", &DataIs);
   Tree->Branch("MSquark",  &MSquark);
   Tree->Branch("MLSP",  &MLSP);
   Tree->Branch("nTruePileUp",  &nTruePileUp);
@@ -207,6 +208,7 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("lumis", &lumis);
   fChain.SetBranchAddress("HasSelTrigger", &HasSelTrigger);
   fChain.SetBranchAddress("HasBaseTrigger", &HasBaseTrigger);
+  fChain.SetBranchAddress("DataIs", &DataIs);
   fChain.SetBranchAddress("MSquark",  &MSquark);
   fChain.SetBranchAddress("MLSP",  &MLSP);
  fChain.SetBranchAddress("nTruePileUp",  &nTruePileUp);
