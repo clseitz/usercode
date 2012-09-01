@@ -51,8 +51,12 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 
 
 
-this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
-this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
+#this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
+#this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
+
+this_fout0 = "/cms/clseitz/ThreeJet/BtagSFtest/Data/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
+this_fout1 = "/cms/clseitz/ThreeJet/BtagSFtest/Data/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
+
 
 
 

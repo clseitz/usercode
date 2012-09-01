@@ -40,6 +40,7 @@ class NtpReader
     int   nGoodVtx;
     Bool_t HasBaseTrigger;
     Bool_t HasSelTrigger;
+    Bool_t DataIs;
     double MSquark;
     double MLSP;
     float nTruePileUp;
