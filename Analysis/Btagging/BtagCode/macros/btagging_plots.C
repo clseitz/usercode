@@ -27,12 +27,14 @@ vector <string > flavors;
 
   //file 0-3 are the files to fit
   
-  
- 
+ filelist.push_back(TFile::Open("/home/clseitz/MyCMS/RU/CMSSW_4_2_4/src/Btagging/BtagCode/test.root"));
+ namelist.push_back("test3b");
+
+ /* 
  filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/RPV_MC_113_223_200GeV_424_2raw.root"));
  namelist.push_back("RPV_MC_113_223_200GeV");
-
- filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/TTbarJets/TTbarJets_Btag_raw_full.root"));
+ 
+  filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/TTbarJets/TTbarJets_Btag_raw_full.root"));
  namelist.push_back("TTbarJets");
 
  filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/Zprime/Zprime_M1000_W100_424_raw.root"));
@@ -43,13 +45,15 @@ namelist.push_back("Zprime_M1500_W15");
 namelist.push_back("Zprime_M500_W50");
  filelist.push_back(TFile::Open("/cms/data24/clseitz/BtaggEff/Zprime/Zprime_M500_W5_424_raw.root"));
 namelist.push_back("Zprime_M500_W5");
-		
+ */	
 
 
 		 Btaggers.push_back("discriminator_TCHE");
 		 Btaggers.push_back("discriminator_TCHP");
 		 Btaggers.push_back("discriminator_SSVHE");
 		 Btaggers.push_back("discriminator_SSVHP");
+		 Btaggers.push_back("discriminator_JP");
+		 Btaggers.push_back("discriminator_CSV");
 		 flavors.push_back("b");
 		 flavors.push_back("c");
 		 flavors.push_back("udsg");
@@ -62,6 +66,13 @@ namelist.push_back("Zprime_M500_W5");
 		 op_name.push_back("SSVHEM"); operating_point.push_back(1.74);
 		 op_name.push_back("SSVHET"); operating_point.push_back(3.05);
 		 op_name.push_back("SSVHPT"); operating_point.push_back(2.00);
+		 op_name.push_back("JPL"); operating_point.push_back(0.275);
+		 op_name.push_back("JPM"); operating_point.push_back(0.545);
+		 op_name.push_back("JPT"); operating_point.push_back(0.790);
+		 op_name.push_back("CSVL"); operating_point.push_back(0.244);
+		 op_name.push_back("CSVM"); operating_point.push_back(0.679);
+		 op_name.push_back("CSVT"); operating_point.push_back(0.898);
+
 		 op_name.push_back("none");
 	
   TFile fnew1("debug.root", "recreate");
@@ -70,7 +81,7 @@ namelist.push_back("Zprime_M500_W5");
   
   //fileloop
    cout<<"GE4Jet_GE1EventBTag_EQ1TripletBtag"<<endl;
-   for(int file=0; file<6; file++){
+   for(int file=0; file<filelist.size(); file++){
   
     cout<<endl;
     cout<<namelist[file]<<endl;;
@@ -80,7 +91,7 @@ namelist.push_back("Zprime_M500_W5");
     fnew1.mkdir(dir);
     //cout<<"Btag"<<Btaggers[1]<<"_"<<flavors[1];
     //Make the plots for btag discrim
-    for(int i=0; i<4; i++){
+    for(int i=0; i<Btaggers.size(); i++){
       std::stringstream sc;
       sc<<Btaggers[i];
       TCanvas* c1 = new TCanvas((sc.str()).c_str(),(sc.str()).c_str(),800,600);
@@ -135,7 +146,7 @@ namelist.push_back("Zprime_M500_W5");
     Double_t xbins[27]={0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,250,300,400,500,600,1000};
    //Double_t xbins[15]={0,20,30,40,50,60,70,80,100,120,240,380,520,660,1000};
    //making plots for btag efficiency and miss tag rate
-      for(int file=0; file<6; file++){
+    for(int file=0; file<filelist.size(); file++){
   cout<<namelist[file]<<endl;;
     sprintf(dir, "%s",namelist[file].c_str());
    
@@ -143,7 +154,7 @@ namelist.push_back("Zprime_M500_W5");
     fnew1.mkdir(dir);
     
     //Loop for the different OP
-    for(int i=0; i<7; i++){
+    for(int i=0; i<op_name.size(); i++){
       std::stringstream sOP1 ;
       sOP1<<"jet_pt_"<<op_name[i];
       //TCanvas* c1 = new TCanvas((sOP1.str()).c_str(),(sOP1.str()).c_str(),800,600);
@@ -223,14 +234,14 @@ h_NoBtagEta->Write();
     }
     
    }
-  for(int file=0; file<6; file++){
+    for(int file=0; file<filelist.size(); file++){
  sprintf(dir, "%s",namelist[file].c_str());
  if(!fnew1.GetDirectory(dir))
     fnew1.mkdir(dir);
- for(float iTagger=0; iTagger<7; iTagger++)
+ for(float iTagger=0; iTagger<op_name.size(); iTagger++)
    {
     
-     for(int iFlavor=0; iFlavor<3; iFlavor++)
+     for(int iFlavor=0; iFlavor<flavors.size(); iFlavor++)
        {
 	 std::stringstream sTagFlav_Tjetpt,sTagFlav_Tmass,sTagFlav_Tsumpt,sTagFlav_Tjetpt_none,sTagFlav_Tmass_none,sTagFlav_Tsumpt_none;
 	 sTagFlav_Tjetpt<<"Btag/triplet_jet_pt_"<<op_name[iTagger]<<"_"<<flavors[iFlavor];
@@ -259,11 +270,11 @@ h_NoBtagEta->Write();
 	 TH1F* h_Triplet_jetpt_none;
 	 TH1F* h_Triplet_sumpt_none;
 	 TH1F* h_Triplet_mass_none;
- 
+	 cout<<"debug"<<endl;
 	 h_tempTriplet_jetpt = (TH1F*) filelist[file]->Get((sTagFlav_Tjetpt.str()).c_str());
 	 h_tempTriplet_sumpt = (TH1F*) filelist[file]->Get(( sTagFlav_Tsumpt.str()).c_str());
 	 h_tempTriplet_mass = (TH1F*) filelist[file]->Get(( sTagFlav_Tmass.str()).c_str());
-
+	 cout<<"debug"<<endl;
 	 h_tempTriplet_jetpt_none = (TH1F*) filelist[file]->Get((sTagFlav_Tjetpt_none.str()).c_str());
 	 h_tempTriplet_sumpt_none = (TH1F*) filelist[file]->Get(( sTagFlav_Tsumpt_none.str()).c_str());
 	 h_tempTriplet_mass_none = (TH1F*) filelist[file]->Get(( sTagFlav_Tmass_none.str()).c_str());

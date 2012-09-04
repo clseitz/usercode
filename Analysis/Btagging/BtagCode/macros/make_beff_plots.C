@@ -30,23 +30,27 @@ void make_beff_plots()
   char picname[99];
   
   filelist.push_back(TFile::Open("debug.root"));
-  filelist.push_back(TFile::Open("debug.root"));
+  /*filelist.push_back(TFile::Open("debug.root"));
  filelist.push_back(TFile::Open("debug.root"));
   filelist.push_back(TFile::Open("debug.root"));
  filelist.push_back(TFile::Open("debug.root"));
-  filelist.push_back(TFile::Open("debug.root"));
+ filelist.push_back(TFile::Open("debug.root"));*/
 
-  namelist.push_back("RPV_MC_113_223_200GeV");
-  namelist.push_back("TTbarJets");
-  namelist.push_back("Zprime_M1000_W100");
+  namelist.push_back("test3b");
+  /*namelist.push_back("RPV_MC_113_223_200GeV");
+    namelist.push_back("TTbarJets");
+    namelist.push_back("Zprime_M1000_W100");
  namelist.push_back("Zprime_M1500_W15");
  namelist.push_back("Zprime_M500_W50");
  namelist.push_back("Zprime_M500_W5");
-  
+  */
   Btaggers.push_back("discriminator_TCHE");
   Btaggers.push_back("discriminator_TCHP");
   Btaggers.push_back("discriminator_SSVHE");
   Btaggers.push_back("discriminator_SSVHP");
+  Btaggers.push_back("discriminator_JP");
+  Btaggers.push_back("discriminator_CSV");
+
   flavors.push_back("udsg");
   flavors.push_back("c");
   flavors.push_back("b");
@@ -59,25 +63,44 @@ void make_beff_plots()
   op_name.push_back("SSVHEM"); operating_point.push_back(1.74);
   op_name.push_back("SSVHET"); operating_point.push_back(3.05);
   op_name.push_back("SSVHPT"); operating_point.push_back(2.00);
-  eff_name.push_back("TCH");
-  eff_name.push_back("SSVH");
-  eff_name.push_back("TCH");
-  eff_name.push_back("SSVH");
-  v_eff.push_back("tag");
-    v_eff.push_back("tag");
-  v_eff.push_back("mistag");
-  v_eff.push_back("mistag");
+  op_name.push_back("JPL"); operating_point.push_back(0.275);
+  op_name.push_back("JPM"); operating_point.push_back(0.545);
+  op_name.push_back("JPT"); operating_point.push_back(0.790);
+  op_name.push_back("CSVL"); operating_point.push_back(0.244);
+  op_name.push_back("CSVM"); operating_point.push_back(0.679);
+  op_name.push_back("CSVT"); operating_point.push_back(0.898);
 
+  eff_name.push_back("TCH");
+  eff_name.push_back("SSVH");
+  eff_name.push_back("JP");
+  eff_name.push_back("CSV");
+
+  eff_name.push_back("TCH");
+  eff_name.push_back("SSVH");
+  eff_name.push_back("JP");
+  eff_name.push_back("CSV");
+
+  v_eff.push_back("tag");
+  v_eff.push_back("tag");
+  v_eff.push_back("tag");
+  v_eff.push_back("tag");
+  v_eff.push_back("mistag");
+  v_eff.push_back("mistag");
+  v_eff.push_back("mistag");
+  v_eff.push_back("mistag");
   TFile fnew1("debug2.root", "recreate");
   
   
   
-  for(int file=0; file<6; file++){
+  for(int file=0; file<filelist.size(); file++){
     sprintf(dir, "%s",namelist[file].c_str());
     if(!fnew1.GetDirectory(dir))
       fnew1.mkdir(dir);
-    for (int b=0; b<4;b++){
+    for (int b=0; b<eff_name.size();b++){
+      cout<<"can't cd into directory"<<endl;
+      cout<<dir<<endl;
       fnew1.cd(dir);
+      cout<<" cd into directory"<<endl;
       std::stringstream sOP1 ;
       sOP1<<"B-"<<v_eff[b] <<"_efficiency_"<<eff_name[b];
       TCanvas* c1 = new TCanvas((sOP1.str()).c_str(),(sOP1.str()).c_str(),800,600);
@@ -87,14 +110,17 @@ void make_beff_plots()
       dummy->GetXaxis()->SetTitleOffset(1.9);
       dummy->GetYaxis()->SetTitleOffset(2.2);
 
-dummy->GetXaxis()->SetRangeUser(0,300);
-      if(b==0 || b ==1){
+      dummy->GetXaxis()->SetRangeUser(0,300);
+      cout<<b<<" "<<eff_name.size()/2<<endl;
+      if(b<eff_name.size()/2){
+	cout<<"lower"<<endl;
 	dummy->GetYaxis()->SetTitle("b-tag efficiency");
 	sprintf(hNAME, "B-tag efficiency %s ",namelist[file].c_str());
 	dummy->SetTitle(hNAME);
 	dummy->GetYaxis()->SetRangeUser(0,1);
       }
-      if(b==2 || b ==3){
+      if(b>=eff_name.size()/2){
+	cout<<"higher"<<endl;
 	dummy->GetYaxis()->SetTitle("mis (udsg) b-tag efficiency");
 	sprintf(hNAME, "Mis (udsg) B-tag efficiency %s ",namelist[file].c_str());
 	dummy->SetTitle(hNAME);
@@ -104,14 +130,15 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
       
       //Loop for the different OP
-      for(int i=0; i<7; i++){
+      for(int i=0; i<op_name.size(); i++){
 	
-	for (int a=0; a<3; a++){
+	for (int a=0; a<flavors.size(); a++){
 	  std::stringstream sOP2, sOP3;
 	  sOP2<<dir<<"/BTagEff_"<<op_name[i]<<"_"<<flavors[a];
 	  sOP3<<"BTagEff_"<<op_name[i]<<"_"<<flavors[a];
 	  
 	  cout<<(sOP2.str()).c_str()<<endl;
+	  cout<<a<<" "<<i<<" "<<b<<endl;
 	  TH1F* tBtag_eff = (TH1F*) filelist[file]->Get((sOP2.str()).c_str());
 	  c1->cd();
 	  if(a==2){
@@ -130,7 +157,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	    }
 	    
 	    //selecting only bjets
-	    if (i>=4 && b==1){
+	    if ((i>=4 && i<7) && b==1){
 	      
 	      tBtag_eff->Draw("same");
 	      tBtag_eff->SetMarkerStyle(i);
@@ -140,12 +167,34 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      leg->Draw();
 	      
 	    }
+	    if (i>=7 && i<10 && b==2){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+	    if (i>=10 && i<13 && b==3){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+
+
 	    
 	  }
 	  if(a==0){
 	    
 	    //selecting udsg jets
-	    if (i<4 && b==2){
+	    if (i<4 && b==4){
 	      tBtag_eff->Draw("same");
 	      tBtag_eff->SetMarkerStyle(4);
 	      tBtag_eff->SetMarkerStyle(i+4);
@@ -159,16 +208,37 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	    }
 	    
 	    //selecting only bjets
-	    if (i>=4 && b==3){
-	      
-	      tBtag_eff->Draw("same");
-	      tBtag_eff->SetMarkerStyle(i);
-	      tBtag_eff->SetMarkerColor(i-3);
-	      tBtag_eff->SetLineColor(i-3);
-	      leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep"); 
-	      leg->Draw();
-	      
-	    }
+	    if (i>=4 && i<7 && b==5){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=7 && i<10 && b==6){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=10 && i<13 && b==7){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+
 	    cout<<"debug"<<endl;
 	    
 	    
@@ -185,8 +255,8 @@ dummy->GetXaxis()->SetRangeUser(0,300);
      
 	 
     }
-
-    for (int b=0; b<4;b++){
+    cout<<"done with the first part"<<endl;
+    for (int b=0; b<eff_name.size();b++){
       fnew1.cd(dir);
       std::stringstream sOP1 ;
       sOP1<<"B-"<<v_eff[b] <<"_efficiency_eta_"<<eff_name[b];
@@ -196,13 +266,16 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       dummy->GetXaxis()->SetTitle("eta of the jets");
       dummy->GetXaxis()->SetTitleOffset(1.9);
       dummy->GetYaxis()->SetTitleOffset(2.2);
-      if(b==0 || b ==1){
+      cout<<b<<" "<<eff_name.size()/2<<endl;
+      if(b<eff_name.size()/2){
+	cout<<"lower"<<endl;
 	dummy->GetYaxis()->SetTitle("b-tag efficiency");
 	sprintf(hNAME, "B-tag efficiency %s ",namelist[file].c_str());
 	dummy->SetTitle(hNAME);
 	dummy->GetYaxis()->SetRangeUser(0,1);
       }
-      if(b==2 || b ==3){
+      if(b>=eff_name.size()/2){
+	cout<<"hgiher"<<endl;
 	dummy->GetYaxis()->SetTitle("mis (udsg) b-tag efficiency");
 	sprintf(hNAME, "Mis (udsg) B-tag efficiency %s ",namelist[file].c_str());
 	dummy->SetTitle(hNAME);
@@ -212,9 +285,9 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       TLegend *leg = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
       
       //Loop for the different OP
-      for(int i=0; i<7; i++){
+      for(int i=0; i<op_name.size(); i++){
 	
-	for (int a=0; a<3; a++){
+	for (int a=0; a<flavors.size(); a++){
 	  std::stringstream sOP2, sOP3;
 	  sOP2<<dir<<"/BTagEffEta_"<<op_name[i]<<"_"<<flavors[a];
 	  sOP3<<"BTagEffEta_"<<op_name[i]<<"_"<<flavors[a];
@@ -236,24 +309,43 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      
 	      
 	    }
-	    
-	    //selecting only bjets
-	    if (i>=4 && b==1){
-	      
-	      tBtag_eff->Draw("same");
+	    if (i>=4 && i<7 && b==1){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=7 && i<10 && b==2){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=10 && i<13 && b==3){
+
+              tBtag_eff->Draw("same");
 	      tBtag_eff->SetMarkerStyle(i);
-	      tBtag_eff->SetMarkerColor(i-3);
-	      tBtag_eff->SetLineColor(i-3);
-	      leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep"); 
-	      leg->Draw();
-	      
-	    }
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+
 	    
 	  }
 	  if(a==0){
 	    
 	    //selecting udsg jets
-	    if (i<4 && b==2){
+	    if (i<4 && b==4){
 	      tBtag_eff->Draw("same");
 	      tBtag_eff->SetMarkerStyle(4);
 	      tBtag_eff->SetMarkerStyle(i+4);
@@ -266,17 +358,38 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      
 	    }
 	    
-	    //selecting only bjets
-	    if (i>=4 && b==3){
-	      
-	      tBtag_eff->Draw("same");
-	      tBtag_eff->SetMarkerStyle(i);
-	      tBtag_eff->SetMarkerColor(i-3);
-	      tBtag_eff->SetLineColor(i-3);
-	      leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep"); 
-	      leg->Draw();
-	      
-	    }
+	    if (i>=4 && i<7 && b==5){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=7 && i<10 && b==6){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+            if (i>=10 && i<13 && b==7){
+
+              tBtag_eff->Draw("same");
+              tBtag_eff->SetMarkerStyle(i);
+              tBtag_eff->SetMarkerColor(i-3);
+              tBtag_eff->SetLineColor(i-3);
+              leg->AddEntry((sOP3.str()).c_str(),(sOP3.str()).c_str(),"lep");
+              leg->Draw();
+
+            }
+
+
 	    //cout<<"debug"<<endl;
 	    
 	    
@@ -300,11 +413,11 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 }
 
 
-  for(int file=0; file<6; file++){
+  for(int file=0; file<filelist.size(); file++){
     sprintf(dir, "%s",namelist[file].c_str());
     if(!fnew1.GetDirectory(dir))
       fnew1.mkdir(dir);
-    for (int b=0; b<4;b++){
+    for (int b=0; b<eff_name.size();b++){
       fnew1.cd(dir);
       std::stringstream sOP1a,sOP1b, sOP1c;
       
@@ -335,7 +448,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       dummya->GetXaxis()->SetTitle("3-jet invariant mass");
       dummyb->GetXaxis()->SetTitle("3-jet sumpt");
       dummyc->GetXaxis()->SetTitle("single jet pt within triplet");
-      if(b==0 || b ==1){
+      if(b<eff_name.size()/2){
 	dummya->GetYaxis()->SetTitle("b-tag efficiency");
 	sprintf(hNAME, "B-tag efficiency %s ",namelist[file].c_str());
 	dummya->SetTitle(hNAME);
@@ -347,7 +460,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	dummyc->SetTitle(hNAME);
 	dummyc->GetYaxis()->SetRangeUser(0,1);
       }
-      if(b==2 || b ==3){
+      if(b>=eff_name.size()/2){
 	dummya->GetYaxis()->SetTitle("mis (udsg) b-tag efficiency");
 	sprintf(hNAME, "Mis (udsg) B-tag efficiency %s ",namelist[file].c_str());
 	dummya->SetTitle(hNAME);
@@ -368,9 +481,9 @@ dummy->GetXaxis()->SetRangeUser(0,300);
       TLegend *legc = new TLegend(0.7060302,0.7692308,0.9761307,0.972028,NULL,"brNDC");
       
       //Loop for the different OP
-      for(int i=0; i<7; i++){
+      for(int i=0; i<op_name.size(); i++){
 	 
-	for (int a=0; a<3; a++){
+	for (int a=0; a<flavors.size(); a++){
 	  
 	 
 	  std::stringstream OPmass, OPsumpt, OPjetpt, OPmassA, OPsumptA, OPjetptA;
@@ -420,7 +533,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	   }
 	   
 	   //selecting only bjets
-	   if (i>=4 && b==1){
+	   if (i>=4 && i<7 && b==1){
 	     c1a->cd(); 
 	     tBtag_eff_mass->Draw("same");
 	     tBtag_eff_mass->SetMarkerStyle(i);
@@ -449,13 +562,73 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	     
 	     
 	   }
-	   
+	   if (i>=7 && i<10 && b==2){
+             c1a->cd();
+             tBtag_eff_mass->Draw("same");
+             tBtag_eff_mass->SetMarkerStyle(i);
+             tBtag_eff_mass->SetMarkerColor(i-3);
+             tBtag_eff_mass->SetLineColor(i-3);
+             lega->AddEntry((OPmassA.str()).c_str(),(OPmassA.str()).c_str(),"lep");
+             lega->Draw();
+
+             c1b->cd();
+             tBtag_eff_sumpt->Draw("same");
+             tBtag_eff_sumpt->SetMarkerStyle(i);
+             tBtag_eff_sumpt->SetMarkerStyle(i);
+             tBtag_eff_sumpt->SetMarkerColor(i-3);
+             tBtag_eff_sumpt->SetLineColor(i-3);
+             legb->AddEntry((OPsumptA.str()).c_str(),(OPsumptA.str()).c_str(),"lep");
+             legb->Draw();
+
+             c1c->cd();
+             tBtag_eff_jetpt->Draw("same");
+             tBtag_eff_jetpt->SetMarkerStyle(i);
+             tBtag_eff_jetpt->SetMarkerStyle(i);
+             tBtag_eff_jetpt->SetMarkerColor(i-3);
+             tBtag_eff_jetpt->SetLineColor(i-3);
+             legc->AddEntry((OPjetptA.str()).c_str(),(OPjetptA.str()).c_str(),"lep");
+             legc->Draw();
+
+
+           }
+
+	   if (i>=10 && i<13 && b==3){
+
+             c1a->cd();
+             tBtag_eff_mass->Draw("same");
+             tBtag_eff_mass->SetMarkerStyle(i);
+             tBtag_eff_mass->SetMarkerColor(i-3);
+             tBtag_eff_mass->SetLineColor(i-3);
+             lega->AddEntry((OPmassA.str()).c_str(),(OPmassA.str()).c_str(),"lep");
+             lega->Draw();
+
+             c1b->cd();
+             tBtag_eff_sumpt->Draw("same");
+             tBtag_eff_sumpt->SetMarkerStyle(i);
+             tBtag_eff_sumpt->SetMarkerStyle(i);
+             tBtag_eff_sumpt->SetMarkerColor(i-3);
+             tBtag_eff_sumpt->SetLineColor(i-3);
+             legb->AddEntry((OPsumptA.str()).c_str(),(OPsumptA.str()).c_str(),"lep");
+             legb->Draw();
+
+             c1c->cd();
+	     tBtag_eff_jetpt->Draw("same");
+             tBtag_eff_jetpt->SetMarkerStyle(i);
+             tBtag_eff_jetpt->SetMarkerStyle(i);
+             tBtag_eff_jetpt->SetMarkerColor(i-3);
+             tBtag_eff_jetpt->SetLineColor(i-3);
+             legc->AddEntry((OPjetptA.str()).c_str(),(OPjetptA.str()).c_str(),"lep");
+             legc->Draw();
+
+
+	   }
+
 	 }
 	 
 	 if(a==0){
 	    
 	    //selecting udsg jets
-	    if (i<4 && b==2){
+	    if (i<4 && b==4){
 	      c1a->cd();
 	      tBtag_eff_mass->Draw("same");
 	      tBtag_eff_mass->SetMarkerStyle(4);
@@ -487,18 +660,17 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      
 	    }
 	    
-	    //selecting only bjets
-	    if (i>=4 && b==3){
-	       c1a->cd();
+	  
+	    if (i>=4 && i<7 && b==5){
+	      c1a->cd(); 
 	      tBtag_eff_mass->Draw("same");
 	      tBtag_eff_mass->SetMarkerStyle(i);
 	      tBtag_eff_mass->SetMarkerColor(i-3);
 	      tBtag_eff_mass->SetLineColor(i-3);
 	      lega->AddEntry((OPmassA.str()).c_str(),(OPmassA.str()).c_str(),"lep"); 
 	      lega->Draw();
-
-
-	        c1b->cd();
+	           
+	      c1b->cd();
 	      tBtag_eff_sumpt->Draw("same");
 	      tBtag_eff_sumpt->SetMarkerStyle(i);
 	      tBtag_eff_sumpt->SetMarkerStyle(i);
@@ -506,6 +678,7 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      tBtag_eff_sumpt->SetLineColor(i-3);
 	      legb->AddEntry((OPsumptA.str()).c_str(),(OPsumptA.str()).c_str(),"lep"); 
 	      legb->Draw();
+	           
 	      c1c->cd();
 	      tBtag_eff_jetpt->Draw("same");
 	      tBtag_eff_jetpt->SetMarkerStyle(i);
@@ -514,8 +687,69 @@ dummy->GetXaxis()->SetRangeUser(0,300);
 	      tBtag_eff_jetpt->SetLineColor(i-3);
 	      legc->AddEntry((OPjetptA.str()).c_str(),(OPjetptA.str()).c_str(),"lep"); 
 	      legc->Draw();
+	           
+	           
+	    }
+	    if (i>=7 && i<10 && b==6){
+	      c1a->cd();
+	      tBtag_eff_mass->Draw("same");
+	      tBtag_eff_mass->SetMarkerStyle(i);
+	      tBtag_eff_mass->SetMarkerColor(i-3);
+	      tBtag_eff_mass->SetLineColor(i-3);
+	      lega->AddEntry((OPmassA.str()).c_str(),(OPmassA.str()).c_str(),"lep");
+	      lega->Draw();
+
+	      c1b->cd();
+	      tBtag_eff_sumpt->Draw("same");
+	      tBtag_eff_sumpt->SetMarkerStyle(i);
+	      tBtag_eff_sumpt->SetMarkerStyle(i);
+	      tBtag_eff_sumpt->SetMarkerColor(i-3);
+	      tBtag_eff_sumpt->SetLineColor(i-3);
+	      legb->AddEntry((OPsumptA.str()).c_str(),(OPsumptA.str()).c_str(),"lep");
+	      legb->Draw();
+
+	      c1c->cd();
+	      tBtag_eff_jetpt->Draw("same");
+	      tBtag_eff_jetpt->SetMarkerStyle(i);
+	      tBtag_eff_jetpt->SetMarkerStyle(i);
+	      tBtag_eff_jetpt->SetMarkerColor(i-3);
+	      tBtag_eff_jetpt->SetLineColor(i-3);
+	      legc->AddEntry((OPjetptA.str()).c_str(),(OPjetptA.str()).c_str(),"lep");
+	      legc->Draw();
+
 
 	    }
+	    if (i>=10 && i<13 && b==7){
+
+	      c1a->cd();
+	      tBtag_eff_mass->Draw("same");
+	      tBtag_eff_mass->SetMarkerStyle(i);
+	      tBtag_eff_mass->SetMarkerColor(i-3);
+	      tBtag_eff_mass->SetLineColor(i-3);
+	      lega->AddEntry((OPmassA.str()).c_str(),(OPmassA.str()).c_str(),"lep");
+	      lega->Draw();
+
+	      c1b->cd();
+	      tBtag_eff_sumpt->Draw("same");
+	      tBtag_eff_sumpt->SetMarkerStyle(i);
+	      tBtag_eff_sumpt->SetMarkerStyle(i);
+	      tBtag_eff_sumpt->SetMarkerColor(i-3);
+	      tBtag_eff_sumpt->SetLineColor(i-3);
+	      legb->AddEntry((OPsumptA.str()).c_str(),(OPsumptA.str()).c_str(),"lep");
+	      legb->Draw();
+
+	      c1c->cd();
+	      tBtag_eff_jetpt->Draw("same");
+	      tBtag_eff_jetpt->SetMarkerStyle(i);
+	      tBtag_eff_jetpt->SetMarkerStyle(i);
+	      tBtag_eff_jetpt->SetMarkerColor(i-3);
+	      tBtag_eff_jetpt->SetLineColor(i-3);
+	      legc->AddEntry((OPjetptA.str()).c_str(),(OPjetptA.str()).c_str(),"lep");
+	      legc->Draw();
+
+
+	    }
+
 	     }
 	}}
       fnew1.cd(dir);

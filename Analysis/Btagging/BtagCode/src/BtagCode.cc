@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Wed Jun 15 13:36:24 EDT 2011
-// $Id: BtagCode.cc,v 1.2 2011/07/19 14:38:00 clseitz Exp $
+// $Id: BtagCode.cc,v 1.3 2012/05/08 12:18:21 clseitz Exp $
 //
 //
 
@@ -107,6 +107,8 @@ BtagCode::beginJob()
   tagger_name.push_back("TCHP");
   tagger_name.push_back("SSVHE");
   tagger_name.push_back("SSVHP");
+    tagger_name.push_back("JP");
+  tagger_name.push_back("CSV");
   
   //define btagging algos and working points
   op_name.push_back("TCHEL"); operating_point.push_back(1.70);
@@ -116,6 +118,12 @@ BtagCode::beginJob()
   op_name.push_back("SSVHEM"); operating_point.push_back(1.74);
   op_name.push_back("SSVHET"); operating_point.push_back(3.05);
   op_name.push_back("SSVHPT"); operating_point.push_back(2.00);
+  op_name.push_back("JPL"); operating_point.push_back(0.275);
+  op_name.push_back("JPM"); operating_point.push_back(0.545);
+  op_name.push_back("JPT"); operating_point.push_back(0.790);
+  op_name.push_back("CSVL"); operating_point.push_back(0.244);
+  op_name.push_back("CSVM"); operating_point.push_back(0.679);
+  op_name.push_back("CSVT"); operating_point.push_back(0.898);
   op_name.push_back("none");
   //define flavors for the btagging
   flavor_name.push_back("b");
@@ -134,6 +142,8 @@ BtagCode::beginJob()
 
        	 if(iTagger==0 || iTagger==1) discriminator_tagalgo_flavor[iTagger].push_back(new TH1F((sdisc.str()).c_str(),(sdisc.str()).c_str(), 300, -30, 30));
 	 if(iTagger==2 || iTagger==3) discriminator_tagalgo_flavor[iTagger].push_back(new TH1F((sdisc.str()).c_str(),(sdisc.str()).c_str(), 300, -6, 6));
+	 if(iTagger==4) discriminator_tagalgo_flavor[iTagger].push_back(new TH1F((sdisc.str()).c_str(),(sdisc.str()).c_str(), 300, -6, 6));
+	 if(iTagger==5) discriminator_tagalgo_flavor[iTagger].push_back(new TH1F((sdisc.str()).c_str(),(sdisc.str()).c_str(), 300, -6, 6));
        }
    }
   //define stuff for the different operating points
@@ -173,7 +183,15 @@ BtagCode::beginJob()
 	  triplet_sumpt_tagger_flavor[iOP].push_back(new TH1F((sTagFlav_Tsumpt.str()).c_str(),(sTagFlav_Tsumpt.str()).c_str(), 500, 0, 1000));
 	  triplet_mass_tagger_flavor[iOP].push_back(new TH1F((sTagFlav_Tmass.str()).c_str(),(sTagFlav_Tmass.str()).c_str(), 500, 0, 1000));
 	  
-
+	  
+	  jet_pt_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  jet_pt_1p2_2p4_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  jet_pt_l1p2_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  jet_eta_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  jet_eta_pt_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  triplet_jet_pt_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  triplet_sumpt_tagger_flavor[iOP][iFlavor]->Sumw2();
+	  triplet_mass_tagger_flavor[iOP][iFlavor]->Sumw2();
 	}
     }
 
@@ -249,6 +267,7 @@ BtagCode::endJob()
   outputFile->mkdir("Btag");
   outputFile->cd("Btag");
   MCbTriplet->Write();
+  cout<<"1"<<endl;
       for(float iTagger=0; iTagger<tagger_name.size();iTagger++)
 	{
 	  for(int iFlavor=0; iFlavor<3; iFlavor++)
@@ -258,6 +277,7 @@ BtagCode::endJob()
  	    }
 	}
       //write out the different op points
+  cout<<"2"<<endl;
       for(float iOP=0; iOP<op_name.size();iOP++)
 	{
 	  for(int iFlavor=0; iFlavor<3; iFlavor++)
@@ -267,9 +287,13 @@ BtagCode::endJob()
 	      jet_pt_l1p2_tagger_flavor[iOP][iFlavor]->Write();
 	       jet_eta_tagger_flavor[iOP][iFlavor]->Write();
 	       jet_eta_pt_tagger_flavor[iOP][iFlavor]->Write();
+	       triplet_jet_pt_tagger_flavor[iOP][iFlavor]->Write();
+	       triplet_sumpt_tagger_flavor[iOP][iFlavor]->Write();
+	       triplet_mass_tagger_flavor[iOP][iFlavor]->Write();
+
 	    }
 	}
-    for(float iTagger=0; iTagger<8;iTagger++)
+      /*     for(float iTagger=0; iTagger<tagger_name.size();iTagger++)
    {
      for(int iFlavor=0; iFlavor<3; iFlavor++)
        {
@@ -277,7 +301,7 @@ BtagCode::endJob()
          triplet_sumpt_tagger_flavor[iTagger][iFlavor]->Write();
          triplet_mass_tagger_flavor[iTagger][iFlavor]->Write();
        }
-       }
+       }*/
 
 }
 
@@ -369,33 +393,36 @@ void BtagCode::BtagEffTriplet(std::vector <std::vector<pat::Jet > > Triplet, std
 	    //get b  discriminators from all the jets and the pt
 	    double flavor_Triplet;
 	    double d_bDis_TCHE_Triplet, d_bDis_TCHP_Triplet, d_bDis_SSVHE_Triplet,d_bDis_SSVHP_Triplet, d_pt_Triplet;
-	    
+	    double  d_bDis_JP_Triplet, d_bDis_CSV_Triplet;
+
 	    flavor_Triplet = fabs( Triplet[iT][iJ].partonFlavour() );
 	    d_bDis_TCHP_Triplet=Triplet[iT][iJ].bDiscriminator("trackCountingHighPurBJetTags");
 	    d_bDis_TCHE_Triplet=Triplet[iT][iJ].bDiscriminator("trackCountingHighEffBJetTags");
 	    d_bDis_SSVHE_Triplet = Triplet[iT][iJ].bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
 	    d_bDis_SSVHP_Triplet = Triplet[iT][iJ].bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
+	    d_bDis_JP_Triplet = Triplet[iT][iJ].bDiscriminator("jetProbabilityBJetTags");
+	    d_bDis_CSV_Triplet = Triplet[iT][iJ].bDiscriminator("combinedSecondaryVertexBJetTags");
 	    d_pt_Triplet=Triplet[iT][iJ].pt();
 	    
 	    
 	    //do btag eff -> require a btag in the triplet
 	    
 	    if (flavor_Triplet==5){
-	      triplet_jet_pt_tagger_flavor[7][0]->Fill(d_pt_Triplet);
-	      triplet_sumpt_tagger_flavor[7][0]->Fill(sumScalarPtTriplet[iT]);
-	      triplet_mass_tagger_flavor[7][0]->Fill(massTriplet[iT]);
+	      triplet_jet_pt_tagger_flavor[13][0]->Fill(d_pt_Triplet);
+	      triplet_sumpt_tagger_flavor[13][0]->Fill(sumScalarPtTriplet[iT]);
+	      triplet_mass_tagger_flavor[13][0]->Fill(massTriplet[iT]);
 	    }
 	    if (flavor_Triplet==4){
-	      triplet_jet_pt_tagger_flavor[7][1]->Fill(d_pt_Triplet);
-	      triplet_sumpt_tagger_flavor[7][1]->Fill(sumScalarPtTriplet[iT]);
-	      triplet_mass_tagger_flavor[7][1]->Fill(massTriplet[iT]);
+	      triplet_jet_pt_tagger_flavor[13][1]->Fill(d_pt_Triplet);
+	      triplet_sumpt_tagger_flavor[13][1]->Fill(sumScalarPtTriplet[iT]);
+	      triplet_mass_tagger_flavor[13][1]->Fill(massTriplet[iT]);
 	    }
 	    
 	    if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4))
 	      {
-		triplet_jet_pt_tagger_flavor[7][2]->Fill(d_pt_Triplet); 
-		triplet_sumpt_tagger_flavor[7][2]->Fill(sumScalarPtTriplet[iT]); 
-		triplet_mass_tagger_flavor[7][2]->Fill(massTriplet[iT]);
+		triplet_jet_pt_tagger_flavor[13][2]->Fill(d_pt_Triplet); 
+		triplet_sumpt_tagger_flavor[13][2]->Fill(sumScalarPtTriplet[iT]); 
+		triplet_mass_tagger_flavor[13][2]->Fill(massTriplet[iT]);
 	      }
 	    
 		
@@ -529,10 +556,120 @@ void BtagCode::BtagEffTriplet(std::vector <std::vector<pat::Jet > > Triplet, std
 		    triplet_mass_tagger_flavor[6][2]->Fill(massTriplet[iT]);
 		  }
 		}
-      
+		//JPL
+		if (d_bDis_JP_Triplet>operating_point[7]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[7][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[7][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[7][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[7][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[7][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[7][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[7][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[7][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[7][2]->Fill(massTriplet[iT]);
+                  }
+                }
+
+		//JPM                                                                                                                                             
+		if (d_bDis_JP_Triplet>operating_point[8]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[8][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[8][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[8][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[8][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[8][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[8][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[8][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[8][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[8][2]->Fill(massTriplet[iT]);
+                  }
+                }
+		//JPL                                                                                                                                 
+		if (d_bDis_JP_Triplet>operating_point[9]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[9][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[9][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[9][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[9][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[9][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[9][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[9][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[9][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[9][2]->Fill(massTriplet[iT]);
+                  }
+                }
+
  
 
-	     
+		//CSVL                                                                                                                                         
+		if (d_bDis_CSV_Triplet>operating_point[10]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[10][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[10][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[10][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[10][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[10][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[10][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[10][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[10][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[10][2]->Fill(massTriplet[iT]);
+                  }
+                }
+		//CSVM                                                                                                                                         
+                if (d_bDis_CSV_Triplet>operating_point[11]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[11][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[11][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[11][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[11][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[11][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[11][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[11][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[11][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[11][2]->Fill(massTriplet[iT]);
+                  }
+                }
+
+		//CSVT                                                                                                               
+                if (d_bDis_CSV_Triplet>operating_point[12]){
+                  if (flavor_Triplet==5){
+                    triplet_jet_pt_tagger_flavor[12][0]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[12][0]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[12][0]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==4){
+                    triplet_jet_pt_tagger_flavor[12][1]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[12][1]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[12][1]->Fill(massTriplet[iT]);
+                  }
+                  if (flavor_Triplet==21 || (flavor_Triplet >0 && flavor_Triplet<4)){
+                    triplet_jet_pt_tagger_flavor[12][2]->Fill(d_pt_Triplet);
+                    triplet_sumpt_tagger_flavor[12][2]->Fill(sumScalarPtTriplet[iT]);
+                    triplet_mass_tagger_flavor[12][2]->Fill(massTriplet[iT]);
+                  }
+                }
+
 	    }
 	    }
 	    }
@@ -609,51 +746,61 @@ void BtagCode::BtagEff(std::vector<pat::Jet >fCleanJets, int nCleanJets){
   for (int j=0; j<nCleanJets; j++){
     double flavor;
     double d_bDis_TCHE, d_bDis_TCHP, d_bDis_SSVHE,d_bDis_SSVHP, d_pt, d_eta;
-    
+    double  d_bDis_JP, d_bDis_CSV;
     flavor = fabs(fCleanJets[j].partonFlavour() );
     d_bDis_TCHE=fCleanJets[j].bDiscriminator("trackCountingHighEffBJetTags");
     d_bDis_TCHP=fCleanJets[j].bDiscriminator("trackCountingHighPurBJetTags");
-    
     d_bDis_SSVHE = fCleanJets[j].bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
     d_bDis_SSVHP = fCleanJets[j].bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
+    d_bDis_JP = fCleanJets[j].bDiscriminator("jetProbabilityBJetTags");
+    d_bDis_CSV = fCleanJets[j].bDiscriminator("combinedSecondaryVertexBJetTags");
+
     d_pt=fCleanJets[j].pt();
     d_eta=fabs(fCleanJets[j].eta());
-    // cout<<d_bDis_TCHP<<" "<< d_bDis_TCHE<<" "<<d_bDis_SSVHE<<" "<<d_bDis_SSVHP<<" "<<d_pt<<endl;
+    //    cout<<d_bDis_TCHP<<" "<< d_bDis_TCHE<<" "<<d_bDis_SSVHE<<" "<<d_bDis_SSVHP<<" "<<d_pt<<" "<<d_bDis_CSV<<" "<<d_bDis_JP <<endl;
     //cout<<MCbcount<<endl;
     if (flavor==5){
       //count number of bjets in the event
-      jet_pt_tagger_flavor[7][0]->Fill(d_pt);
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][0]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][0]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][0]->Fill(d_eta);
-      jet_eta_pt_tagger_flavor[7][0]->Fill(d_eta,d_pt);
+      jet_pt_tagger_flavor[13][0]->Fill(d_pt);
+      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[13][0]->Fill(d_pt);
+      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[13][0]->Fill(d_pt);
+      jet_eta_tagger_flavor[13][0]->Fill(d_eta);
+      jet_eta_pt_tagger_flavor[13][0]->Fill(d_eta,d_pt);
       MCbcount++;
       discriminator_tagalgo_flavor[0][0]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][0]->Fill(d_bDis_TCHP);
       discriminator_tagalgo_flavor[2][0]->Fill(d_bDis_SSVHE);
       discriminator_tagalgo_flavor[3][0]->Fill(d_bDis_SSVHP);
+      discriminator_tagalgo_flavor[4][0]->Fill(d_bDis_JP);
+      discriminator_tagalgo_flavor[5][0]->Fill(d_bDis_CSV);
     }
     if (flavor==4){
-      jet_pt_tagger_flavor[7][1]->Fill(d_pt);
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][1]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][1]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][1]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[7][1]->Fill(d_eta,d_pt);
+      jet_pt_tagger_flavor[13][1]->Fill(d_pt);
+      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[13][1]->Fill(d_pt);
+      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[13][1]->Fill(d_pt);
+      jet_eta_tagger_flavor[13][1]->Fill(d_eta);
+jet_eta_pt_tagger_flavor[13][1]->Fill(d_eta,d_pt);
       discriminator_tagalgo_flavor[0][1]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][1]->Fill(d_bDis_TCHP);
       discriminator_tagalgo_flavor[2][1]->Fill(d_bDis_SSVHE);
       discriminator_tagalgo_flavor[3][1]->Fill(d_bDis_SSVHP);
+      discriminator_tagalgo_flavor[4][1]->Fill(d_bDis_JP);
+      discriminator_tagalgo_flavor[5][1]->Fill(d_bDis_CSV);
+
     }
     if (flavor==21 || (flavor >0 && flavor<4)){
-      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][2]->Fill(d_pt);
-      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][2]->Fill(d_pt);
-      jet_pt_tagger_flavor[7][2]->Fill(d_pt);
-      jet_eta_tagger_flavor[7][2]->Fill(d_eta);
-jet_eta_pt_tagger_flavor[7][2]->Fill(d_eta,d_pt);
+      if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[13][2]->Fill(d_pt);
+      if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[13][2]->Fill(d_pt);
+      jet_pt_tagger_flavor[13][2]->Fill(d_pt);
+      jet_eta_tagger_flavor[13][2]->Fill(d_eta);
+jet_eta_pt_tagger_flavor[13][2]->Fill(d_eta,d_pt);
       discriminator_tagalgo_flavor[0][2]->Fill(d_bDis_TCHE);
       discriminator_tagalgo_flavor[1][2]->Fill(d_bDis_TCHP);
       discriminator_tagalgo_flavor[2][2]->Fill(d_bDis_SSVHE);
       discriminator_tagalgo_flavor[3][2]->Fill(d_bDis_SSVHP);
+      discriminator_tagalgo_flavor[4][2]->Fill(d_bDis_JP);
+      discriminator_tagalgo_flavor[5][2]->Fill(d_bDis_CSV);
+
     }
     
     //differen operating points
@@ -827,7 +974,161 @@ jet_eta_pt_tagger_flavor[5][2]->Fill(d_eta,d_pt);
 	jet_eta_pt_tagger_flavor[6][2]->Fill(d_eta,d_pt);
       }
     }
-    
+
+    //JPL   
+    if (d_bDis_JP>operating_point[7]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[7][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[7][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[7][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[7][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[7][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[7][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[7][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[7][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[7][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[7][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[7][2]->Fill(d_eta,d_pt);
+      }
+    }
+
+   //JPM                                                                                                                                                         
+    if (d_bDis_JP>operating_point[8]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[8][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[8][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[8][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[8][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[8][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[8][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[8][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[8][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[8][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[8][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[8][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[8][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[8][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[8][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[8][2]->Fill(d_eta,d_pt);
+      }
+    }
+    //JPT                                                                                                                                                        
+    if (d_bDis_JP>operating_point[9]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[9][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[9][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[9][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[9][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[9][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[9][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[9][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[9][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[9][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[9][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[9][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[9][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[9][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[9][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[9][2]->Fill(d_eta,d_pt);
+      }
+    }
+    //CSVL                                                                                                                            
+    if (d_bDis_CSV>operating_point[10]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[10][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[10][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[10][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[10][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[10][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[10][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[10][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[10][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[10][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[10][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[10][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[10][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[10][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[10][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[10][2]->Fill(d_eta,d_pt);
+      }
+    }
+
+    //CSVM                                                                                                                                                        
+    if (d_bDis_CSV>operating_point[11]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[11][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[11][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[11][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[11][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[11][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[11][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[11][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[11][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[11][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[11][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[11][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[11][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[11][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[11][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[11][2]->Fill(d_eta,d_pt);
+      }
+    }
+
+    //CSVT                                                                                                                                                        
+    if (d_bDis_CSV>operating_point[12]){
+      if (flavor==5){
+        jet_pt_tagger_flavor[12][0]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[12][0]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[12][0]->Fill(d_pt);
+        jet_eta_tagger_flavor[12][0]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[12][0]->Fill(d_eta,d_pt);
+      }
+      if (flavor==4){
+        jet_pt_tagger_flavor[12][1]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[12][1]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[12][1]->Fill(d_pt);
+        jet_eta_tagger_flavor[12][1]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[12][1]->Fill(d_eta,d_pt);
+
+      }
+      if (flavor==21 || (flavor >0 && flavor<4)){
+        jet_pt_tagger_flavor[12][2]->Fill(d_pt);
+        if(d_eta<1.2) jet_pt_l1p2_tagger_flavor[12][2]->Fill(d_pt);
+        if(d_eta>=1.2 && d_eta<=2.4) jet_pt_1p2_2p4_tagger_flavor[12][2]->Fill(d_pt);
+        jet_eta_tagger_flavor[12][2]->Fill(d_eta);
+        jet_eta_pt_tagger_flavor[12][2]->Fill(d_eta,d_pt);
+      }
+    }
+
   }
 
   
