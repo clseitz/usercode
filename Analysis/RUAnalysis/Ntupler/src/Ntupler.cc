@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.9 2012/09/01 16:05:44 clseitz Exp $
+// $Id: Ntupler.cc,v 1.10 2012/09/01 19:27:56 clseitz Exp $
 //
 //
 
@@ -250,7 +250,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        nCA8PrunedPFJets=0;
        nCA8PFJets=0;
        nPFJets=0;
-
+       /*
        for (int i=0; i<200; ++i)
 	 {
 	   pdgID[i] = -99;
@@ -259,7 +259,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   MCpz[i] = -99;
 	   MCe[i] = -99;
 	 }
- 
+       */
        Triplet.clear();   
        sumScalarPtTriplet.clear();
        sumVectorPtTriplet.clear();
@@ -509,6 +509,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        h_MET->Fill(fMET.et());
        pfMET= fMET.et();
        pfMETphi=fMET.phi();
+
        GetMCTruth(iEvent);
        //       cout<<"--------------------"<<endl;
 MyTree->Fill();
@@ -1400,8 +1401,9 @@ Ntupler::GetMCTruth(const edm::Event& iEvent){
     
     Handle< vector<reco::GenParticle> > GenParticles; 
     iEvent.getByLabel("prunedGenParticles", GenParticles);  
+       nGenPart=(*GenParticles).size();
     for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
-      if((*GenParticles)[p].status()==3){
+      //      if((*GenParticles)[p].status()==3){
       //cout<<p<<endl; 
       //use only that hard process
       if(p<200){
@@ -1411,8 +1413,8 @@ Ntupler::GetMCTruth(const edm::Event& iEvent){
       MCpy[p]=(*GenParticles)[p].py();
       MCpz[p]=(*GenParticles)[p].pz();
       MCe[p]=(*GenParticles)[p].energy();
-      //      cout<<pdgID[p]<<"   "<<(*GenParticles)[p].status()<<"               "<<MCpx[p]<<" "<<MCpy[p]<<" "<<MCpz[p]<<" "<<MCe[p]<<endl;
-      }
+
+	   //}
       }
 
      
