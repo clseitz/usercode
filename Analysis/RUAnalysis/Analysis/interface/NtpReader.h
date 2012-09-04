@@ -47,6 +47,7 @@ class NtpReader
     //TEST
     int NumJetsTest;
     int   mcsize;
+    int   nGenPart;
     int   pdgID[200];
     float MCpx[200];
     float MCpy[200];
