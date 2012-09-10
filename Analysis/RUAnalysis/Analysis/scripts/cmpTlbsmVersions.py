@@ -30,8 +30,8 @@ def plotMttbar():
     ttbar =  TFile.Open("samples/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
     stsusy300 =  TFile.Open("samples/stsusy300.root");
     rpv200 =  TFile.Open("samples/rpv200.root");
-    # rpv250 =  TFile.Open("samples/rpv250.root");
-    rpv250 =  TFile.Open("samples/rpv200_53x_v2a.root");
+    # rpv200_v2 =  TFile.Open("samples/rpv200_v2.root");
+    rpv200_v2 =  TFile.Open("samples/rpv200_53x_v2a.root");
     # ttbar =  TFile.Open("TT_Tune_4000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WJetsToLNu_5000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WToENu_4000pb_PFElectron_PF2PATJets_PFMET.root");
@@ -93,7 +93,7 @@ def plotMttbar():
         hist_ttbar =  ttbar.Get(histname);
         hist_stsusy300 =  stsusy300.Get(histname);
         hist_rpv200 =  rpv200.Get(histname);
-        hist_rpv250 =  rpv250.Get(histname);
+        hist_rpv200_v2 =  rpv200_v2.Get(histname);
         # hist_zjets =  zjets.Get(histname);
 
         # hist_bce1 =  bce1.Get(histname);
@@ -136,8 +136,8 @@ def plotMttbar():
             hist_data.Scale(1.0/numevts);
             numevts = hist_rpv200.Integral();
             hist_rpv200.Scale(1.0/numevts);
-            numevts = hist_rpv250.Integral();
-            hist_rpv250.Scale(1.0/numevts);
+            numevts = hist_rpv200_v2.Integral();
+            hist_rpv200_v2.Scale(1.0/numevts);
             # numevts = hist_wpm800.Integral();
             # hist_wpm800.Scale(1.0/numevts);
             # numevts = hist_wpm1000.Integral();
@@ -151,7 +151,7 @@ def plotMttbar():
           scale = 495.0 * lumi / 101250.0;
           hist_rpv200.Scale(scale);
           scale = 140.0 * lumi / 93500.0;
-          hist_rpv250.Scale(scale);
+          hist_rpv200_v2.Scale(scale);
           # hist_wpm400.Scale(scale);
           # hist_wpm600.Scale(scale);
           # hist_wpm1000.Scale(scale);
@@ -576,7 +576,7 @@ def plotMttbar():
                   hist_ttbar.Rebin(rebin);
                   hist_stsusy300.Rebin(rebin);
                   hist_rpv200.Rebin(rebin);
-                  hist_rpv250.Rebin(rebin);
+                  hist_rpv200_v2.Rebin(rebin);
                   # hist_zjets.Rebin(rebin);
                   # hist_qcd.Rebin(rebin);
                   # hist_Zprime500.Rebin(rebin);
@@ -598,7 +598,7 @@ def plotMttbar():
                   hist_ttbar.SetAxisRange(Urange[0], Urange[1]);
                   hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
                   hist_rpv200.SetAxisRange(Urange[0], Urange[1]);
-                  hist_rpv250.SetAxisRange(Urange[0], Urange[1]);
+                  hist_rpv200_v2.SetAxisRange(Urange[0], Urange[1]);
                   # hist_wjets.SetAxisRange(Urange[0], Urange[1]);
                   # hist_zjets.SetAxisRange(Urange[0], Urange[1]);
                   # hist_qcd.SetAxisRange(Urange[0], Urange[1]);
@@ -695,8 +695,8 @@ def plotMttbar():
         hist_stsusy300.SetLineWidth(linewidth);
         hist_rpv200.SetLineColor(kGray + 1);
         hist_rpv200.SetLineWidth(linewidth);
-        hist_rpv250.SetLineColor(kCyan);
-        hist_rpv250.SetLineWidth(linewidth);
+        hist_rpv200_v2.SetLineColor(kCyan);
+        hist_rpv200_v2.SetLineWidth(linewidth);
         # hist_wpm400.SetLineColor(kGreen + 1);
         # hist_wpm400.SetLineWidth(linewidth);
         # hist_wpm600.SetLineColor(kGray + 3);
@@ -720,8 +720,8 @@ def plotMttbar():
         leg.AddEntry(hist_data, "Data", "P");
         #        leg.AddEntry(hist_data2, "data(no HLT)", "P");
         leg.AddEntry(hist_ttbar, "t#bar{t}", "L");
-        leg.AddEntry(hist_rpv200, "RPV 200", "L");
-        leg.AddEntry(hist_rpv250, "RPV 250", "L");
+        leg.AddEntry(hist_rpv200, "RPV 200 v1", "L");
+        leg.AddEntry(hist_rpv200_v2, "RPV 200 v2", "L");
         leg.AddEntry(hist_stsusy300, "StealthSUSY 300", "L");
         # leg.AddEntry(hist_wjets, "W#rightarrowl#nu", "f");
         # leg.AddEntry(hist_zjets, "Z/#gamma*#rightarrowl^{+}l^{-}", "f");
@@ -803,7 +803,7 @@ def plotMttbar():
           hist_ttbar.Draw("hist same");
           hist_stsusy300.Draw("hist same");
           hist_rpv200.Draw("hist same");
-          hist_rpv250.Draw("hist same");
+          hist_rpv200_v2.Draw("hist same");
         # hist_Zprime500.Draw("same");
         # hist_Zprime750.Draw("same");
         # hist_Zprime1000.Draw("same");
@@ -862,7 +862,7 @@ def plotMttbar():
         cu_hist_ttbar = getCumulativePlot(hist_ttbar, "ttbar");
         cu_hist_stsusy300 = getCumulativePlot(hist_stsusy300, "stsusy300");
         cu_hist_rpv200 = getCumulativePlot(hist_rpv200, "rvp200");
-        cu_hist_rpv250 = getCumulativePlot(hist_rpv250, "rvp250");
+        cu_hist_rpv200_v2 = getCumulativePlot(hist_rpv200_v2, "rvp250");
         # cu_hist_zjets = getCumulativePlot(hist_zjets, "zjets");
         # cu_hist_qcd = getCumulativePlot(hist_qcd, "qcd");
         # cu_hist_singleTop = getCumulativePlot(hist_singleTop, "singleTop");
@@ -892,7 +892,7 @@ def plotMttbar():
         cu_hist_ttbar.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_rpv200.SetAxisRange(Urange[0], Urange[1]);
-        cu_hist_rpv250.SetAxisRange(Urange[0], Urange[1]);
+        cu_hist_rpv200_v2.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_qcd.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_singleTop.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_wpm400.SetAxisRange(Urange[0], Urange[1]);
@@ -905,7 +905,7 @@ def plotMttbar():
             cu_hist_ttbar.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_stsusy300.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_rpv200.SetAxisRange(Yrange[0], Yrange[1], "Y");
-            cu_hist_rpv250.SetAxisRange(Yrange[0], Yrange[1], "Y");
+            cu_hist_rpv200_v2.SetAxisRange(Yrange[0], Yrange[1], "Y");
         
         cu_hs = THStack("cu_MC", "cu_MC");
         # cu_hs.Add(cu_hist_qcd);
@@ -931,7 +931,7 @@ def plotMttbar():
         cu_hist_ttbar.Draw("hist same");
         cu_hist_stsusy300.Draw("hist same");
         cu_hist_rpv200.Draw("same");
-        cu_hist_rpv250.Draw("same");
+        cu_hist_rpv200_v2.Draw("same");
         # if (not 'num' in histname or not 'Top' in histname):
           # cu_hist_wpm400.Draw("same");
           # cu_hist_wpm800.Draw("same");
@@ -969,12 +969,12 @@ def plotMttbar():
 
 def setCorrErrs(hist_good, hist_bad, hist_diff):
     nbins = hist_diff.GetXaxis().GetNbins();
+    goodval = hist_good.GetBinContent(i);
+    badval = hist_bad.GetBinContent(i);
+    gooderr = hist_good.GetBinError(i);
+    baderr = hist_bad.GetBinError(i);
+    errsum = goodval + badval;
     for i in range(1, nbins):
-      goodval = hist_good.GetBinContent(i);
-      badval = hist_bad.GetBinContent(i);
-      gooderr = hist_good.GetBinError(i);
-      baderr = hist_bad.GetBinError(i);
-      errsum = goodval + badval;
       if errsum > 0:
         # print 'evts err ', goodval, gooderr;
         goodprod = goodval * baderr;
