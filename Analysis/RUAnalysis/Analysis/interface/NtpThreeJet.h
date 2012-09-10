@@ -39,6 +39,8 @@ class NtpThreeJet : public NtpReader
     TH2F*  h_mindRMuonJet_mPFIso;
     TH1F*  h_MET;
     TH1F*  h_nTruePileUp;
+    TH1F*  h_nTruePileUp_NoWeight;
+    TH1F*  h_nVertex;
     TH1F* h_nBJet35;
     TH1F* h_nJet35;
     TH1F* h_Jet0;

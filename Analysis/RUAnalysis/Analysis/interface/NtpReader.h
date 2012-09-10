@@ -44,6 +44,8 @@ class NtpReader
     double MSquark;
     double MLSP;
     float nTruePileUp;
+
+
     //TEST
     int NumJetsTest;
     int   mcsize;
@@ -53,6 +55,8 @@ class NtpReader
     float MCpy[200];
     float MCpz[200];
     float MCe[200];
+    int   MCmotherind[200];
+
     // int MaxSize=500;
     int   nPFJets; 
     float jet_PF_px[200];

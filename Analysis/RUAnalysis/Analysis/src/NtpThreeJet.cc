@@ -10,6 +10,8 @@
 #include "TFile.h"
 #include "math.h"
 #include "../interface/BTagSFUtil.h"
+#include "RUAnalysis/Analysis/interface/LumiReweightingStandAlone.h"
+
 using namespace std;
 
 NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName) : NtpReader(InFileNames, IsData)
@@ -48,6 +50,8 @@ void NtpThreeJet::BookHistograms()
   //befor cuts
   h_MET = new TH1F("MET", "MET",200,0,1000); h_MET->Sumw2();
   h_nTruePileUp = new TH1F("nTruePileUp", "nTruePileUp",100,0,100); h_nTruePileUp->Sumw2();
+  h_nTruePileUp_NoWeight = new TH1F("nTruePileUp_NoWeight", "nTruePileUp_NoWeight",100,0,100); h_nTruePileUp_NoWeight->Sumw2();
+  h_nVertex = new TH1F("nVertex", "nVertex",100,0,100); h_nVertex->Sumw2();
   h_HT = new TH1F("HT", "HT",400,0,4000); h_HT->Sumw2();
   h_nBJet35  = new TH1F("nBJet35", "nBJet35",20,0,20); h_nBJet35->Sumw2();
   h_nJet35  = new TH1F("nJet35", "nJet35",20,0,20); h_nJet35->Sumw2();
@@ -192,6 +196,8 @@ void NtpThreeJet::WriteHistograms()
    h_mindRMuonJet_mPFIso->Write();
    h_MET->Write();
    h_nTruePileUp->Write();
+   h_nTruePileUp_NoWeight->Write();
+   h_nVertex->Write();
    h_nBJet35->Write();
    h_nJet35->Write();
    h_HT->Write();
@@ -285,16 +291,48 @@ void NtpThreeJet::Loop ()
   float pt0_cut=180.0;
   float pt1_cut=90.0;
   int njetsMin=6;
-  ////////////////////////////////////////////////////////////
+  bool DoPileUpReweight=true;
+  bool DoBtagSF=true;  
+////////////////////////////////////////////////////////////
 
   // Run over all entries and do what you like!
   int countallhad=0;
   int countlep=0;
   int countsemilep=0;
-
+  
+  reweight::LumiReWeighting LumiWeights_;
+  std::vector< float > DataJun01 ;
+  std::vector< float > Summer2012;
+  float Summer2012_f[60] = { 2.344E-05,    2.344E-05,    2.344E-05,    2.344E-05,    4.687E-04,    4.687E-04,    7.032E-04,    9.414E-04,
+			     1.234E-03,    1.603E-03,    2.464E-03,    3.250E-03,    5.021E-03,    6.644E-03,    8.502E-03,    1.121E-02,
+			     1.518E-02,    2.033E-02,       2.608E-02,    3.171E-02,    3.667E-02,    4.060E-02,    4.338E-02,    4.520E-02,
+			     4.641E-02,    4.735E-02,    4.816E-02,    4.881E-02,    4.917E-02,      4.909E-02,    4.842E-02,    4.707E-02,
+			     4.501E-02,    4.228E-02,    3.896E-02,    3.521E-02,    3.118E-02,    2.702E-02,    2.287E-02,      1.885E-02,
+			     1.508E-02,    1.166E-02,    8.673E-03,    6.190E-03,    4.222E-03,    2.746E-03,    1.698E-03,    9.971E-04,
+			     5.549E-04,    2.924E-04, 1.457E-04,    6.864E-05,    3.054E-05,    1.282E-05,    5.081E-06,    1.898E-06,
+			     6.688E-07,    2.221E-07,    6.947E-08,    2.047E-08
+  };
+  float data_f[60]={0,8.66979e-07,1.99567e-06,7.0944e-06,0.00115866,0.00304481,9.37811e-05,0.000438788,0.00369376,
+		    0.0132685,0.0250747,0.035147,0.0466437,0.0612746,0.0752654,0.0879549,0.0977272,0.0971447,
+		    0.0854517,0.0699568,0.0561969,0.0454351,0.0372194,0.0307875,0.0256272,0.0213495,0.0176728,
+		    0.014462,0.0116675,0.00926419,0.00722899,0.00553611,0.00415629,0.0030565,0.00220048,0.00155038,
+		    0.00106882,0.00072095,0.000475842,0.000307359,0.000194338,0.000120318,7.29651e-05,4.33587e-05,
+		    2.52569e-05,1.44273e-05,8.08416e-06,4.44472e-06,2.39826e-06,1.27011e-06,0.00018054};
+  for( int z=0; z<50; ++z) {
+    Summer2012.push_back(Summer2012_f[z]);
+    DataJun01.push_back(data_f[z]);
+  }
+  
+  LumiWeights_ = reweight::LumiReWeighting(Summer2012,DataJun01);
+  
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
 
-    float weight=1;
+    //do pile up reweighintg
+	
+    double MyWeight = LumiWeights_.weight(nTruePileUp);
+    double weight=1;
+    //    if(!DataIs) weight=MyWeight;
+    //    cout<<nTruePileUp<<" "<<weight<<endl;
   ///////////////////Clear out variables/////////////////////
     std::vector<TLorentzVector* >      fBJets;
     std::vector<TLorentzVector* >      fNoBJets;
@@ -323,7 +361,7 @@ void NtpThreeJet::Loop ()
   ////////////////////////////////////////////////////////////
     
 
-    if (ientry % 100 == 0) {
+    if (ientry % 1000 == 0) {
       printf("Processing entry: %i\n", ientry);
     }
     //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
@@ -394,7 +432,9 @@ void NtpThreeJet::Loop ()
 	  }
 	}
       }
-      }
+	}
+	//cout<<nTruePileUp<<" "<<MyWeight<<" "<<weight<<endl;
+
 
 
      //MUON/////
@@ -482,6 +522,8 @@ void NtpThreeJet::Loop ()
      h_nJet35->Fill(nJet35,weight);
      h_MET->Fill(pfMET,weight);
      h_nTruePileUp->Fill(nTruePileUp,weight);
+     h_nTruePileUp_NoWeight->Fill(nTruePileUp);
+     h_nVertex->Fill(nGoodVtx,weight);
      h_HT->Fill(SumptAllJet,weight);
      if(nJet35>=1)h_Jet0->Fill(fCleanJets[0]->Pt(),weight);
      if(nJet35>=2)h_Jet1->Fill(fCleanJets[1]->Pt(),weight);
