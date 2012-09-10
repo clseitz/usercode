@@ -151,7 +151,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   Int_t nCleanPhotons;
   
   Int_t IsVtxGood;
-  Int_t nGoodVtx;
+
   TH1F* h_nGoodVtx;
   TH1F* h_zPosGoodVtx;
   TH1F* h_NumEvtCut;

@@ -55,8 +55,12 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("MSquark",  &MSquark);
   Tree->Branch("MLSP",  &MLSP);
   Tree->Branch("nTruePileUp",  &nTruePileUp);
+
+
+  Tree->Branch("nGoodVtx", &nGoodVtx);
   Tree->Branch("nGenPart",&nGenPart);
   Tree->Branch("pdgID[nGenPart]",pdgID);
+  Tree->Branch("MCmotherind[nGenPart]", MCmotherind);
   Tree->Branch("MCpx[nGenPart]", MCpx);
   Tree->Branch("MCpy[nGenPart]", MCpy);
   Tree->Branch("MCpz[nGenPart]", MCpz);
@@ -67,7 +71,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("nMuons", &nMuons);
   Tree->Branch("nPhotons", &nPhotons);
   Tree->Branch("nTriplets", &nTriplets);
-  Tree->Branch("nGoodVtx", &nGoodVtx);
+
   ///////////////////////////
   //JETS
   /////////////////////////////
@@ -214,8 +218,10 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("MLSP",  &MLSP);
  fChain.SetBranchAddress("nTruePileUp",  &nTruePileUp);
 
+  fChain.SetBranchAddress("nGoodVtx", &nGoodVtx);
    fChain.SetBranchAddress("nGenPart",  &nGenPart);
     fChain.SetBranchAddress("pdgID[nGenPart]",pdgID);
+     fChain.Branch("MCmotherind[nGenPart]", MCmotherind);
     fChain.SetBranchAddress("MCpx[nGenPart]", MCpx);
     fChain.SetBranchAddress("MCpy[nGenPart]", MCpy);
     fChain.SetBranchAddress("MCpz[nGenPart]", MCpz);
@@ -226,7 +232,7 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("nMuons", &nMuons);
   fChain.SetBranchAddress("nPhotons", &nPhotons);
   fChain.SetBranchAddress("nTriplets", &nTriplets);
-  fChain.SetBranchAddress("nGoodVtx", &nGoodVtx);
+
 
   fChain.SetBranchAddress("nPFJets", &nPFJets);
   fChain.SetBranchAddress("jet_PF_pt[nPFJets]", jet_PF_pt);

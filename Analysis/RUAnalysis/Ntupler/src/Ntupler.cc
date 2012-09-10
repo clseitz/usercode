@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.10 2012/09/01 19:27:56 clseitz Exp $
+// $Id: Ntupler.cc,v 1.11 2012/09/04 12:40:18 clseitz Exp $
 //
 //
 
@@ -91,6 +91,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+
 using namespace std;
 
 
@@ -286,6 +287,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	 ////////////////////
        if(!_isData) GetTruePileUp(iEvent);
+
        DoVertexID(iEvent);
        DoElectronID(iEvent);
        DoMuonID(iEvent);
@@ -505,14 +507,15 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 phe[i]=fCleanPhotons[i].energy(); 
      
        }
-       nGoodVtx=CountVtx;
+
        h_MET->Fill(fMET.et());
        pfMET= fMET.et();
        pfMETphi=fMET.phi();
 
        GetMCTruth(iEvent);
        //       cout<<"--------------------"<<endl;
-MyTree->Fill();
+
+       MyTree->Fill();
        entry++;
 
      }//HasTrigger
@@ -1057,6 +1060,8 @@ Ntupler::DoVertexID(const edm::Event& iEvent){
   
   if (CountVtx > 0) IsVtxGood = 1;
   h_nGoodVtx->Fill(CountVtx);
+       nGoodVtx=CountVtx;
+
   //cout<<CountVtx<<" "<< recVtxs->size()<<endl;
   return;
 }
@@ -1413,8 +1418,13 @@ Ntupler::GetMCTruth(const edm::Event& iEvent){
       MCpy[p]=(*GenParticles)[p].py();
       MCpz[p]=(*GenParticles)[p].pz();
       MCe[p]=(*GenParticles)[p].energy();
-
-	   //}
+      for (unsigned int ind = 0; ind < 200 && ind < (*GenParticles).size(); ind++) {
+	if ((*GenParticles)[p].mother() == &((*GenParticles)[ind])) {
+	  MCmotherind[p] = ind;
+	  break;
+	}
+      }
+      //}
       }
 
      
