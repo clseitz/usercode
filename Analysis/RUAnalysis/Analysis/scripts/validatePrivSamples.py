@@ -81,6 +81,18 @@ def plotMttbar():
     hists.append("Triplets/Jet5_EvtSel");
     hists.append("Triplets/Jet6_EvtSel");
     hists.append("Triplets/MET_EvtSel");
+    hists.append("Events/nBJet35");
+    hists.append("Events/HT");
+    hists.append("Events/nJet35");
+    hists.append("Events/Jet0");
+    hists.append("Events/Jet1");
+    hists.append("Events/Jet2");
+    hists.append("Events/Jet3");
+    hists.append("Events/Jet4");
+    hists.append("Events/Jet5");
+    hists.append("Events/Jet6");
+    hists.append("Events/MET");
+    hists.append("Events/nTruePileUp");
     print hists
     
     gcd = gROOT.cd
@@ -134,7 +146,7 @@ def plotMttbar():
         # hist_ttbar.Sumw2(); # No good, must be done before filling
 
         # if ('iso' in histname or 'jetmultip' in histname or 'DeltaR' in histname or ('num' in histname and 'Top' in histname)):
-        if (logscale == 0 or logscale == 1):
+        if (logscale == 0):
           numevts = hist_ttbar.Integral();
           if (numevts > 0):
             hist_ttbar.Scale(1.0/numevts);
@@ -162,7 +174,7 @@ def plotMttbar():
           scale = 495.0 * lumi / 100000.0;
           hist_rpv200.Scale(scale);
           # scale = 140.0 * lumi / 93500.0;
-          scale = 495.0 * lumi / 101250.0;
+          scale = 495.0 * lumi / 40500.0;
           hist_rpv200priv.Scale(scale);
           # hist_wpm400.Scale(scale);
           # hist_wpm600.Scale(scale);
@@ -233,64 +245,69 @@ def plotMttbar():
         # hist_mc.Add(hist_wjets);
         # hist_mc.Add(hist_singleTop);
 
-        # hist_data = hist_ttbar.Clone("test");
+        hist_data = hist_rpv200.Clone("test");
         rebin = 1;
         Urange = (0,5000)
         Yrange = (0,0)
         
-        if ("nBJet35_EvtSel" in histname):
+        if ("nBJet35" in histname):
             hist_data.SetXTitle("Number of b jets");
             hist_data.SetYTitle("Events");
             Urange = (0, 6)
-        elif ("HT_EvtSel" in histname):
+        elif ("HT" in histname):
             hist_data.SetXTitle("HT [GeV]");
-            hist_data.SetYTitle("Events/(50 GeV)");
-            rebin = 5;
-            Urange = (400, 2500)
-        elif ("MET_EvtSel" in histname):
+            hist_data.SetYTitle("Events/(200 GeV)");
+            rebin = 20;
+            Urange = (400, 3500)
+        elif ("MET" in histname):
             hist_data.SetXTitle("MET [GeV]");
-            hist_data.SetYTitle("Events/(5 GeV)");
-            # rebin = 5;
-            Urange = (0, 200)
-        elif ("nJet35_EvtSel" in histname):
+            hist_data.SetYTitle("Events/(50 GeV)");
+            rebin = 10;
+            Urange = (0, 400)
+        elif ("nJet35" in histname):
             hist_data.SetXTitle("Number of jets");
             hist_data.SetYTitle("Events");
             Urange = (4, 15)
         elif ("Jet0" in histname):
             hist_data.SetXTitle("Leading jet p_{T}");
-            hist_data.SetYTitle("Events/(25 GeV)");
-            rebin = 5;
-            Urange = (50, 1000)
+            hist_data.SetYTitle("Events/(125 GeV)");
+            rebin = 25;
+            Urange = (50, 1800)
         elif ("Jet1" in histname):
             hist_data.SetXTitle("2nd jet p_{T}");
-            hist_data.SetYTitle("Events/(10 GeV)");
-            rebin = 2;
-            Urange = (50, 500)
+            hist_data.SetYTitle("Events/(100 GeV)");
+            rebin = 20;
+            Urange = (50, 1500)
         elif ("Jet2" in histname):
             hist_data.SetXTitle("3rd jet p_{T}");
-            hist_data.SetYTitle("Events/(10 GeV)");
-            rebin = 2;
-            Urange = (50, 400)
+            hist_data.SetYTitle("Events/(50 GeV)");
+            rebin = 10;
+            Urange = (50, 700)
         elif ("Jet3" in histname):
             hist_data.SetXTitle("4th jet p_{T}");
-            hist_data.SetYTitle("Events/(5 GeV)");
-            # rebin = 2;
-            Urange = (50, 300)
+            hist_data.SetYTitle("Events/(50 GeV)");
+            rebin = 10;
+            Urange = (50, 500)
         elif ("Jet4" in histname):
             hist_data.SetXTitle("5th jet p_{T}");
-            hist_data.SetYTitle("Events/(5 GeV)");
-            # rebin = 2;
-            Urange = (50, 300)
+            hist_data.SetYTitle("Events/(40 GeV)");
+            rebin = 8;
+            Urange = (50, 350)
         elif ("Jet5" in histname):
             hist_data.SetXTitle("6th jet p_{T}");
-            hist_data.SetYTitle("Events/(5 GeV)");
-            # rebin = 2;
-            Urange = (50, 150)
+            hist_data.SetYTitle("Events/(25 GeV)");
+            rebin = 5;
+            Urange = (50, 250)
         elif ("Jet6" in histname):
             hist_data.SetXTitle("7th jet p_{T}");
-            hist_data.SetYTitle("Events/(5 GeV)");
+            hist_data.SetYTitle("Events/(25 GeV)");
             # rebin = 2;
             Urange = (50, 150)
+        elif ("PileUp" in histname):
+            hist_data.SetXTitle("Number of pile-up events");
+            hist_data.SetYTitle("Events");
+            rebin = 5;
+            Urange = (0, 70)
         elif (histname == "electron_et"):
             hist_data.SetXTitle("electron E_{T} [GeV]");
             hist_data.SetYTitle("Events/(10 GeV)");
@@ -623,6 +640,7 @@ def plotMttbar():
                   hist_ttbar.SetAxisRange(Urange[0], Urange[1]);
                   hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
                   hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
+                  # print "high range ", Urange[1];
                   hist_rpv200.SetAxisRange(Urange[0], Urange[1]);
                   hist_rpv200priv.SetAxisRange(Urange[0], Urange[1]);
                   # hist_wjets.SetAxisRange(Urange[0], Urange[1]);
