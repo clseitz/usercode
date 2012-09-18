@@ -33,6 +33,8 @@ def plotMttbar():
     stsusy300_v2 =  TFile.Open("samples/stsusy300_53x_v2a.root");
     rpv200 =  TFile.Open("samples/rpv200Official_53x_v2a.root");
     rpv200priv =  TFile.Open("samples/rpv200_53x_v2a.root");
+    rpv400 =  TFile.Open("samples/rpv400Official.root");
+    rpv400priv =  TFile.Open("samples/rpv400_53x_v2a.root");
     # ttbar =  TFile.Open("TT_Tune_4000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WJetsToLNu_5000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WToENu_4000pb_PFElectron_PF2PATJets_PFMET.root");
@@ -114,6 +116,8 @@ def plotMttbar():
         hist_stsusy300_v2 =  stsusy300_v2.Get(histname);
         hist_rpv200 =  rpv200.Get(histname);
         hist_rpv200priv =  rpv200priv.Get(histname);
+        hist_rpv400 =  rpv400.Get(histname);
+        hist_rpv400priv =  rpv400priv.Get(histname);
         # hist_zjets =  zjets.Get(histname);
 
         # hist_bce1 =  bce1.Get(histname);
@@ -160,6 +164,10 @@ def plotMttbar():
             hist_rpv200.Scale(1.0/numevts);
             numevts = hist_rpv200priv.Integral();
             hist_rpv200priv.Scale(1.0/numevts);
+            numevts = hist_rpv400.Integral();
+            hist_rpv400.Scale(1.0/numevts);
+            numevts = hist_rpv400priv.Integral();
+            hist_rpv400priv.Scale(1.0/numevts);
             # numevts = hist_wpm800.Integral();
             # hist_wpm800.Scale(1.0/numevts);
             # numevts = hist_wpm1000.Integral();
@@ -174,9 +182,14 @@ def plotMttbar():
           scale = 495.0 * lumi / 100000.0;
           hist_rpv200.Scale(scale);
           # scale = 140.0 * lumi / 93500.0;
-          scale = 495.0 * lumi / 40500.0;
+          # scale = 495.0 * lumi / 40500.0 # Incomplete PATtuple
+          scale = 495.0 * lumi / 101250.0;
           hist_rpv200priv.Scale(scale);
-          # hist_wpm400.Scale(scale);
+          scale = 7.94 * lumi / 100000.0;
+          hist_rpv400.Scale(scale);
+          scale = 7.94 * lumi / 101250.0;
+          hist_rpv400priv.Scale(scale);
+# hist_wpm400.Scale(scale);
           # hist_wpm600.Scale(scale);
           # hist_wpm1000.Scale(scale);
           # hist_wpm800.Scale(scale);
@@ -619,6 +632,8 @@ def plotMttbar():
                   hist_stsusy300_v2.Rebin(rebin);
                   hist_rpv200.Rebin(rebin);
                   hist_rpv200priv.Rebin(rebin);
+                  hist_rpv400.Rebin(rebin);
+                  hist_rpv400priv.Rebin(rebin);
                   # hist_zjets.Rebin(rebin);
                   # hist_qcd.Rebin(rebin);
                   # hist_Zprime500.Rebin(rebin);
@@ -643,6 +658,8 @@ def plotMttbar():
                   # print "high range ", Urange[1];
                   hist_rpv200.SetAxisRange(Urange[0], Urange[1]);
                   hist_rpv200priv.SetAxisRange(Urange[0], Urange[1]);
+                  hist_rpv400.SetAxisRange(Urange[0], Urange[1]);
+                  hist_rpv400priv.SetAxisRange(Urange[0], Urange[1]);
                   # hist_wjets.SetAxisRange(Urange[0], Urange[1]);
                   # hist_zjets.SetAxisRange(Urange[0], Urange[1]);
                   # hist_qcd.SetAxisRange(Urange[0], Urange[1]);
@@ -694,7 +711,7 @@ def plotMttbar():
 #        
 #        qcdUncert = TGraphAsymmErrors(hist_mc);
 
-        linewidth = 6;
+        linewidth = 3;
         # hist_Zprime500.SetLineColor(6);
         # hist_Zprime500.SetLineWidth(linewidth);
         # hist_Zprime500.SetFillStyle(0);
@@ -741,14 +758,24 @@ def plotMttbar():
         hist_stsusy300_v2.SetLineWidth(linewidth);
         hist_rpv200.SetMarkerColor(kRed);
         hist_rpv200.SetLineColor(kRed);
-        # hist_rpv200.SetLineWidth(linewidth);
+        hist_rpv200.SetLineWidth(linewidth);
         hist_rpv200.SetMarkerStyle(8);
         hist_rpv200.SetMarkerSize(1.5);
         hist_rpv200priv.SetMarkerColor(kGreen + 3);
         hist_rpv200priv.SetLineColor(kGreen + 3);
-        # hist_rpv200priv.SetLineWidth(linewidth);
-        hist_rpv200priv.SetMarkerStyle(21);
+        hist_rpv200priv.SetLineWidth(linewidth);
+        hist_rpv200priv.SetMarkerStyle(24);
         hist_rpv200priv.SetMarkerSize(1.5);
+        hist_rpv400.SetMarkerColor(kOrange + 1);
+        hist_rpv400.SetLineColor(kOrange + 1);
+        hist_rpv400.SetLineWidth(linewidth);
+        hist_rpv400.SetMarkerStyle(21);
+        hist_rpv400.SetMarkerSize(1.5);
+        hist_rpv400priv.SetMarkerColor(kGray + 3);
+        hist_rpv400priv.SetLineColor(kGray + 3);
+        hist_rpv400priv.SetLineWidth(linewidth);
+        hist_rpv400priv.SetMarkerStyle(22);
+        hist_rpv400priv.SetMarkerSize(2.0);
         # hist_wpm400.SetLineColor(kGreen + 1);
         # hist_wpm400.SetLineWidth(linewidth);
         # hist_wpm600.SetLineColor(kGray + 3);
@@ -763,7 +790,7 @@ def plotMttbar():
 #        qcdUncert.SetFillColor(kGray + 3);
 #        qcdUncert.SetFillStyle(3003);
 
-        leg = TLegend(0.696, 0.55, 0.95, 0.92);
+        leg = TLegend(0.72, 0.6, 0.98, 0.85);
         leg.SetBorderSize(0);
         leg.SetLineStyle(0);
         leg.SetTextFont(42);
@@ -774,6 +801,8 @@ def plotMttbar():
         # leg.AddEntry(hist_ttbar, "t#bar{t}", "L");
         leg.AddEntry(hist_rpv200, "RPV 200 Official", "P");
         leg.AddEntry(hist_rpv200priv, "RPV 200 Private", "P");
+        leg.AddEntry(hist_rpv400, "RPV 400 Official", "P");
+        leg.AddEntry(hist_rpv400priv, "RPV 400 Private", "P");
         # leg.AddEntry(hist_stsusy300, "StealthSUSY 300 v1", "L");
         # leg.AddEntry(hist_stsusy300_v2, "StealthSUSY 300 v2", "L");
         # leg.AddEntry(hist_wjets, "W#rightarrowl#nu", "f");
@@ -859,6 +888,8 @@ def plotMttbar():
           # hist_stsusy300_v2.Draw("hist same");
           hist_rpv200.Draw("hist error same");
           hist_rpv200priv.Draw("hist error same");
+          hist_rpv400.Draw("hist error same");
+          hist_rpv400priv.Draw("hist error same");
         # hist_Zprime500.Draw("same");
         # hist_Zprime750.Draw("same");
         # hist_Zprime1000.Draw("same");
@@ -919,7 +950,8 @@ def plotMttbar():
         cu_hist_stsusy300_v2 = getCumulativePlot(hist_stsusy300_v2, "stsusy300");
         cu_hist_rpv200 = getCumulativePlot(hist_rpv200, "rvp200");
         cu_hist_rpv200priv = getCumulativePlot(hist_rpv200priv, "rvp200");
-        # cu_hist_zjets = getCumulativePlot(hist_zjets, "zjets");
+        cu_hist_rpv400 = getCumulativePlot(hist_rpv400, "rvp400");
+        cu_hist_rpv400priv = getCumulativePlot(hist_rpv400priv, "rvp400");
         # cu_hist_qcd = getCumulativePlot(hist_qcd, "qcd");
         # cu_hist_singleTop = getCumulativePlot(hist_singleTop, "singleTop");
         # cu_hist_wpm400 =  getCumulativePlot(hist_wpm400, "Wprimet400");
@@ -950,6 +982,8 @@ def plotMttbar():
         cu_hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_rpv200.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_rpv200priv.SetAxisRange(Urange[0], Urange[1]);
+        cu_hist_rpv400.SetAxisRange(Urange[0], Urange[1]);
+        cu_hist_rpv400priv.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_qcd.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_singleTop.SetAxisRange(Urange[0], Urange[1]);
         # cu_hist_wpm400.SetAxisRange(Urange[0], Urange[1]);
@@ -964,7 +998,9 @@ def plotMttbar():
             cu_hist_stsusy300_v2.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_rpv200.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_rpv200priv.SetAxisRange(Yrange[0], Yrange[1], "Y");
-        
+            cu_hist_rpv400.SetAxisRange(Yrange[0], Yrange[1], "Y");
+            cu_hist_rpv400priv.SetAxisRange(Yrange[0], Yrange[1], "Y");
+
         cu_hs = THStack("cu_MC", "cu_MC");
         # cu_hs.Add(cu_hist_qcd);
         # cu_hs.Add(cu_hist_zjets);
@@ -992,6 +1028,8 @@ def plotMttbar():
         # cu_hist_stsusy300_v2.Draw("hist same");
         cu_hist_rpv200.Draw("same");
         cu_hist_rpv200priv.Draw("same");
+        cu_hist_rpv400.Draw("same");
+        cu_hist_rpv400priv.Draw("same");
         # if (not 'num' in histname or not 'Top' in histname):
           # cu_hist_wpm400.Draw("same");
           # cu_hist_wpm800.Draw("same");
