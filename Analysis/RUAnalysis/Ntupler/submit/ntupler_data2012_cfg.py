@@ -15,10 +15,10 @@ dir_list=[]
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/ThreeJet/Ruderman_3b/MCProdSLHA_428p7/PAT/*.root').readlines()
 
 #data2012
-#suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012*-PromptReco-v1_Json0601/*.root').readlines()
+suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012*-PromptReco-v1_Json0601/*.root').readlines()
 #suffix_list = os.popen('ls -1 /cms/data27/clseitz/Wprime/test_TTJets_FastSim/MatchingPAT/*root').readlines()
 #suffix_list = os.popen('ls -1 /cms/karen/clseitz/ThreeJet/MultiJet/Run2012B-PromptReco-v1_Json0601/ttbsm_52x_data_205_1_LJP.root').readlines()
-suffix_list = os.popen('ls -1 /cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/TLBSM/*root').readlines()
+#suffix_list = os.popen('ls -1 /cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/TLBSM/*root').readlines()
 this_fin_nocfi  = "file:"+suffix_list[index]
 
 #this_fin_nocfi  = "file:"+suffix_list[3*index]
@@ -54,8 +54,8 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 #this_fout0 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
 #this_fout1 = "/cms/clseitz/ThreeJet/TLBSM53xv1/MultiJet/Run2012C-PromptReco-v2/RU/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
 
-this_fout0 = "/cms/clseitz/ThreeJet/BtagSFtest/Data/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_plots.root"
-this_fout1 = "/cms/clseitz/ThreeJet/BtagSFtest/Data/MultiJet_BSix45_SQuad60_Di20_JSONAug17_"+str(index)+"_tree.root"
+this_fout0 = "/cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/RU/MultiJetJun06JSON/MultiJet_BSix45_SQuad60_Di20_JSONJune06_"+str(index)+"_plots.root"
+this_fout1 = "/cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/RU/MultiJetJun06JSON/MultiJet_BSix45_SQuad60_Di20_JSONJun06_"+str(index)+"_tree.root"
 
 
 

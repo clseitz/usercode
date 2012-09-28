@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.11 2012/09/04 12:40:18 clseitz Exp $
+// $Id: Ntupler.cc,v 1.12 2012/09/10 13:40:54 clseitz Exp $
 //
 //
 
@@ -330,7 +330,9 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //make some kinematic plots and write out variables for the tree
        
        nPFJets=nCleanPFJets;
-       int i=0;
+       std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
+       cout<<"NJets: "<<nPFJets<<endl;
+      int i=0;
        for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {       
 	 if(i<6){
 	   v_PFjet_pt[i]->Fill(Jet->pt()); 
@@ -360,9 +362,32 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscSSSVHP_PF[i]=Jet->bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
 	 bdiscCSV_PF[i]=Jet->bDiscriminator("combinedSecondaryVertexBJetTags");
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
-	 i++;
-       }
+	 if (!_isData) {
+	   int jetMom = -1; 
+	   /*  const reco::GenParticle * part = Jet->genParton();
+	   if (part){
+	     
+	     cout<<"GenParton: "<<part->pdgId()<<endl;
+	         const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
+	     cout<<mom->pdgId()<<endl;
+	     for (int y = 0; y < int(parents->size()); ++y)
+	       if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
+	     if (jetMom == -1){
+	       jetMom = int(parents->size());
+	       reco::GenParticle cand(*mom);
+	       parents->push_back(cand);
+	       std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+	       }
+	 
+	       }*/
+	   jet_PF_JetMom[i]=jetMom;	     
+cout<<"jetmomL: "<<jetMom<<endl;
+}
+     i++;
+   }
+   cout<<"================"<<endl;
   nCA8PFJets=nCleanCA8PFJets;
+
        i=0;
        for (std::vector<pat::Jet>::const_iterator Jet = fCleanCA8PFJets->begin(); Jet != fCleanCA8PFJets->end(); ++Jet) {       
 	 if(i<6){
@@ -1403,8 +1428,8 @@ Ntupler::DoCleanUp(vector<Muon >fGoodMuons,vector<Electron >fGoodElectrons,vecto
 void 
 Ntupler::GetMCTruth(const edm::Event& iEvent){
   if(!_isData){
-    
-    Handle< vector<reco::GenParticle> > GenParticles; 
+
+	   edm::Handle< std::vector<reco::GenParticle> > GenParticles; 
     iEvent.getByLabel("prunedGenParticles", GenParticles);  
        nGenPart=(*GenParticles).size();
     for (unsigned int p=0; p<(*GenParticles).size(); p++) { 
