@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.12 2012/09/10 13:40:54 clseitz Exp $
+// $Id: Ntupler.cc,v 1.13 2012/09/28 09:24:55 clseitz Exp $
 //
 //
 
@@ -364,7 +364,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
 	   int jetMom = -1; 
-	   /*  const reco::GenParticle * part = Jet->genParton();
+	    const reco::GenParticle * part = Jet->genParton();
 	   if (part){
 	     
 	     cout<<"GenParton: "<<part->pdgId()<<endl;
@@ -379,7 +379,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	       std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
 	       }
 	 
-	       }*/
+	       }
 	   jet_PF_JetMom[i]=jetMom;	     
 cout<<"jetmomL: "<<jetMom<<endl;
 }
