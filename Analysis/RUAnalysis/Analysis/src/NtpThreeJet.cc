@@ -105,11 +105,13 @@ void NtpThreeJet::BookHistograms()
 
   cout<<"before histos"<<endl;
   for(int b=0; b<5; b++){
-  for (int i=0; i<7; i++){
+  for (int i=0; i<10; i++){
     int iPt=30+i*10;
     //Triplet mass plots
     Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
     Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+    Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+    Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     //Dalitz Plots
     MjjHigh_MjjMid_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
     MjjHigh_MjjLow_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
@@ -126,6 +128,8 @@ void NtpThreeJet::BookHistograms()
       Mjjj_sumpt_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Sumw2();
       Mjjj_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
 
       MjjHigh_MjjMid_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH2F*> > ());
       MjjHigh_MjjLow_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH2F*> > ());
@@ -134,7 +138,7 @@ void NtpThreeJet::BookHistograms()
       M12_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       M13_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       M23_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
-      for(int j=0; j<20; j++){
+      for(int j=0; j<25; j++){
 	
 	int iDiag=j*10+40;
 	
@@ -143,7 +147,18 @@ void NtpThreeJet::BookHistograms()
 	Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
 	Mjjj_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
-	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i].push_back(std::vector<TH2F*> ());
+	Mjjj_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+        Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+        Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	Mjjj_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+        Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+        Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+	/*	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i].push_back(std::vector<TH2F*> ());
 	sprintf(hNAME, " MjjHigh_MjjMid_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
 	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k].push_back(new TH2F(hNAME,hNAME,100,0,1,100,0,1));
 	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
@@ -171,7 +186,7 @@ void NtpThreeJet::BookHistograms()
 	M23_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	sprintf(hNAME, "M23_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
 	M23_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
-	M23_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+	M23_bjet_pt_njet_diag[b][i][k][j]->Sumw2();*/
       }
     }
   }
@@ -254,19 +269,21 @@ void NtpThreeJet::WriteHistograms()
      sprintf(FOLDER, "bjet_%i", b);
      TDirectory* now=triplets->mkdir(FOLDER);
      triplets->cd(FOLDER);
-       for (int i=0; i<7; i++){
+       for (int i=0; i<10; i++){
 	 sprintf(FOLDER, "jetpt_%i", i*10+30);
 	 now->mkdir(FOLDER);
 	 now->cd(FOLDER);
 	 for (int k=0; k<3; k++){
 	   Mjjj_sumpt_bjet_pt_njet[b][i][k]->Write();
-	   for(int j=0; j<20; j++){ 
+	   for(int j=0; j<25; j++){ 
 	   
 	     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Write();  
-	     MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Write();
+	     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+	     /*MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Write();
-
+	     */
 	     /*M12_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     M13_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     M23_bjet_pt_njet_diag[b][i][k][j]->Write();
@@ -303,7 +320,24 @@ void NtpThreeJet::Loop ()
   reweight::LumiReWeighting LumiWeights_;
   std::vector< float > DataJun01 ;
   std::vector< float > Summer2012;
-  float Summer2012_f[60] = { 2.344E-05,    2.344E-05,    2.344E-05,    2.344E-05,    4.687E-04,    4.687E-04,    7.032E-04,    9.414E-04,
+      
+ float Summer2012_f [60] = {2.560E-06, 5.239E-06, 1.420E-05, 
+			     5.005E-05, 1.001E-04, 2.705E-04, 1.999E-03, 
+			     6.097E-03, 1.046E-02, 1.383E-02, 1.685E-02, 
+			     2.055E-02, 2.572E-02, 3.262E-02, 4.121E-02, 
+			     4.977E-02, 5.539E-02, 5.725E-02, 5.607E-02, 
+			     5.312E-02, 5.008E-02, 4.763E-02, 4.558E-02, 
+			     4.363E-02, 4.159E-02, 3.933E-02, 3.681E-02, 
+			     3.406E-02, 3.116E-02, 2.818E-02, 2.519E-02, 
+			     2.226E-02, 1.946E-02, 1.682E-02, 1.437E-02, 
+			     1.215E-02, 1.016E-02, 8.400E-03, 6.873E-03, 
+			     5.564E-03, 4.457E-03, 3.533E-03, 2.772E-03, 
+			     2.154E-03, 1.656E-03, 1.261E-03, 9.513E-04, 
+			     7.107E-04, 5.259E-04, 3.856E-04, 2.801E-04, 
+			     2.017E-04, 1.439E-04, 1.017E-04, 7.126E-05, 
+			     4.948E-05, 3.405E-05, 2.322E-05, 1.570E-05, 
+			     5.005E-06};
+ /*  float Summer2012_f[60] = { 2.344E-05,    2.344E-05,    2.344E-05,    2.344E-05,    4.687E-04,    4.687E-04,    7.032E-04,    9.414E-04,
 			     1.234E-03,    1.603E-03,    2.464E-03,    3.250E-03,    5.021E-03,    6.644E-03,    8.502E-03,    1.121E-02,
 			     1.518E-02,    2.033E-02,       2.608E-02,    3.171E-02,    3.667E-02,    4.060E-02,    4.338E-02,    4.520E-02,
 			     4.641E-02,    4.735E-02,    4.816E-02,    4.881E-02,    4.917E-02,      4.909E-02,    4.842E-02,    4.707E-02,
@@ -311,7 +345,7 @@ void NtpThreeJet::Loop ()
 			     1.508E-02,    1.166E-02,    8.673E-03,    6.190E-03,    4.222E-03,    2.746E-03,    1.698E-03,    9.971E-04,
 			     5.549E-04,    2.924E-04, 1.457E-04,    6.864E-05,    3.054E-05,    1.282E-05,    5.081E-06,    1.898E-06,
 			     6.688E-07,    2.221E-07,    6.947E-08,    2.047E-08
-  };
+			     };*/
   float data_f[60]={0,8.66979e-07,1.99567e-06,7.0944e-06,0.00115866,0.00304481,9.37811e-05,0.000438788,0.00369376,
 		    0.0132685,0.0250747,0.035147,0.0466437,0.0612746,0.0752654,0.0879549,0.0977272,0.0971447,
 		    0.0854517,0.0699568,0.0561969,0.0454351,0.0372194,0.0307875,0.0256272,0.0213495,0.0176728,
@@ -324,21 +358,15 @@ void NtpThreeJet::Loop ()
   }
   
   LumiWeights_ = reweight::LumiReWeighting(Summer2012,DataJun01);
-  
-  for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-
-    //do pile up reweighintg
-	
-    double MyWeight = LumiWeights_.weight(nTruePileUp);
-    double weight=1;
-    //    if(!DataIs) weight=MyWeight;
-    //    cout<<nTruePileUp<<" "<<weight<<endl;
-  ///////////////////Clear out variables/////////////////////
     std::vector<TLorentzVector* >      fBJets;
     std::vector<TLorentzVector* >      fNoBJets;
     std::vector<TLorentzVector* >      fCleanJets;
     std::vector<TLorentzVector* >      fTestJets;
     std::vector<TLorentzVector* >      fCleanJets20;  
+    vector<TLorentzVector* > fdummyCleanJets;  
+
+    std::vector<int >   JetMoms;
+    std::vector<int >   TripletMoms;
     std::vector<float >   sumScalarPtTriplet;
     std::vector<float >   massTriplet;
 
@@ -353,33 +381,45 @@ void NtpThreeJet::Loop ()
     std::vector<float >   sumVectorPtTriplet;
     std::vector <std::vector<TLorentzVector* > > Triplet;
 
+      TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
+  for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
+
+    //do pile up reweighintg
+	
+    //    double MyWeight = LumiWeights_.weight(nTruePileUp);
+    double weight=1;
+    //    if(!DataIs) weight=MyWeight;
+    //    cout<<nTruePileUp<<" "<<weight<<endl;
+  ///////////////////Clear out variables/////////////////////
+
   Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
   fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear(); 
+  fdummyCleanJets.clear();
   massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
   massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
-
+  JetMoms.clear(); TripletMoms.clear();
   ////////////////////////////////////////////////////////////
     
 
-    if (ientry % 1000 == 0) {
-      printf("Processing entry: %i\n", ientry);
+    if (ientry % 100 == 0) {
+      printf("=================Processing entry: %i\n", ientry);
     }
     //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
     if(1==1){//MSquark == 375 && MLSP ==75){
-
+ 
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
     int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; 
 
     float SumptAllJet=0;
     float SumptAllJet20=0;
-    vector<TLorentzVector* > fdummyCleanJets;
+
     int dummycounter=0;     
     //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
         for (int i=0; i<nPFJets; i++){
 	  //cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
-      TLorentzVector* Jet= new TLorentzVector(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-      TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
+TLorentzVector* Jet=new TLorentzVector (jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
+
 
       if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
 	nJet20++;
@@ -388,8 +428,12 @@ void NtpThreeJet::Loop ()
 	if(jet_PF_pt[i]>35.0){
 	SumptAllJet=SumptAllJet+jet_PF_pt[i];
 	fCleanJets.push_back(Jet);
-	nJet35++;
 	h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
+	JetMoms.push_back(jet_PF_JetMom[i]);
+	//	cout<<"JetMomFromTree: "<<jet_PF_JetMom[i]<<endl;
+	//cout<<"JetMomFromTree_InArray: "<<JetMoms[nJet35]<<endl;
+
+	nJet35++;
 	dummycounter++;
 	//implementing b-tagging scale factors
 	int jet_flavor =jet_PF_PartonFlav[i];
@@ -401,6 +445,7 @@ void NtpThreeJet::Loop ()
 	//Add isData check here (need to add variable to the ntuple first)
 	//set a unique seed                                                                                                                                                 
 	//	cout<<"before function:"<<isTagged<<" CSV:"<<bdiscCSV_PF[i]<<endl;
+
 	if(!DataIs){
         double phi = jet_phi;
         double sin_phi = sin(phi*1000000);
@@ -415,7 +460,8 @@ void NtpThreeJet::Loop ()
         double LightJeteff =  btsfutil->GetLightJeteff(jet_pt,jet_eta,0); //no uncertainties given                                                                           
 
 	btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
-	if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	//if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	delete btsfutil;
 	}
 	if (isTagged)
 	  {
@@ -432,14 +478,18 @@ void NtpThreeJet::Loop ()
 	  }
 	}
       }
-	}
+
+}
+
+
+
 	//cout<<nTruePileUp<<" "<<MyWeight<<" "<<weight<<endl;
 
 
 
-     //MUON/////
-     //make some plots for the muons
-    vector<TLorentzVector* > fdummyCleanMuons;
+	//MUON/////
+	//make some plots for the muons
+	  
     for (int i=0; i<nMuons; i++){
        TLorentzVector Muon(mpx[i],mpy[i],mpz[i],me[i]);
        //lets look at the leading muon for now
@@ -460,8 +510,8 @@ void NtpThreeJet::Loop ()
 
        h_mindRMuonJet_mPFIso->Fill(mPFIso[i],mindRMuonJet,weight);
        }
-     }
-    
+       }
+	
      ////TRIGGER////////////
      if(nJet20>=4){
      if(HasBaseTrigger){
@@ -489,7 +539,7 @@ void NtpThreeJet::Loop ()
      //Possible Triggers selections
 	
     if (HasSelTrigger){     
-     if (nJet35>=6 && nMuons>=1) {
+      if (nJet35>=6 && nMuons>=1) {
        h_PossibleTrigger->Fill(1);
        if(nBJet35 >= 1) h_PossibleTrigger->Fill(5);
        if(nBJet35 >= 2) h_PossibleTrigger->Fill(9);
@@ -531,12 +581,14 @@ void NtpThreeJet::Loop ()
      if(nJet35>=4)h_Jet3->Fill(fCleanJets[3]->Pt(),weight);
      if(nJet35>=5)h_Jet4->Fill(fCleanJets[4]->Pt(),weight);
      if(nJet35>=6)h_Jet5->Fill(fCleanJets[5]->Pt(),weight);
-	   
-	      
+        
+     	      
      if ( nJet35>=6){
        //cout<<nJet35<<" "<<fCleanJets.size()<<" s"<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
-       if(fCleanJets[0]->Pt() > 80.0 && fCleanJets[1]->Pt() > 80. && fCleanJets[2]->Pt() > 80.0 && fCleanJets[3]->Pt() > 80.0 && 
-fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
+       //       if(fCleanJets[0]->Pt() > 80.0 && fCleanJets[1]->Pt() > 80. && fCleanJets[2]->Pt() > 80.0 && fCleanJets[3]->Pt() > 80.0 && 
+       //fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
+
+       if(fCleanJets[3]->Pt() > 80 ){
        //      if(SumptAllJet>900){
 	 if(1==1){//nBJet35 >= 3){
 
@@ -552,9 +604,9 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 	   if(nJet35>=6) h_Jet5_EvtSel->Fill(fCleanJets[5]->Pt(),weight);
 	   if(nJet35>=7) h_Jet6_EvtSel->Fill(fCleanJets[6]->Pt(),weight);
 	   //all the jets make triplets
-	   //	   int numJetForTriplet=fCleanJets.size();
+	   //  	   int numJetForTriplet=fCleanJets.size();
 	   //only the six leading jets make triplets
-       unsigned int numJetForTriplet=6;
+	   unsigned int numJetForTriplet=6;
        int nTriplets=0;
        for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
 	 for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
@@ -571,7 +623,13 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 	     sumScalarPtTriplet.push_back(Jet1->Pt()+Jet2->Pt()+Jet3->Pt());
 	     massTriplet.push_back(Triplet123.M());
 	     sumVectorPtTriplet.push_back(Triplet123.Pt());
+	     int TripletMomGood=-1;
+	     if(JetMoms[i]==-1 || JetMoms[j]==-1 || JetMoms[k]==-1) TripletMomGood=-1;
+	     if((JetMoms[i]!=-1 && JetMoms[j]!=-1 && JetMoms[k]!=-1) && (JetMoms[i]==JetMoms[j] && JetMoms[i]==JetMoms[k] && JetMoms[j]==JetMoms[k])) TripletMomGood=JetMoms[i];
+	    
 
+	     TripletMoms.push_back(TripletMomGood);
+	     //	     cout<<"Combo: "<<i<<" "<<j<<" "<<k<<" JetMoms: "<<JetMoms[i]<<" "<<JetMoms[j]<<" "<<JetMoms[k]<<" TripleMoms: "<<TripletMoms[nTriplets]<<endl;
 	     massDoublet12.push_back(Doublet12.M());  
 	     massDoublet13.push_back(Doublet13.M()); 
 	     massDoublet23.push_back(Doublet23.M());
@@ -592,7 +650,9 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 	     Triplet[nTriplets].push_back(Jet2);
 	     Triplet[nTriplets].push_back(Jet3);
 
-	     nTriplets++;	     
+	     nTriplets++;
+
+
 	   }
 	 }
        }
@@ -602,7 +662,7 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
        {
 	 for(int b=0; b<5; b++){
 
-	 for (int i=0; i<7; i++)
+	 for (int i=0; i<10; i++)
 	   {
 	     float iPt=30.0+(float)i*10.0;
 	     for(int k=0; k<3; k++)
@@ -615,7 +675,7 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 		     {	
 		       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
 		     }
-		   for(int j=0; j<20; j++){
+		   for(int j=0; j<25; j++){
 		        
 		     float iDiag=(float)j*10.0+40.0;
 		     //to implement the pt cut we only keep triplets where the lowest jet passes pt cut
@@ -635,16 +695,21 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 			   {
 			     float countT=0;
 			     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+			     if(TripletMoms[q]==0 || TripletMoms[q]==1)
+			     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
+			     if(TripletMoms[q]!=0 && TripletMoms[q]!=1)
+			     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(massTriplet[q],weight);
+
 			     //cout<<iDiag<<" "<<iPt<<" "<<b<<" "<<iNjet<<endl;
 			     //cout<<massTriplet[q]<<" "<<(*Triplet[q][2]+*Triplet[q][1]+*Triplet[q][0]).M()<<endl;
 			     //if(countT==0 && massTriplet[q]>160 && massTriplet[q]<190){
 
 
-			     if(massTriplet[q] > 150.0 && massTriplet[q] < 200.0){
-			       MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletMid[q], massDoubletHigh[q],weight);
-			       MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q], massDoubletHigh[q],weight);
-			       MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q],massDoubletMid[q],weight);
-			     }
+			     //if(massTriplet[q] > 150.0 && massTriplet[q] < 200.0){
+			      // MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletMid[q], massDoubletHigh[q],weight);
+			      // MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q], massDoubletHigh[q],weight);
+			      // MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q],massDoubletMid[q],weight);
+			       //}
 			     countT++;
 			          
 			    
@@ -660,11 +725,23 @@ fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
 	   }//triplet loop
 	 }//3 or more b jets
 	 }//jetp
-     }//minjet
+	 } //minjet
      //lets see if the top branching ratios work
     
   }
  }//Msquqark
+
+  //delete Triplet; 
+    //delete &sumScalarPtTriplet; delete  &sumVectorPtTriplet; delete &massTriplet;
+    /*delete &fBJets; delete &fNoBJets; delete &fCleanJets;  delete  &fCleanJets20; delete &fTestJets;
+    delete  &massDoublet12; delete &massDoublet13; delete &massDoublet23;
+    delete  &massDoubletHigh; delete &massDoubletMid; delete  &massDoubletLow;
+    */
  }//get entrye
+
+  /*  fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear();
+  massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
+  massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
+  */
   return;
 }

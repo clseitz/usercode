@@ -71,6 +71,11 @@
 #./RunThreeJet mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_exactB_Aug15.root /cms/clseitz/ThreeJet/RUNtuple/TTJets_8TeV/*tree*root
 #./RunThreeJet btagSFtest_beforeChange_CVS1p12.root /cms/clseitz/ThreeJet/BtagSFtest/*tree*root
 #./RunThreeJet btagSFtest.root /cms/clseitz/ThreeJet/BtagSFtest/*tree*root
-./RunThreeJet btagSFtest_PileUpagain_QCD.root /cms/clseitz/ThreeJet/TLBSM/TLBSM52xv5/QCD_HT500-1000/RU_PileUp/*245*tree*root
+#./RunThreeJet btagSFtest_PileUpagain_QCD.root /cms/clseitz/ThreeJet/TLBSM/TLBSM52xv5/QCD_HT500-1000/RU_PileUp/*245*tree*root
 #./RunThreeJet btagSFtest_QCD.root /cms/clseitz/ThreeJet/BtagSFtest/QCD/*tree*
 #./RunThreeJet btagSFtest_Data.root /cms/clseitz/ThreeJet/BtagSFtest/Data/*tree*
+
+#./RunThreeJet Gluino_test_JotMom.root  /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/RU/RPV_JetMom/RPV_M200_112/*_1_*tree
+#./RunThreeJet data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_6pt35_Sep25.root /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/RU/MultiJetJun06JSON/*tree*root
+#./RunThreeJet test_btagSF_6pt35_MCmatch.root /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/RU/RPV_JetMom/RPV_M200_113_223/*tree*root
+./RunThreeJet test_btagSF_6pt35_MCmatch.root /cms/clseitz/ThreeJet/RUNtuple/Sep25ReRun/RPV_JetMom/RPV_M200_113_223/*tree*root
