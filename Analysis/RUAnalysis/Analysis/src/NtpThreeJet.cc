@@ -25,11 +25,13 @@ NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData, 
 
 NtpThreeJet::~NtpThreeJet ()
 {
-  /*  if (fOutFile) {
+    std::cout << "Starting NtpThreeJet destructor " << std::endl;
+    if (fOutFile) {
     fOutFile->Write();
     fOutFile->Close();
     delete fOutFile;
-    }*/
+    }
+    std::cout << "Done with NtpThreeJet destructor " << std::endl;
 }
 
 
@@ -55,8 +57,8 @@ void NtpThreeJet::BookHistograms()
   h_HT = new TH1F("HT", "HT",400,0,4000); h_HT->Sumw2();
   h_nBJet35  = new TH1F("nBJet35", "nBJet35",20,0,20); h_nBJet35->Sumw2();
   h_nJet35  = new TH1F("nJet35", "nJet35",20,0,20); h_nJet35->Sumw2();
-  h_Jet0= new TH1F("Jet0", "Jet0",200,0,1000); h_Jet0->Sumw2();
-  h_Jet1= new TH1F("Jet1", "Jet1",200,0,1000); h_Jet1->Sumw2();
+  h_Jet0= new TH1F("Jet0", "Jet0",400,0,2000); h_Jet0->Sumw2();
+  h_Jet1= new TH1F("Jet1", "Jet1",400,0,2000); h_Jet1->Sumw2();
   h_Jet2= new TH1F("Jet2", "Jet2",200,0,1000); h_Jet2->Sumw2();
   h_Jet3= new TH1F("Jet3", "Jet3",200,0,1000); h_Jet3->Sumw2();
   h_Jet4= new TH1F("Jet4", "Jet4",200,0,1000); h_Jet4->Sumw2();
@@ -69,8 +71,8 @@ void NtpThreeJet::BookHistograms()
   h_HT_EvtSel = new TH1F("HT_EvtSel", "HT_EvtSel",400,0,4000); h_HT_EvtSel->Sumw2();
   h_nBJet35_EvtSel  = new TH1F("nBJet35_EvtSel", "nBJet35_EvtSel",20,0,20); h_nBJet35_EvtSel->Sumw2();
   h_nJet35_EvtSel  = new TH1F("nJet35_EvtSel", "nJet35_EvtSel",20,0,20); h_nJet35_EvtSel->Sumw2();
-  h_Jet0_EvtSel= new TH1F("Jet0_EvtSel", "Jet0_EvtSel",200,0,1000); h_Jet0_EvtSel->Sumw2();
-  h_Jet1_EvtSel= new TH1F("Jet1_EvtSel", "Jet1_EvtSel",200,0,1000); h_Jet1_EvtSel->Sumw2();
+  h_Jet0_EvtSel= new TH1F("Jet0_EvtSel", "Jet0_EvtSel",400,0,2000); h_Jet0_EvtSel->Sumw2();
+  h_Jet1_EvtSel= new TH1F("Jet1_EvtSel", "Jet1_EvtSel",400,0,2000); h_Jet1_EvtSel->Sumw2();
   h_Jet2_EvtSel= new TH1F("Jet2_EvtSel", "Jet2_EvtSel",200,0,1000); h_Jet2_EvtSel->Sumw2();
   h_Jet3_EvtSel= new TH1F("Jet3_EvtSel", "Jet3_EvtSel",200,0,1000); h_Jet3_EvtSel->Sumw2();
   h_Jet4_EvtSel= new TH1F("Jet4_EvtSel", "Jet4_EvtSel",200,0,1000); h_Jet4_EvtSel->Sumw2();
@@ -109,6 +111,7 @@ void NtpThreeJet::BookHistograms()
     int iPt=30+i*10;
     //Triplet mass plots
     Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
+    Mjjj_sumpt_btag_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
     Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
@@ -124,9 +127,13 @@ void NtpThreeJet::BookHistograms()
       int iNjet=k+6;
 
       Mjjj_sumpt_bjet_pt_njet[b].push_back(std::vector<TH2F*> ());
+      Mjjj_sumpt_btag_pt_njet[b].push_back(std::vector<TH2F*> ());
       sprintf(hNAME, "Mjjj_sumpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
       Mjjj_sumpt_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Sumw2();
+      sprintf(hNAME, "Mjjjbtag_sumpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Mjjj_sumpt_btag_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
+      Mjjj_sumpt_btag_pt_njet[b][i][k]->Sumw2();
       Mjjj_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
@@ -196,7 +203,8 @@ void NtpThreeJet::BookHistograms()
 }
  
 void NtpThreeJet::WriteHistograms()
-{cout<<"made it here"<<endl;
+{
+	cout<<"made it here"<<endl;
   char FOLDER[100];
   fOutFile->cd();
 
@@ -275,6 +283,7 @@ void NtpThreeJet::WriteHistograms()
 	 now->cd(FOLDER);
 	 for (int k=0; k<3; k++){
 	   Mjjj_sumpt_bjet_pt_njet[b][i][k]->Write();
+	   Mjjj_sumpt_btag_pt_njet[b][i][k]->Write();
 	   for(int j=0; j<25; j++){ 
 	   
 	     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Write();  
@@ -293,7 +302,7 @@ void NtpThreeJet::WriteHistograms()
        }
    }
    
-  return;
+  cout << "end of writing\n";
 }
   
 
@@ -360,7 +369,7 @@ void NtpThreeJet::Loop ()
   LumiWeights_ = reweight::LumiReWeighting(Summer2012,DataJun01);
     std::vector<TLorentzVector* >      fBJets;
     std::vector<TLorentzVector* >      fNoBJets;
-    std::vector<TLorentzVector* >      fCleanJets;
+    std::vector<JetLV* >      				 fCleanJets;
     std::vector<TLorentzVector* >      fTestJets;
     std::vector<TLorentzVector* >      fCleanJets20;  
     vector<TLorentzVector* > fdummyCleanJets;  
@@ -379,7 +388,7 @@ void NtpThreeJet::Loop ()
     std::vector<float >   massDoubletLow;
 
     std::vector<float >   sumVectorPtTriplet;
-    std::vector <std::vector<TLorentzVector* > > Triplet;
+    std::vector <std::vector<JetLV* > > Triplet;
 
       TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
@@ -418,10 +427,13 @@ void NtpThreeJet::Loop ()
     //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
         for (int i=0; i<nPFJets; i++){
 	  //cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
-TLorentzVector* Jet=new TLorentzVector (jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-
+  JetLV* Jet=new JetLV(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
 
       if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
+	bool isTagged = false;
+	if (bdiscCSV_PF[i] > 0.679)
+		isTagged = true;
+	Jet->setBtag(isTagged);
 	nJet20++;
 	fCleanJets20.push_back(Jet);
 	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
@@ -440,8 +452,6 @@ TLorentzVector* Jet=new TLorentzVector (jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],j
 	float jet_pt = jet_PF_pt[i];
 	float jet_phi = jet_PF_phi[i];
         float jet_eta = jet_PF_eta[i];
-	bool isTagged = false;
-	if (bdiscCSV_PF[i] > 0.679) isTagged = true;
 	//Add isData check here (need to add variable to the ntuple first)
 	//set a unique seed                                                                                                                                                 
 	//	cout<<"before function:"<<isTagged<<" CSV:"<<bdiscCSV_PF[i]<<endl;
@@ -611,9 +621,9 @@ TLorentzVector* Jet=new TLorentzVector (jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],j
        for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
 	 for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
 	   for (unsigned int k=j+1; k<numJetForTriplet-0; ++k) {
-	     Triplet.push_back(std::vector<TLorentzVector* > ());
+	     Triplet.push_back(std::vector<JetLV* > ());
 	     
-	     TLorentzVector* Jet1; TLorentzVector* Jet2; TLorentzVector* Jet3;
+	     JetLV* Jet1; JetLV* Jet2; JetLV* Jet3;
 	     Jet1=fCleanJets[i]; Jet2=fCleanJets[j]; Jet3=fCleanJets[k];
 	     TLorentzVector Triplet123; Triplet123=(*Jet1+*Jet2+*Jet3);
 	     TLorentzVector Doublet12; Doublet12=*Jet1+*Jet2;
@@ -674,6 +684,12 @@ TLorentzVector* Jet=new TLorentzVector (jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],j
 		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
 		     {	
 		       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
+		     }
+		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt &&
+		   	 nBJet35>=b && (Triplet[q][0]->btagged ||
+		   	 	 Triplet[q][1]->btagged || Triplet[q][2]->btagged))
+		     {	
+		       Mjjj_sumpt_btag_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
 		     }
 		   for(int j=0; j<25; j++){
 		        
