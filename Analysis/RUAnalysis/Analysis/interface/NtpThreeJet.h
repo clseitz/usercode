@@ -142,6 +142,7 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M13_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M23_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_btag_pt_njet;
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
 
@@ -150,6 +151,33 @@ class NtpThreeJet : public NtpReader
     TFile* fOutFile;
 
 };
+
+
+class JetLV : public TLorentzVector
+{
+public:
+	JetLV(double x, double y, double z, double energy) :
+		TLorentzVector(x, y, z, energy),
+		btagged(hasBtag)
+	{
+		hasBtag = false;
+	}
+	
+	~JetLV()
+	{
+	}
+	
+	const bool &btagged; // Read-only access to b tag status
+	
+	void setBtag(bool isBjet)
+	{
+		hasBtag = isBjet;
+	}
+	
+protected:
+	bool hasBtag;
+};
+
 
 
 
