@@ -156,7 +156,8 @@ def plotMttbar():
           # hist_ttbar.Scale(scale);
           scale = 1.1 * lumi / 98600.0;
           # hist_stsusy300.Scale(scale);
-          scale = 495.0 * lumi / 101250.0;
+          # scale = 495.0 * lumi / 101250.0; # Actuall rpv200
+          scale = 7.94 * lumi / 98250.0;
           hist_rpv200.Scale(scale);
           scale = 140.0 * lumi / 93500.0;
           # hist_rpv250.Scale(scale);
@@ -631,8 +632,8 @@ def plotMttbar():
                   # hist_wptb1000.SetAxisRange(Urange[0], Urange[1]);
 
 
-        hist_data.SetMarkerStyle(8);
-        hist_data.SetMarkerSize(1.5);
+        hist_data.SetMarkerStyle(1);
+        hist_data.SetMarkerSize(0.5);
         # hist_data.SetMarkerSize(0.1);
         
         # hist_data.SetFillStyle(1001);
@@ -663,7 +664,7 @@ def plotMttbar():
 #        
 #        qcdUncert = TGraphAsymmErrors(hist_mc);
 
-        linewidth = 6;
+        linewidth = 3;
         # hist_Zprime500.SetLineColor(6);
         # hist_Zprime500.SetLineWidth(linewidth);
         # hist_Zprime500.SetFillStyle(0);
@@ -828,17 +829,16 @@ def plotMttbar():
         hist_data.Draw('axis');
 
         # hist_data.Draw("hist");
-        hist_data.SetMarkerStyle(8);
         if ('jet1' in histname):
           hist_ttbar.Draw("same");
         else:
           # hs.Draw("hist same");
           # hist_ttbar.Draw("hist same");
           # hist_stsusy300.Draw("hist same");
-          hist_rpv200.Draw("hist same");
+          hist_rpv200.Draw("error hist same");
           if ("Mjjj_1btag" in histname):
-            hist_nobtags.Draw("hist same");
-            hist_anybtags.Draw("hist same");
+            hist_nobtags.Draw("error hist same");
+            hist_anybtags.Draw("error hist same");
             
           # hist_rpv250.Draw("hist same");
         # hist_Zprime500.Draw("same");
