@@ -162,7 +162,7 @@ void NtpTriggerEff::Loop ()
    for (int i=0; i<nPFJets; i++){
      TLorentzVector* Jet= new TLorentzVector(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
      
-     if (jet_PF_pt[i]>45.0 && fabs(jet_PF_eta[i])<2.5){
+     if (jet_PF_pt[i]>30.0 && fabs(jet_PF_eta[i])<2.5){
        nJet20++;
        fCleanJets20.push_back(Jet);
        HT20=HT20+jet_PF_pt[i];

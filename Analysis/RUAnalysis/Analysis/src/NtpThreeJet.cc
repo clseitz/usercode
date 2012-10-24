@@ -10,6 +10,8 @@
 #include "TFile.h"
 #include "math.h"
 #include "../interface/BTagSFUtil.h"
+//#include "../interface/BTagSFUtil_Loose.h"
+//#include "../interface/BTagSFUtil_CSVT.h"
 #include "RUAnalysis/Analysis/interface/LumiReweightingStandAlone.h"
 
 using namespace std;
@@ -106,6 +108,10 @@ void NtpThreeJet::BookHistograms()
   
 
   cout<<"before histos"<<endl;
+  Double_t tbins[68]={0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,86,92,99,106,114,122,131,141,151,
+		      162,174,187,201,216,232,249,267,286,307,329,353,379,406,435,466,500,536,575,617,
+		      662,710,761,816,875,938,1006,1079,1157,1241,1331,1427,1530,1641,1760,1887,2024,2170,2327,2495,2677,3000};
+
   for(int b=0; b<5; b++){
   for (int i=0; i<10; i++){
     int iPt=30+i*10;
@@ -113,7 +119,7 @@ void NtpThreeJet::BookHistograms()
     Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
     Mjjj_sumpt_btag_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
     Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+     Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     Mjjj_1btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
     Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
@@ -157,27 +163,36 @@ void NtpThreeJet::BookHistograms()
 	
 	Mjjj_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+		Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2000,0,2000));
+		//Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,67,tbins));
 	Mjjj_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
 	Mjjj_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "Mjjj_btag_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+	if(b<1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
+	if(b>=1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", 1,b,iPt,iDiag,iNjet);
+
+		Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2000,0,2000));
+		//Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,67,tbins));
+
 	Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	Mjjj_1btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	sprintf(hNAME, "Mjjj_1btag_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_1btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+		Mjjj_1btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2000,0,2000));
+		//Mjjj_1btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,67,tbins));
+
 	Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	Mjjj_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
-        Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+	        Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,2000,0,2000));
+		//Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,67,tbins));
         Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
 
 	Mjjj_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
-        Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
+	        Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,2000,0,2000));
+		//Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,67,tbins));
         Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
 
 
@@ -304,7 +319,7 @@ void NtpThreeJet::WriteHistograms()
 	   
 	     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Write();  
 	     Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
-	     Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
+	     //Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
 	     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
 	     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
 	     /*MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Write();
@@ -364,15 +379,7 @@ void NtpThreeJet::Loop ()
 			     2.017E-04, 1.439E-04, 1.017E-04, 7.126E-05, 
 			     4.948E-05, 3.405E-05, 2.322E-05, 1.570E-05, 
 			     5.005E-06};
- /*  float Summer2012_f[60] = { 2.344E-05,    2.344E-05,    2.344E-05,    2.344E-05,    4.687E-04,    4.687E-04,    7.032E-04,    9.414E-04,
-			     1.234E-03,    1.603E-03,    2.464E-03,    3.250E-03,    5.021E-03,    6.644E-03,    8.502E-03,    1.121E-02,
-			     1.518E-02,    2.033E-02,       2.608E-02,    3.171E-02,    3.667E-02,    4.060E-02,    4.338E-02,    4.520E-02,
-			     4.641E-02,    4.735E-02,    4.816E-02,    4.881E-02,    4.917E-02,      4.909E-02,    4.842E-02,    4.707E-02,
-			     4.501E-02,    4.228E-02,    3.896E-02,    3.521E-02,    3.118E-02,    2.702E-02,    2.287E-02,      1.885E-02,
-			     1.508E-02,    1.166E-02,    8.673E-03,    6.190E-03,    4.222E-03,    2.746E-03,    1.698E-03,    9.971E-04,
-			     5.549E-04,    2.924E-04, 1.457E-04,    6.864E-05,    3.054E-05,    1.282E-05,    5.081E-06,    1.898E-06,
-			     6.688E-07,    2.221E-07,    6.947E-08,    2.047E-08
-			     };*/
+
   float data_f[60]={0,8.66979e-07,1.99567e-06,7.0944e-06,0.00115866,0.00304481,9.37811e-05,0.000438788,0.00369376,
 		    0.0132685,0.0250747,0.035147,0.0466437,0.0612746,0.0752654,0.0879549,0.0977272,0.0971447,
 		    0.0854517,0.0699568,0.0561969,0.0454351,0.0372194,0.0307875,0.0256272,0.0213495,0.0176728,
@@ -449,30 +456,16 @@ void NtpThreeJet::Loop ()
 
       if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
 	bool isTagged = false;
-	if (bdiscCSV_PF[i] > 0.679)
-		isTagged = true;
-	Jet->setBtag(isTagged);
-	nJet20++;
-	fCleanJets20.push_back(Jet);
-	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
-	if(jet_PF_pt[i]>35.0){
-	SumptAllJet=SumptAllJet+jet_PF_pt[i];
-	fCleanJets.push_back(Jet);
-	h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
-	JetMoms.push_back(jet_PF_JetMom[i]);
-	//	cout<<"JetMomFromTree: "<<jet_PF_JetMom[i]<<endl;
-	//cout<<"JetMomFromTree_InArray: "<<JetMoms[nJet35]<<endl;
-
-	nJet35++;
-	dummycounter++;
+	//CSVL > 0.244, CSVM > 0.679, CSVT > 0.898
+	if (bdiscCSV_PF[i] >  0.679)
+	 isTagged = true;
+	//Add isData check here (need to add variable to the ntuple first)
+	//set a unique seed                                                                                                                                                
 	//implementing b-tagging scale factors
 	int jet_flavor =jet_PF_PartonFlav[i];
 	float jet_pt = jet_PF_pt[i];
 	float jet_phi = jet_PF_phi[i];
         float jet_eta = jet_PF_eta[i];
-	//Add isData check here (need to add variable to the ntuple first)
-	//set a unique seed                                                                                                                                                 
-	//	cout<<"before function:"<<isTagged<<" CSV:"<<bdiscCSV_PF[i]<<endl;
 
 	if(!DataIs){
         double phi = jet_phi;
@@ -488,9 +481,24 @@ void NtpThreeJet::Loop ()
         double LightJeteff =  btsfutil->GetLightJeteff(jet_pt,jet_eta,0); //no uncertainties given                                                                           
 
 	btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
-	//if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
 	delete btsfutil;
 	}
+
+	Jet->setBtag(isTagged);
+	nJet20++;
+	fCleanJets20.push_back(Jet);
+	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
+	if(jet_PF_pt[i]>35.0){
+	SumptAllJet=SumptAllJet+jet_PF_pt[i];
+	fCleanJets.push_back(Jet);
+	h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
+	JetMoms.push_back(jet_PF_JetMom[i]);
+	//	cout<<"JetMomFromTree: "<<jet_PF_JetMom[i]<<endl;
+	//cout<<"JetMomFromTree_InArray: "<<JetMoms[nJet35]<<endl;
+
+	nJet35++;
+	dummycounter++;
 	if (isTagged)
 	  {
 	    nBJet35++;
@@ -729,10 +737,16 @@ void NtpThreeJet::Loop ()
 			   {
 			     float countT=0;
 			     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-					 if (Triplet[q][0]->btagged || Triplet[q][1]->btagged || Triplet[q][2]->btagged)
-						 Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-					 if ((Triplet[q][0]->btagged + Triplet[q][1]->btagged + Triplet[q][2]->btagged) == 1)
-						 Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+			     if(b==0)   Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+			     if (b>=1){
+			       if (Triplet[q][0]->btagged || Triplet[q][1]->btagged || Triplet[q][2]->btagged)
+				 {
+				   Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				 }
+				 }
+					 //Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+					 /*if ((Triplet[q][0]->btagged + Triplet[q][1]->btagged + Triplet[q][2]->btagged) == 1)
+					   Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);*/
 			     if(TripletMoms[q]==0 || TripletMoms[q]==1)
 						 Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
 			     if(TripletMoms[q]!=0 && TripletMoms[q]!=1)

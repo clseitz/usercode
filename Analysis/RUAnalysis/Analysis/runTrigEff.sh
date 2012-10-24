@@ -14,4 +14,4 @@
 #./RunTriggerEff data2012_MultiJet_BMu40_SSSix45_TriggerMap_6jets20GeV_jul3.root /uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu40_SSix45/*tree*root
 #./RunTriggerEff data2012_MultiJet_BMu40_SQuad80_TriggerMap_6jets20GeV_jul3_eq4jet.root /uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu40_SQuad80/*tree*root
 #./RunTriggerEff data2012_MultiJet_BMu12_SQuad50_TriggerMap_6jets20GeV_jun29.root /uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu12_SQuad60Di20/*Mu12*Jul1*tree*root
-./RunTriggerEff data2012_MultiJet_BMu40_SHT750_TriggerMap_6jets45GeV_jul8_geq6jet.root /uscms_data/d3/clseitz/ThreeJet/RUNtuple/SingleMuDataset/BMu40_SHT750/*tree*root
+./RunTriggerEff data2012_MultiJet_BMu_Quad60_Di20_Run2012AC_TriggerMap_6jets45GeV_oct16_geq6jet.root /cms/clseitz/ThreeJet/RUNtuple/Sep25ReRun/MultiJetSep7/Run2012*/*tree*
