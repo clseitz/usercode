@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.13 2012/09/28 09:24:55 clseitz Exp $
+// $Id: Ntupler.cc,v 1.14 2012/10/04 13:43:56 clseitz Exp $
 //
 //
 
@@ -30,6 +30,7 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -54,6 +55,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+
 
 #include "TTree.h"
 
@@ -99,6 +101,20 @@ using namespace std;
 // constants, enums and typedefs
 //
 
+typedef struct {
+	reco::Candidate::LorentzVector adjJet, diffVec;
+	const pat::Jet *origJet;
+	double jecUnc;
+} jetElem;
+
+// Comparison function for jet list
+// Want highest pt first
+bool cmpJets(jetElem first, jetElem second)
+{
+	return (first.adjJet.Pt() > second.adjJet.Pt());
+}
+
+
 //
 // static data member definitions
 //
@@ -116,6 +132,7 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   //  _patJetType      = iConfig.getUntrackedParameter<string>("PatJetType",      "selectedPatJets");
   _patJetType      = iConfig.getUntrackedParameter<std::vector<std::string> >("PatJetType", std::vector<std::string> ());
   _primaryVertex   = iConfig.getUntrackedParameter<string> ("PrimaryVertex","goodOfflinePrimarVertices");
+  _jecAdj   			 = iConfig.getUntrackedParameter<string> ("jecAdj", "none");
   _METtype   = iConfig.getUntrackedParameter<string> ("METtype","patMETsPFlow");
   _njetsMin        = iConfig.getUntrackedParameter<int>   ("NjetsMin",         4);
   _njetsMax        = iConfig.getUntrackedParameter<int>   ("NjetsMax",         4);
@@ -195,7 +212,6 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      bool HasTrigger = false;
      bool HasTrigger2 = false;
-     bool DataIs = false;
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -227,7 +243,6 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
      HasBaseTrigger = HasTrigger2;
-     DataIs=_isData;
      if ((HasTrigger || HasTrigger2)){
 
        fGoodJets.clear(); fCleanJets.clear(); 
@@ -240,7 +255,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        fGoodPhotons.clear(); fCleanPhotons.clear();
        nGoodPhotons=0; nCleanPhotons=0;
        fGoodVtx.clear();
-       nGoodVtx=0; int CountVtx=0;
+       nGoodVtx=0;
        nElectrons=0;
        nMuons=0;
        nPhotons=0;
@@ -271,16 +286,26 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        /////DO OBJECT ID
        ///////////////////////////////////////////////////////
        //Select all the objects int the event (vertex function makes some plots)
+
+			JetCorrectionUncertainty *jecUnc = 0;
+			edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
+			// get the jet corrector parameters collection from the global tag
+			iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PF"), JetCorParColl);
+			// get the uncertainty parameters from the collection
+			JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+			// instantiate the jec uncertainty object
+			jecUnc = new JetCorrectionUncertainty(JetCorPar);
+
        //JETS already have loose JetID applied
        //	 edm::Handle<edm::View<pat::Jet> > fGoodPFJets;
-       edm::Handle< std::vector<pat::Jet> > fGoodPFJets;
+       // edm::Handle< std::vector<pat::Jet> > fGoodPFJets;
        edm::Handle< std::vector<pat::Jet> > fCleanPFJets;
        iEvent.getByLabel(_patJetType[0], fCleanPFJets);
-       edm::Handle< std::vector<pat::Jet> > fGoodCA8PFJets;
+       // edm::Handle< std::vector<pat::Jet> > fGoodCA8PFJets;
        edm::Handle< std::vector<pat::Jet> > fCleanCA8PFJets;
        iEvent.getByLabel(_patJetType[1], fCleanCA8PFJets);
        //need as PAT to get btag stuff
-       edm::Handle< std::vector<pat::Jet> > fGoodCA8PrunedPFJets;
+       // edm::Handle< std::vector<pat::Jet> > fGoodCA8PrunedPFJets;
        edm::Handle< std::vector<pat::Jet> > fCleanCA8PrunedPFJets;
        iEvent.getByLabel(_patJetType[2], fCleanCA8PrunedPFJets);
        
@@ -333,7 +358,32 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
        cout<<"NJets: "<<nPFJets<<endl;
       int i=0;
-       for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {       
+			std::list<jetElem> adjJetList;
+			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+				jecUnc->setJetEta(Jet->eta());
+				jecUnc->setJetPt(Jet->pt()); // the uncertainty is a function of the corrected pt
+ 
+				jetElem tmpjet;
+				tmpjet.origJet = &(*Jet);
+				tmpjet.adjJet = Jet->p4();
+				double corrFactor = 1.0;
+				tmpjet.jecUnc = jecUnc->getUncertainty(true);
+				if (_jecAdj.compare("up") == 0)
+					corrFactor += tmpjet.jecUnc;
+				else if (_jecAdj.compare("down") == 0)
+					corrFactor -= tmpjet.jecUnc;
+				if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
+					tmpjet.adjJet *= corrFactor;
+				tmpjet.diffVec = Jet->p4() - tmpjet.adjJet;
+				adjJetList.push_back(tmpjet);
+      }
+			delete jecUnc;
+			adjJetList.sort(cmpJets);
+       // for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+       for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
+				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
+			 	const pat::Jet *Jet = chngJet->origJet;
+				
 	 if(i<6){
 	   v_PFjet_pt[i]->Fill(Jet->pt()); 
 	   v_PFjet_eta[i]->Fill(Jet->eta()); 
@@ -342,16 +392,18 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 }
 
 
-	 jet_PF_pt[i]=Jet->pt();
-	 jet_PF_px[i]=Jet->px();
-	 jet_PF_py[i]=Jet->py();
-	 jet_PF_pz[i]=Jet->pz();
-	 jet_PF_e[i]=Jet->energy();
-	 jet_PF_et[i]=Jet->et();
+	 jet_PF_pt[i]=adjJet->Pt();
+	 jet_PF_px[i]=adjJet->Px();
+	 jet_PF_py[i]=adjJet->Py();
+	 jet_PF_pz[i]=adjJet->Pz();
+	 jet_PF_e[i]=adjJet->energy();
+	 jet_PF_mass[i]=adjJet->mass();
+	 jet_PF_et[i]=adjJet->Et();
+	 jet_PF_jec_unc[i]=chngJet->jecUnc;
+
 	 jet_PF_eta[i]=Jet->eta();
 	 jet_PF_phi[i]=Jet->phi();
 	 jet_PF_theta[i]=Jet->theta();
-	 jet_PF_mass[i]=Jet->mass();
 	 jet_PF_NeutralHad[i]=Jet->correctedJet("Uncorrected").neutralHadronEnergyFraction();
 	 jet_PF_area[i]=Jet->jetArea();
 	 jet_PF_nJetDaughters[i]=Jet->numberOfDaughters();
@@ -381,7 +433,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 
 	       }
 	   jet_PF_JetMom[i]=jetMom;	     
-cout<<"jetmomL: "<<jetMom<<endl;
+		 cout<<"jetmomL: "<<jetMom<<endl;
 }
      i++;
    }
@@ -533,9 +585,21 @@ cout<<"jetmomL: "<<jetMom<<endl;
      
        }
 
+			 reco::Candidate::LorentzVector met = fMET.p4();
+       for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
+			 	met += chngJet->diffVec;
+			 }
+			 met.SetPz(0.0);  // Make sure no longitudinal component
+			 met.SetE(met.Pt()); // Make sure it stays massless
+					  
+       h_MET->Fill(met.Et());
+       pfMET= met.Et();
+       pfMETphi=met.Phi();
+			 /*
        h_MET->Fill(fMET.et());
        pfMET= fMET.et();
        pfMETphi=fMET.phi();
+			 */
 
        GetMCTruth(iEvent);
        //       cout<<"--------------------"<<endl;
@@ -1143,7 +1207,6 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
     // find minimum distance to a prim vert
     float minVtxDist3D = 999;
     float vtxDistZ = 999;
-    float vtxDistXY = 999;
     if (primaryVertices.isValid()) {
       for (reco::VertexCollection::const_iterator v_it = primaryVertices->begin(); v_it != primaryVertices->end(); ++v_it) {
 
@@ -1153,7 +1216,6 @@ Ntupler::DoElectronID(const edm::Event& iEvent){
 
         if (dist3D < minVtxDist3D) {
           minVtxDist3D = dist3D;
-          vtxDistXY = distXY;
           vtxDistZ = distZ;
         }
       }
@@ -1236,40 +1298,39 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
     //reco::PFCandidateRef PFMuon = Muon->pfCandidateRef();
 
     // Get the PFGamma isolation
-    float PFGammaIso = -999;
+    // float PFGammaIso = -999;
     const reco::IsoDeposit * PFGammaIsolation = Muon->isoDeposit(pat::PfGammaIso);
     if (PFGammaIsolation) {
-      PFGammaIso = PFGammaIsolation->depositWithin(0.3);
+      // PFGammaIso = PFGammaIsolation->depositWithin(0.3);
     } else {
       std::cerr << "ERROR: Cannot find pat::PfGammaIso" << std::endl;
     }
 
     // Get the PFNeutralHad isolation
-    float PFNeutralHadronIso = -999;
+    // float PFNeutralHadronIso = -999;
     const reco::IsoDeposit * PFNeutralHadronIsolaton = Muon->isoDeposit(pat::PfNeutralHadronIso);
     if (PFNeutralHadronIsolaton) {
-      PFNeutralHadronIso = PFNeutralHadronIsolaton->depositWithin(0.3);
+      // PFNeutralHadronIso = PFNeutralHadronIsolaton->depositWithin(0.3);
     } else {
       std::cerr << "ERROR: Cannot find pat::PfNeutralHadronIso" << std::endl;
     }
 
     // Get the PFChargedHad isolation
-    float PFChargedHadronIso = -999;
+    // float PFChargedHadronIso = -999;
     const reco::IsoDeposit * PFChargedHadronIsolaton = Muon->isoDeposit(pat::PfChargedHadronIso);
     if (PFChargedHadronIsolaton) {
-      PFChargedHadronIso = PFChargedHadronIsolaton->depositWithin(0.3);
+      // PFChargedHadronIso = PFChargedHadronIsolaton->depositWithin(0.3);
     } else {
       std::cerr << "ERROR: Cannot find pat::PfChargedHadronIso" << std::endl;
     }
 
     // The isolation we will use for selection
-    float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
-      (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / Muon->pt() : 99999;
+    // float const PFIso = (PFGammaIsolation && PFNeutralHadronIsolaton && PFChargedHadronIsolaton) ?
+      // (PFGammaIso + PFNeutralHadronIso + PFChargedHadronIso) / Muon->pt() : 99999;
 
     // find minimum distance to a prim vert
     float minVtxDist3D = 999;
     float vtxDistZ = 999;
-    float vtxDistXY = 999;
     if (primaryVertices.isValid()) {
       for (reco::VertexCollection::const_iterator v_it = primaryVertices->begin(); v_it != primaryVertices->end(); ++v_it) {
 
@@ -1279,7 +1340,6 @@ Ntupler::DoMuonID(const edm::Event& iEvent){
 
         if (dist3D < minVtxDist3D) {
           minVtxDist3D = dist3D;
-          vtxDistXY = distXY;
           vtxDistZ = distZ;
         }
       }

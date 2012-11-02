@@ -64,6 +64,7 @@ class NtpReader
     float jet_PF_pz[200];
     float jet_PF_e[200];
     float jet_PF_pt[200];
+    float jet_PF_jec_unc[200];
     float  jet_PF_et[200];
     float  jet_PF_eta[200];
     float  jet_PF_phi[200];

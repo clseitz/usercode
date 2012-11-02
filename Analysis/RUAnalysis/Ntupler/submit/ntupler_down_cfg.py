@@ -122,7 +122,7 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                NjetsMax       = cms.untracked.int32(1000),
                                jetptcut       = cms.untracked.double(20),
                                etacut         = cms.untracked.double(3.),
-                               jecAdj 				= cms.untracked.string('none'), # Can also be "up" or "down"
+                               jecAdj 				= cms.untracked.string('down'), # Can also be "up" or "down"
                                TriggerNames = cms.untracked.vstring(
     'HLT_Mu12_v1','HLT_IsoMu12_v1','HLT_Mu15_v2','HLT_Mu24_v2','HLT_IsoMu17_v6',
     'HLT_Mu30_v3','HLT_IsoMu17_v8','HLT_IsoMu24_v5','HLT_IsoMu24_v6',
