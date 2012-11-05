@@ -60,11 +60,11 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("nGoodVtx", &nGoodVtx);
   Tree->Branch("nGenPart",&nGenPart);
   Tree->Branch("pdgID[nGenPart]",pdgID);
-  Tree->Branch("MCmotherind[nGenPart]", MCmotherind);
   Tree->Branch("MCpx[nGenPart]", MCpx);
   Tree->Branch("MCpy[nGenPart]", MCpy);
   Tree->Branch("MCpz[nGenPart]", MCpz);
   Tree->Branch("MCe[nGenPart]", MCe);
+  Tree->Branch("MCmotherind[nGenPart]", MCmotherind);
   
  
   Tree->Branch("nElectrons", &nElectrons);
@@ -94,6 +94,7 @@ void NtpReader::SetBranches (TTree* Tree)
   Tree->Branch("jet_PF_py[nPFJets]", jet_PF_py);
   Tree->Branch("jet_PF_pz[nPFJets]", jet_PF_pz);
   Tree->Branch("jet_PF_e[nPFJets]", jet_PF_e);
+  Tree->Branch("jet_PF_jec_unc[nPFJets]", jet_PF_jec_unc);
 
   Tree->Branch("bdiscTCHE_PF[nPFJets]", bdiscTCHE_PF);
   Tree->Branch("bdiscTCHP_PF[nPFJets]", bdiscTCHP_PF);
@@ -222,11 +223,11 @@ void NtpReader::SetBranchAddresses ()
   fChain.SetBranchAddress("nGoodVtx", &nGoodVtx);
    fChain.SetBranchAddress("nGenPart",  &nGenPart);
     fChain.SetBranchAddress("pdgID[nGenPart]",pdgID);
-     fChain.Branch("MCmotherind[nGenPart]", MCmotherind);
     fChain.SetBranchAddress("MCpx[nGenPart]", MCpx);
     fChain.SetBranchAddress("MCpy[nGenPart]", MCpy);
     fChain.SetBranchAddress("MCpz[nGenPart]", MCpz);
     fChain.SetBranchAddress("MCe[nGenPart]", MCe);
+    fChain.SetBranchAddress("MCmotherind[nGenPart]", MCmotherind);
  
 
   fChain.SetBranchAddress("nElectrons", &nElectrons);
@@ -247,6 +248,7 @@ void NtpReader::SetBranchAddresses ()
    fChain.SetBranchAddress("jet_PF_mass[nPFJets]", jet_PF_nJetDaughters);
    fChain.SetBranchAddress("jet_PF_PartonFlav[nPFJets]", jet_PF_PartonFlav);
    fChain.SetBranchAddress("jet_PF_JetMom[nPFJets]", jet_PF_JetMom);
+   fChain.SetBranchAddress("jet_PF_jec_unc[nPFJets]", jet_PF_jec_unc);
 
   fChain.SetBranchAddress("jet_PF_px[nPFJets]", jet_PF_px);
   fChain.SetBranchAddress("jet_PF_py[nPFJets]", jet_PF_py);

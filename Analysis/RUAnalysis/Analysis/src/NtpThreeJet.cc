@@ -12,6 +12,7 @@
 #include "../interface/BTagSFUtil.h"
 //#include "../interface/BTagSFUtil_Loose.h"
 //#include "../interface/BTagSFUtil_CSVT.h"
+//#include "../interface/BTagSFUtil_JPTM.h"
 #include "RUAnalysis/Analysis/interface/LumiReweightingStandAlone.h"
 
 using namespace std;

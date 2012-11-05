@@ -15,14 +15,23 @@
 #include "TF1.h"
 #include "TLatex.h"
 #include "TGraph.h"
-#include "TGraphAsymmErrors.h"
+#include "TGraphErrors.h"
 
 #include <sstream>
+
+
+template <class T>
+inline std::string to_string (const T& t)
+{
+	std::stringstream ss;
+	ss << t;
+	return ss.str();
+}
 
 void make_BtagOpt()
 {
 	
-	//Which plots to make
+	//Which plots to make/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF
 	int WhichPlot=0; //0 = normal all backgrounds+error bars and data, 1= include W' on top of the background for W' mass
 	int bkgC=5;//38;
 	//define input variables
@@ -54,8 +63,8 @@ void make_BtagOpt()
 	
 	///////DIFFF//////
 	//WBtag_1GeVBin
-	//CSVM_1GeVBin
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4th80_Oct24_CSVM_1GeVBin.root"));
+	//JPM_1GeVBin
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("MultiJetQuad60Di20_2400pb");
 	EvtGen.push_back(1);
 	Xsec.push_back(1);
@@ -65,7 +74,7 @@ void make_BtagOpt()
 	
 	float Ngluino=100000;
 
-	/*filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M200_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	/*filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M200_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M200_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(686);
@@ -73,7 +82,7 @@ void make_BtagOpt()
 	lumis.push_back(lumi*TriggerS);
 	*/
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M250_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M250_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M250_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(197.2);
@@ -81,7 +90,7 @@ void make_BtagOpt()
 	GaussMeanIni.push_back(250);
 	lumis.push_back(lumi*TriggerS);
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M300_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M300_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M300_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(67.7727);
@@ -89,14 +98,14 @@ void make_BtagOpt()
 	lumis.push_back(lumi*TriggerS);
 	
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M350_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M350_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M350_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(26.4);
 	GaussMeanIni.push_back(350);
 	lumis.push_back(lumi*TriggerS);
 
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M400_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M400_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M400_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(11.3);
@@ -104,7 +113,7 @@ void make_BtagOpt()
 	lumis.push_back(lumi*TriggerS);
 	
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M450_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M450_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M450_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(5.2);
@@ -112,7 +121,7 @@ void make_BtagOpt()
 	lumis.push_back(lumi*TriggerS);
 	
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M500_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M500_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M500_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(2.6);
@@ -120,34 +129,35 @@ void make_BtagOpt()
 	lumis.push_back(lumi*TriggerS);
 	
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M750_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M750_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M750_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(0.127);
 	GaussMeanIni.push_back(750);
 	lumis.push_back(lumi*TriggerS);
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1000_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1000_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M1000_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(0.010005);
 	GaussMeanIni.push_back(1000);
 	lumis.push_back(lumi*TriggerS);
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1250_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1250_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M1250_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(0.000984752);
 	GaussMeanIni.push_back(1250);
 	lumis.push_back(lumi*TriggerS);
 	
-	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1500_113_223_4th80_Oct24_CSVM_1GeVBin.root"));
+	filelist.push_back(TFile::Open("/cms/clseitz/ThreeJet/TLBSM/Analysis/Oct24_WBtagSF/RPV_M1500_113_223_4th80_Oct24_JPM_1GeVBin.root"));
 	namelist.push_back("RPV_M1500_113_223");
 	EvtGen.push_back(Ngluino);
 	Xsec.push_back(0.000104);
 	
 	GaussMeanIni.push_back(1500);
 	lumis.push_back(lumi*TriggerS);
+	
 	
 	
 
@@ -159,8 +169,8 @@ void make_BtagOpt()
 	std::vector<TH2F* > SignalOverSqrtBkg;
 	std::vector<TH2F* > SignalOverSqrtSigPlusBkg;
 	std::vector<TH2F* > SignalOverSigPlusBkg;
-	TFile fnew1("DATA_RPV_Btags_6th60_Diag110_CSVM_1GeVBin.root", "recreate");
-	TFile fnew2("DATA_SignalPreFit_RPV_Btags_6th60_Diag110_CSVM_1GeVBin.root", "recreate");
+	TFile fnew1("DATA_RPV_Btags_6th60_Diag110_JPM_113_223_1GeVBin_TEST.root", "recreate");
+	TFile fnew2("DATA_SignalPreFit_RPV_Btags_6th60_Diag110_JPM_113_223_1GeVBin_TEST.root", "recreate");
 	
 	fnew1.cd();
 	fnew1.mkdir("BkgScaled");
@@ -202,12 +212,26 @@ void make_BtagOpt()
 	float first=1;
 	if(WhichPlot==0){	
 		for (int i=0; i<3; i++){
+
+			
 			int iPt=60+i*10;	
 			for(int k=0; k<5; k++){
+				vector <float > Mass_113_223;
+				vector <float > GausMean_113_223;
+				vector <float > GausAmp_113_223;
+				vector <float > GausWidth_113_223;
+				vector <float > GausIntegral_113_223;
+				
+				vector <float > Mass_Err_113_223;
+				vector <float > GausMean_Err_113_223;
+				vector <float > GausAmp_Err_113_223;
+				vector <float > GausWidth_Err_113_223;
+				vector <float > GausIntegral_Err_113_223;
 				int iNjet=6;
 				//k is used for the different plot options with btagging
 				
 				for(int j=0; j<1; j++){
+					
 					int iDiag=j*10+110;
 					
 					///////DATA Fit for >= 0 b	
@@ -235,6 +259,7 @@ void make_BtagOpt()
 					
 					
 					float FitStart=210;//h_DataFitP4->GetMaximumBin()*10-10;
+					if(k==0) FitStart=190;
 					h_DataFitP4->Fit(P4DataFit,"RL","",FitStart,2000);
 					
 					if(k==0) sprintf(hNAME, "Data_Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", 0,0,iPt,iDiag,iNjet);
@@ -280,7 +305,7 @@ void make_BtagOpt()
 						newBin=(oldBin-fitVal)/fitVal;
 						h_DataMinusFitOverFit->SetBinContent(p,newBin);
 						h_DataMinusFitOverFit->SetBinError(p,oldErr*(oldBin*fitVal-oldBin+fitVal)/(fitVal*fitVal));
-						cout<<fitVal<<" "<<oldErr<<" "<<oldBin<<endl;
+						//cout<<fitVal<<" "<<oldErr<<" "<<oldBin<<endl;
 						newBin=(oldBin-fitVal)/oldErr;
 						float newErr=1;
 						if (oldBin==0)
@@ -334,12 +359,32 @@ void make_BtagOpt()
 						/*P4PreFit->SetParameter(1,-30);
 						P4PreFit->SetParameter(2,15);
 						P4PreFit->SetParameter(3,5);*/
-						 FitStart=h_PreFitP4->GetMaximumBin()*nRebin-20;
+						// FitStart=h_PreFitP4->GetMaximumBin()*nRebin-20;
 					float	FitEnd=h_PreFitP4->GetMaximumBin()*nRebin+800;
-
+						
+						if (m==1)
+						{FitStart=GaussMeanIni[m]-102;
+						    FitEnd=GaussMeanIni[m]+100;
+						}
+						if (m==2)
+						{FitStart=GaussMeanIni[m]-115;
+						    FitEnd=GaussMeanIni[m]+100;
+						}
+						if (m==3)
+						{FitStart=GaussMeanIni[m]-100;
+						    FitEnd=GaussMeanIni[m]+100;
+						}
+						if(m>3 && m<=7){
+							FitStart=GaussMeanIni[m]-170;
+							FitEnd=GaussMeanIni[m]+200;
+						}
+						if (m>=8){
+							FitStart=GaussMeanIni[m]-450;
+							FitEnd=GaussMeanIni[m]+200;
+						}
 						cout<<"FITSTART: "<<FitStart<<endl;
-						h_PreFitP4->Fit(P4PreFit,"RQ","",FitStart,1800);
-						h_PreFitP4->Fit(P4PreFit,"RQ","",FitStart,1800);
+						h_PreFitP4->Fit(P4PreFit,"RQ","",FitStart,2000);
+						h_PreFitP4->Fit(P4PreFit,"RQ","",FitStart,2000);
 					
 						
 						fnew2.cd();
@@ -390,10 +435,10 @@ void make_BtagOpt()
 						
 						TH1F* h_TTbarFitP4 = (TH1F*) filelist[m]->Get(hIN)->Clone();
 						h_TTbarFitP4->Rebin(nRebin);
-						FitStart=GausPreFit->GetParameter(1)-130;
+					//	FitStart=GausPreFit->GetParameter(1)-130;
 						h_TTbarFitP4->Scale(scaleTTbar);
-						h_TTbarFitP4->Fit(P4GausFit,"RQ","",FitStart,1800);
-						h_TTbarFitP4->Fit(P4GausFit,"RQ","",FitStart,1800);
+						h_TTbarFitP4->Fit(P4GausFit,"RQ","",FitStart,2000);
+						h_TTbarFitP4->Fit(P4GausFit,"RQ","",FitStart,2000);
 					//	sprintf(hNAME, "P4Gaus_Mjjj_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
 						
 						if(k==0) sprintf(hNAME, "P4Gaus_Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", 0,0,iPt,iDiag,iNjet);
@@ -416,6 +461,11 @@ void make_BtagOpt()
 						TTbarGausP4->SetParameter(0,P4GausFit->GetParameter(4));
 						TTbarGausP4->SetParameter(1,P4GausFit->GetParameter(5));
 						TTbarGausP4->SetParameter(2,P4GausFit->GetParameter(6));
+						
+						TTbarGausP4->SetParError(0,P4GausFit->GetParError(4));
+						TTbarGausP4->SetParError(1,P4GausFit->GetParError(5));
+						TTbarGausP4->SetParError(2,P4GausFit->GetParError(6));
+						
 					
 						TTbarGausP4->SetLineColor(6);
 						//sprintf(hNAME, "GaussP4_Mjjj_bjet%i_pt%i_diag%i_GE%ijet", 0,iPt,iDiag,iNjet);
@@ -472,24 +522,80 @@ void make_BtagOpt()
 						first=1;
 						//if (i==0 && j==0) first=SigP4/sqrt(SigP4+BkgP4);
 						//if(m<=4) h_GluinoMass_vs_nBtags_113_223->SetBinContent(iPt/10+1,GaussMeanIni[m]/50+1,SigP4/sqrt(SigP4+BkgP4)/first);
-						//if(m>4) h_GluinoMass_vs_nBtags_112->SetBinContent(iPt/10+1,GaussMeanIni[m]/50+1,SigP4/sqrt(SigP4+BkgP4)/first);
+						//if(m>4) h_GluinoMass_vs_nBtags_113_223->SetBinContent(iPt/10+1,GaussMeanIni[m]/50+1,SigP4/sqrt(SigP4+BkgP4)/first);
 
+						
+						
+							Mass_113_223.push_back(GaussMeanIni[m]);
+							GausAmp_113_223.push_back(TTbarGausP4->GetParameter(0));
+							GausMean_113_223.push_back(TTbarGausP4->GetParameter(1));
+							GausWidth_113_223.push_back(TTbarGausP4->GetParameter(2));
+							GausIntegral_113_223.push_back(SigP4/nRebin);
+							
+							GausAmp_Err_113_223.push_back(TTbarGausP4->GetParError(0));
+							GausMean_Err_113_223.push_back(TTbarGausP4->GetParError(1));
+							GausWidth_Err_113_223.push_back(TTbarGausP4->GetParError(2));
+							GausIntegral_Err_113_223.push_back(SigP4/nRebin);
+							cout<<"!!!!!!!!!!!!!!!! "<<TTbarGausP4->GetParameter(0)<<" "<<TTbarGausP4->GetParError(0)<<endl;
+							cout<<"!!!!!!!!!!!!!!!! "<<TTbarGausP4->GetParameter(2)<<" "<<TTbarGausP4->GetParError(2)<<endl;
 						
 						}//file loop					
 					
-						
+					
+					if(k==0) sprintf(hNAME,"geq0_Event", 0,0,iPt,iDiag,iNjet);
+					if(k==1) sprintf(hNAME,"geq1_Event", 1,iPt,iDiag,iNjet);
+					if(k==2) sprintf(hNAME,"geq1_Triplet", 1,1,iPt,iDiag,iNjet);
+					if(k==3) sprintf(hNAME,"geq2_Event", 2,iPt,iDiag,iNjet);
+					if(k==4) sprintf(hNAME,"geq2_Event_geq1_Triplet", 1,2,iPt,iDiag,iNjet);
+					
+					h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(2,">= 0 b Event");
+					h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(3,">= 1 b Event");
+					h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(4,">= 1 b Triplet");
+					h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(5,">= 2 b Event");
+					h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(6,"& >=1 b Triplet");
+					
+					
+					TGraphErrors* g_GausMean_113_223 = new TGraphErrors((int)Mass_113_223.size(), &Mass_113_223[0],&GausMean_113_223[0],0,&GausMean_Err_113_223[0]);
+					g_GausMean_113_223->SetName(("GausMean_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					g_GausMean_113_223->SetTitle(("GausMean_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					
+					TGraphErrors* g_GausAmp_113_223 = new TGraphErrors((int)Mass_113_223.size(), &Mass_113_223[0],&GausAmp_113_223[0],0,&GausAmp_Err_113_223[0]);
+					g_GausAmp_113_223->SetName(("GausAmp_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					g_GausAmp_113_223->SetTitle(("GausAmp_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					
+					TGraphErrors* g_GausWidth_113_223 = new TGraphErrors((int)Mass_113_223.size(),&Mass_113_223[0], &GausWidth_113_223[0],0,&GausWidth_Err_113_223[0]);
+					g_GausWidth_113_223->SetName(("GausWidth_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					g_GausWidth_113_223->SetTitle(("GausWidth_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					
+					TGraph* g_GausIntegral_113_223 = new TGraph((int)Mass_113_223.size(),&Mass_113_223[0], &GausIntegral_113_223[0]);
+					g_GausIntegral_113_223->SetName(("GausIntegral_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					g_GausIntegral_113_223->SetTitle(("GausIntegral_vs_Mass_113_223_"+ to_string(iPt)+"_"+hNAME).c_str());
+					
+					
+					fnew1.cd();
+					
+					
+					g_GausMean_113_223->Write();
+					g_GausAmp_113_223->Write();
+					g_GausWidth_113_223->Write();
+					
+					g_GausIntegral_113_223->Write();	
 					}//idiag
 					
-					
-					
+				
 										
 					}//injet
+			
+			
 					
 					}//ipt
 					
 					
 				
 			}//whichplot
+	
+	
+		
 		
 		fnew1.cd();
 		//h_test->Write();
@@ -534,17 +640,17 @@ void make_BtagOpt()
 		h_GluinoMass_vs_nBtags_113_223_normalized->SetMarkerSize(2);
 		cout<<"sum : " <<sum<<" average: "<<sum/numSum<<endl;
 		
-		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(2,">= 0 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(3,">= 1 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(4,">= 1 b-tags in Triplet");
-		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(5,">= 2 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(6,">= 2 b-tags in Event and >=1 b-tags in Triplet");
+		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(2,">= 0 b Event");
+		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(3,">= 1 b Event");
+		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(4,">= 1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(5,">= 2 b Event");
+		h_GluinoMass_vs_nBtags_113_223->GetXaxis()->SetBinLabel(6,"& >=1 b Triplet");
 		
-		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(2,">= 0 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(3,">= 1 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(4,">= 1 b-tags in Triplet");
-		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(5,">= 2 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(6,">= 2 b Event & >=1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(2,">= 0 b Event");
+		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(3,">= 1 b Event");
+		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(4,">= 1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(5,">= 2 b Event");
+		h_GluinoMass_vs_nBtags_113_223_normalized->GetXaxis()->SetBinLabel(6,"& >=1 b Triplet");
 		
 		////////80/////
 		h_GluinoMass_vs_nBtags_113_223_pt80->GetYaxis()->SetBinLabel(n,AxisLabel);
@@ -553,17 +659,17 @@ void make_BtagOpt()
 		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->SetMarkerSize(2);
 		cout<<"sum : " <<sum<<" average: "<<sum/numSum<<endl;
 		
-		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(2,">= 0 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(3,">= 1 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(4,">= 1 b-tags in Triplet");
-		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(5,">= 2 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(6,">= 2 b-tags in Event and >=1 b-tags in Triplet");
+		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(2,">= 0 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(3,">= 1 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(4,">= 1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(5,">= 2 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80->GetXaxis()->SetBinLabel(6,"& >=1 b Triplet");
 		
-		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(2,">= 0 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(3,">= 1 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(4,">= 1 b-tags in Triplet");
-		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(5,">= 2 b-tags in Event");
-		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(6,">= 2 b Event & >=1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(2,">= 0 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(3,">= 1 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(4,">= 1 b Triplet");
+		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(5,">= 2 b Event");
+		h_GluinoMass_vs_nBtags_113_223_pt80_normalized->GetXaxis()->SetBinLabel(6,"& >= 1 b Triplet");
 		
 		
 		
