@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.14 2012/10/04 13:43:56 clseitz Exp $
+// $Id: Ntupler.cc,v 1.15 2012/11/02 10:03:12 cvuosalo Exp $
 //
 //
 
@@ -288,13 +288,15 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //Select all the objects int the event (vertex function makes some plots)
 
 			JetCorrectionUncertainty *jecUnc = 0;
-			edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
-			// get the jet corrector parameters collection from the global tag
-			iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PF"), JetCorParColl);
-			// get the uncertainty parameters from the collection
-			JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
-			// instantiate the jec uncertainty object
-			jecUnc = new JetCorrectionUncertainty(JetCorPar);
+		  if (! _isData) {
+				edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
+				// get the jet corrector parameters collection from the global tag
+				iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PF"), JetCorParColl);
+				// get the uncertainty parameters from the collection
+				JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+				// instantiate the jec uncertainty object
+				jecUnc = new JetCorrectionUncertainty(JetCorPar);
+			}
 
        //JETS already have loose JetID applied
        //	 edm::Handle<edm::View<pat::Jet> > fGoodPFJets;
@@ -360,14 +362,17 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       int i=0;
 			std::list<jetElem> adjJetList;
 			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
-				jecUnc->setJetEta(Jet->eta());
-				jecUnc->setJetPt(Jet->pt()); // the uncertainty is a function of the corrected pt
- 
+				 if (! _isData) {
+					jecUnc->setJetEta(Jet->eta());
+					jecUnc->setJetPt(Jet->pt()); // the uncertainty is a function of the corrected pt
+				}
 				jetElem tmpjet;
 				tmpjet.origJet = &(*Jet);
 				tmpjet.adjJet = Jet->p4();
 				double corrFactor = 1.0;
-				tmpjet.jecUnc = jecUnc->getUncertainty(true);
+				if (_isData)
+					tmpjet.jecUnc = 0;
+				else tmpjet.jecUnc = jecUnc->getUncertainty(true);
 				if (_jecAdj.compare("up") == 0)
 					corrFactor += tmpjet.jecUnc;
 				else if (_jecAdj.compare("down") == 0)
@@ -377,8 +382,11 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				tmpjet.diffVec = Jet->p4() - tmpjet.adjJet;
 				adjJetList.push_back(tmpjet);
       }
-			delete jecUnc;
-			adjJetList.sort(cmpJets);
+			if (jecUnc != 0)
+				delete jecUnc;
+		  if (! _isData)
+				adjJetList.sort(cmpJets);
+
        // for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
        for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
 				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
@@ -586,11 +594,13 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        }
 
 			 reco::Candidate::LorentzVector met = fMET.p4();
-       for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
-			 	met += chngJet->diffVec;
+			 if (! _isData) {
+				 for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
+					met += chngJet->diffVec;
+				 }
+				 met.SetPz(0.0);  // Make sure no longitudinal component
+				 met.SetE(met.Pt()); // Make sure it stays massless
 			 }
-			 met.SetPz(0.0);  // Make sure no longitudinal component
-			 met.SetE(met.Pt()); // Make sure it stays massless
 					  
        h_MET->Fill(met.Et());
        pfMET= met.Et();
