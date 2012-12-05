@@ -32,6 +32,7 @@ NtpThreeJet::~NtpThreeJet ()
     if (fOutFile) {
 			// fOutFile->Write(); // Writes another copy of all objects
 			fOutFile->Close();
+			std::cout << "Closed file, now deleting pointer" << std::endl;
 			delete fOutFile;
     }
     std::cout << "Done with NtpThreeJet destructor " << std::endl;
@@ -364,6 +365,7 @@ void NtpThreeJet::Loop ()
   std::vector< float > DataJun01 ;
   std::vector< float > Summer2012;
       
+	// Distribution used for S10 Summer2012 MC.
  float Summer2012_f [60] = {2.560E-06, 5.239E-06, 1.420E-05, 
 			     5.005E-05, 1.001E-04, 2.705E-04, 1.999E-03, 
 			     6.097E-03, 1.046E-02, 1.383E-02, 1.685E-02, 
@@ -387,6 +389,7 @@ void NtpThreeJet::Loop ()
 		    0.014462,0.0116675,0.00926419,0.00722899,0.00553611,0.00415629,0.0030565,0.00220048,0.00155038,
 		    0.00106882,0.00072095,0.000475842,0.000307359,0.000194338,0.000120318,7.29651e-05,4.33587e-05,
 		    2.52569e-05,1.44273e-05,8.08416e-06,4.44472e-06,2.39826e-06,1.27011e-06,0.00018054};
+
   for( int z=0; z<50; ++z) {
     Summer2012.push_back(Summer2012_f[z]);
     DataJun01.push_back(data_f[z]);
@@ -417,14 +420,16 @@ void NtpThreeJet::Loop ()
     std::vector <std::vector<JetLV* > > Triplet;
 
       TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
+	int notrig = 0;
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
 
     //do pile up reweighintg
 	
-    //    double MyWeight = LumiWeights_.weight(nTruePileUp);
+    double MyWeight = LumiWeights_.weight(nTruePileUp);
     double weight=1;
-    //    if(!DataIs) weight=MyWeight;
-    //    cout<<nTruePileUp<<" "<<weight<<endl;
+    if(!DataIs)
+    	weight = MyWeight;
+    cout << " nTruePileUp " << nTruePileUp << ", assigned weight " << weight << " ";
   ///////////////////Clear out variables/////////////////////
 
   Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
@@ -437,10 +442,10 @@ void NtpThreeJet::Loop ()
     
 
     if (ientry % 100 == 0) {
-      printf("=================Processing entry: %i\n", ientry);
+      printf("\n=================Processing entry: %i\n", ientry);
     }
     //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
-    if(1==1){//MSquark == 375 && MLSP ==75){
+    if(1==1){//MSquark == 375 && MLSP ==75)
  
     //JETS///////
     //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
@@ -482,7 +487,8 @@ void NtpThreeJet::Loop ()
         double LightJeteff =  btsfutil->GetLightJeteff(jet_pt,jet_eta,0); //no uncertainties given                                                                           
 
 	btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
-	if (temp != isTagged) cout<<"GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	if (temp != isTagged)
+		cout<< endl << "GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
 	delete btsfutil;
 	}
 
@@ -575,7 +581,7 @@ void NtpThreeJet::Loop ()
      }
      //Possible Triggers selections
 	
-    if (HasSelTrigger){     
+    if (HasSelTrigger){
       if (nJet35>=6 && nMuons>=1) {
        h_PossibleTrigger->Fill(1);
        if(nBJet35 >= 1) h_PossibleTrigger->Fill(5);
@@ -603,8 +609,8 @@ void NtpThreeJet::Loop ()
 
 
 
-     //  if ( nJet35>=6 && nMuons>=1){
-     //     if ( nJet35>=6 && SumptAllJet>800){
+     //  if ( nJet35>=6 && nMuons>=1)
+     //     if ( nJet35>=6 && SumptAllJet>800)
      h_nBJet35->Fill(nBJet35,weight);
      h_nJet35->Fill(nJet35,weight);
      h_MET->Fill(pfMET,weight);
@@ -623,11 +629,11 @@ void NtpThreeJet::Loop ()
      if ( nJet35>=6){
        //cout<<nJet35<<" "<<fCleanJets.size()<<" s"<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
        //       if(fCleanJets[0]->Pt() > 80.0 && fCleanJets[1]->Pt() > 80. && fCleanJets[2]->Pt() > 80.0 && fCleanJets[3]->Pt() > 80.0 && 
-       //fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0){
+       //fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0)
 
        if(fCleanJets[3]->Pt() > 80 ){
-       //      if(SumptAllJet>900){
-	 if(1==1){//nBJet35 >= 3){
+       //      if(SumptAllJet>900)
+	 if(1==1){//nBJet35 >= 3)
 
 	   h_nBJet35_EvtSel->Fill(nBJet35,weight);
 	   h_nJet35_EvtSel->Fill(nJet35,weight);
@@ -725,11 +731,10 @@ void NtpThreeJet::Loop ()
 		     //also we check if the njetsMin cut satisfies this pt cut
 		     //std::cout<<"before selection"<<endl;
 		     // std::cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
-		     //if(iNjet>fCleanJets.size()){
+		     //if(iNjet>fCleanJets.size())
 		     // cout<<Triplet[q][2].pt()<<endl;
 		     // cout<<fCleanJets.size()<<endl;
 		     // cout<<iNjet-1<<endl;
-		     //}
 		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
 		       {
 			 //cout<<"after selection"<<endl;
@@ -755,18 +760,16 @@ void NtpThreeJet::Loop ()
 
 			     //cout<<iDiag<<" "<<iPt<<" "<<b<<" "<<iNjet<<endl;
 			     //cout<<massTriplet[q]<<" "<<(*Triplet[q][2]+*Triplet[q][1]+*Triplet[q][0]).M()<<endl;
-			     //if(countT==0 && massTriplet[q]>160 && massTriplet[q]<190){
+			     //if(countT==0 && massTriplet[q]>160 && massTriplet[q]<190)
 
 
-			     //if(massTriplet[q] > 150.0 && massTriplet[q] < 200.0){
+			     //if(massTriplet[q] > 150.0 && massTriplet[q] < 200.0)
 			      // MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletMid[q], massDoubletHigh[q],weight);
 			      // MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q], massDoubletHigh[q],weight);
 			      // MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Fill(massDoubletLow[q],massDoubletMid[q],weight);
-			       //}
 			     countT++;
 			          
 			    
-			     //}
 			     //cout<<"!!!!!!!!!!!!!KEEP!!!!!!!!!!"<<endl;
 			   }
 		       }
@@ -781,7 +784,7 @@ void NtpThreeJet::Loop ()
 	 } //minjet
      //lets see if the top branching ratios work
     
-  }
+  } else notrig++;
  }//Msquqark
 
   //delete Triplet; 
@@ -791,10 +794,10 @@ void NtpThreeJet::Loop ()
     delete  &massDoubletHigh; delete &massDoubletMid; delete  &massDoubletLow;
     */
  }//get entrye
+ cout << "\n events w/o trigger " << notrig << endl;
 
   /*  fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear();
   massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
   massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
   */
-  return;
 }
