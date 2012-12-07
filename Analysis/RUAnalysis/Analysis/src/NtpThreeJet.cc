@@ -17,12 +17,19 @@
 
 using namespace std;
 
-NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName) : NtpReader(InFileNames, IsData)
+NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData,
+TString const OutFileName, TString const PUFile) : NtpReader(InFileNames, IsData)
 {
   fOutFile = new TFile(OutFileName, "recreate");
   if (!fOutFile->IsOpen()) {
     std::cerr << "ERROR: cannot open output root file " << OutFileName << std::endl;
     throw;
+  }
+  fPUFile = new TFile(PUFile);
+  if (fPUFile->IsOpen()) {
+    std::cout << "Found PU file " << PUFile << std::endl;
+	} else {
+    std::cerr << "Did not find PU file " << PUFile << " -- using default" << std::endl;
   }
 }
 
@@ -35,14 +42,17 @@ NtpThreeJet::~NtpThreeJet ()
 			std::cout << "Closed file, now deleting pointer" << std::endl;
 			delete fOutFile;
     }
+    if (fPUFile) {
+			fPUFile->Close();
+			delete fPUFile;
+    }
+    std::cout << "Done with NtpThreeJet destructor " << std::endl;
     std::cout << "Done with NtpThreeJet destructor " << std::endl;
 }
 
 
 void NtpThreeJet::BookHistograms()
 {
-
-
   char hNAME[99];
  
   //before cuts, just the ones that where already in the ntuple
@@ -339,7 +349,7 @@ void NtpThreeJet::WriteHistograms()
    
   cout << "end of writing\n";
 }
-  
+
 
 void NtpThreeJet::Loop ()
 {
@@ -390,10 +400,20 @@ void NtpThreeJet::Loop ()
 		    0.00106882,0.00072095,0.000475842,0.000307359,0.000194338,0.000120318,7.29651e-05,4.33587e-05,
 		    2.52569e-05,1.44273e-05,8.08416e-06,4.44472e-06,2.39826e-06,1.27011e-06,0.00018054};
 
+	TH1D *puhist = (TH1D *) gDirectory->Get("pileup");
+	if (puhist) {
+		double numEvts = puhist->Integral();
+		if (numEvts > 0)
+			puhist->Scale(1.0/numEvts);
+	}
   for( int z=0; z<50; ++z) {
     Summer2012.push_back(Summer2012_f[z]);
-    DataJun01.push_back(data_f[z]);
+    double dataVal = data_f[z];
+		if (puhist)
+			dataVal =  puhist->GetBinContent(z + 1);
+    DataJun01.push_back(dataVal);
   }
+	cout << endl;
   
   LumiWeights_ = reweight::LumiReWeighting(Summer2012,DataJun01);
     std::vector<TLorentzVector* >      fBJets;

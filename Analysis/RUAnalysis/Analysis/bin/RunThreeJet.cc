@@ -14,18 +14,20 @@
 
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
 
-int RunThreeJet (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName)
+int RunThreeJet (std::vector<TString>& InFileNames, bool const IsData, TString const OutFileName,
+const TString PUFile)
 {
-  NtpThreeJet Ana(InFileNames, IsData, OutFileName);
+  NtpThreeJet Ana(InFileNames, IsData, OutFileName, PUFile);
   //std::cout<<"Book Histograms"<<std::endl;
 
   Ana.BookHistograms();
   // std::cout<<"Loop through Events"<<std::endl;
 
   Ana.Loop();
-  // std::cout<<"Write Histograms"<<std::endl;
+  std::cout<<"Write Histograms"<<std::endl;
 
   Ana.WriteHistograms();
+  std::cout<<"After Write Histograms, returning"<<std::endl;
   return 0;
 }
 
@@ -41,14 +43,15 @@ int main (int argc, char* argv[])
   bool const IsData = false;
 
   // Output file name
-  TString const OutFileName = argv[1];
+  TString const PUFile = argv[1];
+  TString const OutFileName = argv[2];
 
   // Grab the filename itself for a quick check
   TString const JustFileName = OutFileName.Last('/') >= 0 ? OutFileName( OutFileName.Last('/') + 1, OutFileName.Length() - OutFileName.Last('/') - 1) : OutFileName;
 
   // Grab input file names
   std::vector<TString> InFileNames;
-  for (int i = 2; i < argc; ++i) {
+  for (int i = 3; i < argc; ++i) {
     InFileNames.push_back(argv[i]);
   }
 
@@ -62,7 +65,9 @@ int main (int argc, char* argv[])
   }
 
 
-  RunThreeJet(InFileNames, IsData, OutFileName);
+  RunThreeJet(InFileNames, IsData, OutFileName, PUFile);
+
+  std::cout<<"About to return from main"<<std::endl;
 
   return 0;
 }

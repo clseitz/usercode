@@ -14,7 +14,7 @@
 class NtpThreeJet : public NtpReader
 {
   public:
-    NtpThreeJet (std::vector<TString>&, bool const, TString const);
+    NtpThreeJet (std::vector<TString>&, bool const, TString const, const TString PUFile);
     ~NtpThreeJet ();
 
     void Loop ();
@@ -151,6 +151,7 @@ class NtpThreeJet : public NtpReader
     
  private:
     TFile* fOutFile;
+    TFile* fPUFile;
 
 };
 
