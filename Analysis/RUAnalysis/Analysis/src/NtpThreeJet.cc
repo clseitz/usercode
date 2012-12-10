@@ -2,6 +2,7 @@
 //#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <vector>
 #include <cmath>
@@ -9,7 +10,8 @@
 #include "TLorentzVector.h"
 #include "TFile.h"
 #include "math.h"
-#include "../interface/BTagSFUtil.h"
+//#include "../interface/BTagSFUtil.h"
+#include "../interface/BTagSFUtil_CSVM_BtagMap.h"
 //#include "../interface/BTagSFUtil_Loose.h"
 //#include "../interface/BTagSFUtil_CSVT.h"
 //#include "../interface/BTagSFUtil_JPTM.h"
@@ -21,11 +23,41 @@ NtpThreeJet::NtpThreeJet (std::vector<TString>& InFileNames, bool const IsData,
 TString const OutFileName, TString const PUFile) : NtpReader(InFileNames, IsData)
 {
   fOutFile = new TFile(OutFileName, "recreate");
+  cout<<"OutPut file: "<<OutFileName<<endl;
+  stringstream ss;
+  ss<<OutFileName;
+  string NameFile= ss.str();
+  string::size_type found = NameFile.find('BtagMap');
+  string::size_type found0 = NameFile.find('mc_');
+  int length=abs(int(found0+1)- int(found-7));
+  //Should be TTjets for now its the RPV sample
+    string BtagMap = "TTJets_MassiveB_AK5PF_CSVM_bTaggingEfficiencyMap.root";
+
+   if (found!=string::npos && found0!=string::npos)
+    {
+      BtagMap = NameFile.substr(found0+1,length)+"_AK5PF_CSVM_bTaggingEfficiencyMap.root";
+    }
+  
+  cout<<"BtagMap: data/"<<BtagMap<<" as map for Btagging efficiencies"<<endl;
+  
+  
+
+  f_EffMap = new TFile(("data/"+BtagMap).c_str());
+  if (!f_EffMap->IsOpen()) {
+    std::cerr << "ERROR: cannot open Efficiency map file " << "data/"<<BtagMap << std::endl;
+    f_EffMap = new TFile("data/TTJets_MassiveB_AK5PF_CSVM_bTaggingEfficiencyMap.root");
+   std::cerr << "BtagMap: TTbar instead"<< std::endl;
+  if (!f_EffMap->IsOpen()) {
+    std::cerr << "ERROR: cannot open Second  Efficiency map file data/TTJets_MassiveB_AK5PF_CSVM_bTaggingEfficiencyMap.root" << std::endl;
+    throw;
+  }
+    }
+
   if (!fOutFile->IsOpen()) {
     std::cerr << "ERROR: cannot open output root file " << OutFileName << std::endl;
     throw;
   }
-  fPUFile = new TFile(PUFile);
+  fPUFile = new TFile("data/"+PUFile);
   if (fPUFile->IsOpen()) {
     std::cout << "Found PU file " << PUFile << std::endl;
 	} else {
@@ -46,6 +78,11 @@ NtpThreeJet::~NtpThreeJet ()
 			fPUFile->Close();
 			delete fPUFile;
     }
+    /*    if (f_EffMap) {
+			f_EffMap->Close();
+			delete fPUFile;
+			}*/
+    
     std::cout << "Done with NtpThreeJet destructor " << std::endl;
     std::cout << "Done with NtpThreeJet destructor " << std::endl;
 }
@@ -53,6 +90,53 @@ NtpThreeJet::~NtpThreeJet ()
 
 void NtpThreeJet::BookHistograms()
 {
+
+  h2_EffMapB    = (TH2D*)f_EffMap->Get("efficiency_b");
+  h2_EffMapC    = (TH2D*)f_EffMap->Get("efficiency_c");
+  h2_EffMapUDSG = (TH2D*)f_EffMap->Get("efficiency_udsg");
+  double PtBins[] = {20,30, 40, 50, 60, 70, 80, 100, 120, 160, 210, 260, 320, 400, 500, 600, 800};
+
+  CSVM_SFb_0to2p4 = new TF1("CSVM_SFb_0to2p4","0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)))", 30.,670.);
+
+  // Tagger: CSVM within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
+  CSVM_SFb_errors = new TH1D("CSVM_SFb_errors", "CSVM_SFb_errors", 16, PtBins);  
+
+  CSVM_SFb_errors->SetBinContent( 0,0.0554504);
+  CSVM_SFb_errors->SetBinContent( 1,0.0209663);
+  CSVM_SFb_errors->SetBinContent( 2,0.0207019);
+  CSVM_SFb_errors->SetBinContent( 3,0.0230073);
+  CSVM_SFb_errors->SetBinContent( 4,0.0208719);
+  CSVM_SFb_errors->SetBinContent( 5,0.0200453);
+  CSVM_SFb_errors->SetBinContent( 6,0.0264232);
+  CSVM_SFb_errors->SetBinContent( 7,0.0240102);
+  CSVM_SFb_errors->SetBinContent( 8,0.0229375);
+  CSVM_SFb_errors->SetBinContent( 9,0.0184615);
+  CSVM_SFb_errors->SetBinContent(10,0.0216242);
+  CSVM_SFb_errors->SetBinContent(11,0.0248119);
+  CSVM_SFb_errors->SetBinContent(12,0.0465748);
+  CSVM_SFb_errors->SetBinContent(13,0.0474666);
+  CSVM_SFb_errors->SetBinContent(14,0.0718173);
+  CSVM_SFb_errors->SetBinContent(15,0.0717567);
+  CSVM_SFb_errors->SetBinContent(16,(2*0.0717567));
+
+  CSVM_SFl_Corr = new TF1("CSVM_SFl_Corr","(1.10422 + (-0.000523856*x) + (1.14251e-06*(x*x)))", 0.,670.);
+
+  CSVM_SFl_0to2p4 =   new TF1("CSVM_SFl_0to2p4","((1.04318+(0.000848162*x))+(-2.5795e-06*(x*x)))+(1.64156e-09*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0to0p8 =   new TF1("CSVM_SFl_0to0p8","((1.06182+(0.000617034*x))+(-1.5732e-06*(x*x)))+(3.02909e-10*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0p8to1p6 = new TF1("CSVM_SFl_0p8to1p6","((1.111+(-9.64191e-06*x))+(1.80811e-07*(x*x)))+(-5.44868e-10*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_1p6to2p4 = new TF1("CSVM_SFl_1p6to2p4","((1.08498+(-0.000701422*x))+(3.43612e-06*(x*x)))+(-4.11794e-09*(x*(x*x)))", 20.,670.);
+
+  CSVM_SFl_0to2p4_min =   new TF1("CSVM_SFl_0to2p4_min","((0.962627+(0.000448344*x))+(-1.25579e-06*(x*x)))+(4.82283e-10*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0to0p8_min =   new TF1("CSVM_SFl_0to0p8_min","((0.972455+(7.51396e-06*x))+(4.91857e-07*(x*x)))+(-1.47661e-09*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0p8to1p6_min = new TF1("CSVM_SFl_0p8to1p6_min","((1.02055+(-0.000378856*x))+(1.49029e-06*(x*x)))+(-1.74966e-09*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_1p6to2p4_min = new TF1("CSVM_SFl_1p6to2p4_min","((0.983476+(-0.000607242*x))+(3.17997e-06*(x*x)))+(-4.01242e-09*(x*(x*x)))", 20.,670.);
+
+  CSVM_SFl_0to2p4_max =   new TF1("CSVM_SFl_0to2p4_max","((1.12368+(0.00124806*x))+(-3.9032e-06*(x*x)))+(2.80083e-09*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0to0p8_max =   new TF1("CSVM_SFl_0to0p8_max","((1.15116+(0.00122657*x))+(-3.63826e-06*(x*x)))+(2.08242e-09*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_0p8to1p6_max = new TF1("CSVM_SFl_0p8to1p6_max","((1.20146+(0.000359543*x))+(-1.12866e-06*(x*x)))+(6.59918e-10*(x*(x*x)))", 20.,670.);
+  CSVM_SFl_1p6to2p4_max = new TF1("CSVM_SFl_1p6to2p4_max","((1.18654+(-0.000795808*x))+(3.69226e-06*(x*x)))+(-4.22347e-09*(x*(x*x)))", 20.,670.);
+
+
   char hNAME[99];
  
   //before cuts, just the ones that where already in the ntuple
@@ -447,9 +531,9 @@ void NtpThreeJet::Loop ()
 	
     double MyWeight = LumiWeights_.weight(nTruePileUp);
     double weight=1;
-    if(!DataIs)
-    	weight = MyWeight;
-    cout << " nTruePileUp " << nTruePileUp << ", assigned weight " << weight << " ";
+        if(!DataIs)
+	  weight = MyWeight;
+    //cout << " nTruePileUp " << nTruePileUp << ", assigned weight " << weight << " ";
   ///////////////////Clear out variables/////////////////////
 
   Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
@@ -466,84 +550,91 @@ void NtpThreeJet::Loop ()
     }
     //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
     if(1==1){//MSquark == 375 && MLSP ==75)
- 
-    //JETS///////
-    //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
-    int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; 
-
-    float SumptAllJet=0;
-    float SumptAllJet20=0;
-
-    int dummycounter=0;     
-    //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
-        for (int i=0; i<nPFJets; i++){
-	  //cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
-  JetLV* Jet=new JetLV(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-
-      if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
-	bool isTagged = false;
-	//CSVL > 0.244, CSVM > 0.679, CSVT > 0.898
-	if (bdiscCSV_PF[i] >  0.679)
-	 isTagged = true;
-	//Add isData check here (need to add variable to the ntuple first)
-	//set a unique seed                                                                                                                                                
-	//implementing b-tagging scale factors
-	int jet_flavor =jet_PF_PartonFlav[i];
-	float jet_pt = jet_PF_pt[i];
-	float jet_phi = jet_PF_phi[i];
-        float jet_eta = jet_PF_eta[i];
-
-	if(!DataIs){
-        double phi = jet_phi;
-        double sin_phi = sin(phi*1000000);
-        double seed = abs(static_cast<int>(sin_phi*100000));
-	//Initialize class                                                                                                                                                
-        BTagSFUtil* btsfutil = new BTagSFUtil( seed );
-        bool temp=isTagged;
-	//modify tags                                                                                                                                                      
-	double BTagSF =  btsfutil->GetBTagSF(jet_pt,jet_eta,0);
-        double BTageff =  btsfutil->GetBTageff();
-        double LightJetSF =  btsfutil->GetLightJetSF(jet_pt,jet_eta,0);
-        double LightJeteff =  btsfutil->GetLightJeteff(jet_pt,jet_eta,0); //no uncertainties given                                                                           
-
-	btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
-	if (temp != isTagged)
-		cout<< endl << "GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
-	delete btsfutil;
-	}
-
-	Jet->setBtag(isTagged);
-	nJet20++;
-	fCleanJets20.push_back(Jet);
-	SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
-	if(jet_PF_pt[i]>35.0){
-	SumptAllJet=SumptAllJet+jet_PF_pt[i];
-	fCleanJets.push_back(Jet);
-	h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
-	JetMoms.push_back(jet_PF_JetMom[i]);
-	//	cout<<"JetMomFromTree: "<<jet_PF_JetMom[i]<<endl;
-	//cout<<"JetMomFromTree_InArray: "<<JetMoms[nJet35]<<endl;
-
-	nJet35++;
-	dummycounter++;
-	if (isTagged)
-	  {
-	    nBJet35++;
-	    fBJets.push_back(Jet);
-	    fdummyCleanJets.push_back(dummyJet);
+      
+      //JETS///////
+      //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
+      int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; 
+      
+      float SumptAllJet=0;
+      float SumptAllJet20=0;
+      
+      int dummycounter=0;     
+      //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
+      for (int i=0; i<nPFJets; i++){
+	//cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
+	JetLV* Jet=new JetLV(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
+	
+	if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
+	  bool isTagged = false;
+	  //CSVL > 0.244, CSVM > 0.679, CSVT > 0.898
+	  if (bdiscCSV_PF[i] >  0.679)
+	    isTagged = true;
+	  //Add isData check here (need to add variable to the ntuple first)
+	  //set a unique seed                                                                                                                                                
+	  //implementing b-tagging scale factors
+	  int jet_flavor =jet_PF_PartonFlav[i];
+	  float jet_pt = jet_PF_pt[i];
+	  float jet_phi = jet_PF_phi[i];
+	  float jet_eta = jet_PF_eta[i];
+	  
+	  if(!DataIs){
+	    double phi = jet_phi;
+	    double sin_phi = sin(phi*1000000);
+	    double seed = abs(static_cast<int>(sin_phi*100000));
+	    //Initialize class                                                                                                                                                
+	    BTagSFUtil* btsfutil = new BTagSFUtil( seed );
+	    bool temp=isTagged;
+	    //modify tags                                                                                                                                                      
+	    int BtagSys =0;
+	    //modify tags  
+	    //For uncertainties use BtagSys=-1,1                                                                                                                                  
+	    float Btag_SF =  GetBTagSF(jet_pt,jet_eta,BtagSys*1);
+	    float Btag_eff =  h2_EffMapB->GetBinContent( h2_EffMapB->GetXaxis()->FindBin(jet_pt), h2_EffMapB->GetYaxis()->FindBin(fabs(jet_eta)) );
+	    
+	    //For uncertainties use BtagSys=-2,2 double uncertainties for c jets                                         
+	    float Ctag_SF =  GetBTagSF(jet_pt,jet_eta,BtagSys*2);
+	    float Ctag_eff = h2_EffMapC->GetBinContent( h2_EffMapC->GetXaxis()->FindBin(jet_pt), h2_EffMapC->GetYaxis()->FindBin(fabs(jet_eta)) );
+	    
+	    float UDSGtag_SF = GetLightJetSF(jet_pt,jet_eta,BtagSys*1);
+	    float UDSGtag_eff = h2_EffMapUDSG->GetBinContent( h2_EffMapUDSG->GetXaxis()->FindBin(jet_pt), h2_EffMapUDSG->GetYaxis()->FindBin(fabs(jet_eta)) );
+	    
+	    btsfutil->modifyBTagsWithSF(isTagged, jet_flavor, Btag_SF,Btag_eff,Ctag_SF,Ctag_eff,UDSGtag_SF,UDSGtag_eff);
+	    //if (temp != isTagged)
+	    // cout<< endl << "GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
+	    delete btsfutil;
 	  }
-	if (!isTagged)
-	  {
-	    nNoBJet35++;
-	    fNoBJets.push_back(Jet);
-	    fdummyCleanJets.push_back(Jet);
-
+	  
+	  Jet->setBtag(isTagged);
+	  nJet20++;
+	  fCleanJets20.push_back(Jet);
+	  SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
+	  if(jet_PF_pt[i]>35.0){
+	    SumptAllJet=SumptAllJet+jet_PF_pt[i];
+	    fCleanJets.push_back(Jet);
+	    h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
+	    JetMoms.push_back(jet_PF_JetMom[i]);
+	    //	cout<<"JetMomFromTree: "<<jet_PF_JetMom[i]<<endl;
+	    //cout<<"JetMomFromTree_InArray: "<<JetMoms[nJet35]<<endl;
+	    
+	    nJet35++;
+	    dummycounter++;
+	    if (isTagged)
+	      {
+		nBJet35++;
+		fBJets.push_back(Jet);
+		fdummyCleanJets.push_back(dummyJet);
+	      }
+	    if (!isTagged)
+	      {
+		nNoBJet35++;
+		fNoBJets.push_back(Jet);
+		fdummyCleanJets.push_back(Jet);
+		
+	      }
 	  }
 	}
       }
-
-}
-
+      
 
 
 	//cout<<nTruePileUp<<" "<<MyWeight<<" "<<weight<<endl;
@@ -721,8 +812,7 @@ void NtpThreeJet::Loop ()
        }
      
        
-     for(unsigned int q=0; q<massTriplet.size(); q++)
-       {
+
 	 for(int b=0; b<5; b++){
 
 	 for (int i=0; i<10; i++)
@@ -732,6 +822,8 @@ void NtpThreeJet::Loop ()
 	       { 
 		 unsigned int iNjet=k+6;
 		 //count njets with the pt cut -> gonna be slow
+     for(unsigned int q=0; q<massTriplet.size(); q++)
+       {
 		 if(iNjet<=fCleanJets.size()){
 		  
 		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
@@ -820,4 +912,72 @@ void NtpThreeJet::Loop ()
   massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
   massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
   */
+}
+
+float NtpThreeJet::GetBTagSF (float pt, float eta, int meanminmax){
+  float jetPt=pt;
+
+  float SFb_Unc_MultFactor =1.0;
+
+  if (jetPt>800.0) jetPt= 800.0;
+  if (jetPt<20.0) jetPt = 20.0;
+
+
+
+
+  float  ScaleFactor     = CSVM_SFb_0to2p4->Eval(jetPt);
+  float  ScaleFactor_unc = CSVM_SFb_errors->GetBinContent(CSVM_SFb_errors->GetXaxis()->FindBin(jetPt));
+  
+  float ScaleFactor_up   = ScaleFactor + abs(meanminmax)*SFb_Unc_MultFactor*ScaleFactor_unc;
+  float ScaleFactor_down = ScaleFactor - abs(meanminmax)*SFb_Unc_MultFactor*ScaleFactor_unc;
+
+  
+  if(meanminmax==0) return ScaleFactor;
+  if(meanminmax==-1 || meanminmax == -2) return ScaleFactor_down;
+  if(meanminmax==1 || meanminmax == 2) return ScaleFactor_up;
+
+}
+
+
+
+float NtpThreeJet::GetLightJetSF (float pt, float eta, int meanminmax){
+  float jetPt=pt; 
+  float jetAbsEta = fabs(eta);
+  if (jetPt>800.0) jetPt= 800.0;
+  if (jetPt<20.0) jetPt = 20.0;
+  float  ScaleFactor     = 1;
+  float ScaleFactor_up   = 1;
+  float ScaleFactor_down = 1;
+
+  if( pt>800 )
+    {
+      ScaleFactor      = CSVM_SFl_Corr->Eval(670)*CSVM_SFl_0to2p4->Eval(670);
+      ScaleFactor_up   = ScaleFactor + 2*( (CSVM_SFl_0to2p4_max->Eval(670) - CSVM_SFl_0to2p4->Eval(670))/CSVM_SFl_0to2p4->Eval(670) )*ScaleFactor;
+      ScaleFactor_down = ScaleFactor + 2*( (CSVM_SFl_0to2p4_min->Eval(670) - CSVM_SFl_0to2p4->Eval(670))/CSVM_SFl_0to2p4->Eval(670) )*ScaleFactor;
+    }
+  else
+    {
+      if(jetAbsEta<0.8)
+	{
+	  ScaleFactor      = CSVM_SFl_Corr->Eval(jetPt)*CSVM_SFl_0to0p8->Eval(jetPt);
+	  ScaleFactor_up   = ScaleFactor + ( (CSVM_SFl_0to0p8_max->Eval(jetPt) - CSVM_SFl_0to0p8->Eval(jetPt))/CSVM_SFl_0to0p8->Eval(jetPt) )*ScaleFactor;
+	  ScaleFactor_down = ScaleFactor + ( (CSVM_SFl_0to0p8_min->Eval(jetPt) - CSVM_SFl_0to0p8->Eval(jetPt))/CSVM_SFl_0to0p8->Eval(jetPt) )*ScaleFactor;
+	}
+      else if(jetAbsEta>=0.8 && jetAbsEta<1.6)
+	{
+	  ScaleFactor      = CSVM_SFl_Corr->Eval(jetPt)*CSVM_SFl_0p8to1p6->Eval(jetPt);
+	  ScaleFactor_up   = ScaleFactor + ( (CSVM_SFl_0p8to1p6_max->Eval(jetPt) - CSVM_SFl_0p8to1p6->Eval(jetPt))/CSVM_SFl_0p8to1p6->Eval(jetPt) )*ScaleFactor;
+	  ScaleFactor_down = ScaleFactor + ( (CSVM_SFl_0p8to1p6_min->Eval(jetPt) - CSVM_SFl_0p8to1p6->Eval(jetPt))/CSVM_SFl_0p8to1p6->Eval(jetPt) )*ScaleFactor;
+	}
+      else
+	{
+	  ScaleFactor      = CSVM_SFl_Corr->Eval(jetPt)*CSVM_SFl_1p6to2p4->Eval(jetPt);
+	  ScaleFactor_up   = ScaleFactor + ( (CSVM_SFl_1p6to2p4_max->Eval(jetPt) - CSVM_SFl_1p6to2p4->Eval(jetPt))/CSVM_SFl_1p6to2p4->Eval(jetPt) )*ScaleFactor;
+	  ScaleFactor_down = ScaleFactor + ( (CSVM_SFl_1p6to2p4_min->Eval(jetPt) - CSVM_SFl_1p6to2p4->Eval(jetPt))/CSVM_SFl_1p6to2p4->Eval(jetPt) )*ScaleFactor;
+	}
+    }
+  if(meanminmax==0) return ScaleFactor;
+  if(meanminmax==-1) return ScaleFactor_down;
+  if(meanminmax==1) return ScaleFactor_up;
+
 }
