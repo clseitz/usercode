@@ -20,7 +20,8 @@ class NtpThreeJet : public NtpReader
     void Loop ();
     void BookHistograms();
     void WriteHistograms();
-
+    float GetBTagSF (float pt, float eta, int meanminmax);
+    float GetLightJetSF (float pt, float eta, int meanminmax);
     //some variables needed
     /*   std::vector<TLorentzVector >      fBJets;
    std::vector<TLorentzVector >      fNoBJets;
@@ -127,7 +128,32 @@ class NtpThreeJet : public NtpReader
 
     TH1F* h_TopLepMass;
     TH1F* h_TopHadMass;
+    TF1  *CSVM_SFb_0to2p4;
+    TH1D *CSVM_SFb_errors;
 
+    TF1 *CSVM_SFl_0to2p4;
+    TF1 *CSVM_SFl_0to0p8;
+    TF1 *CSVM_SFl_0p8to1p6;
+    TF1 *CSVM_SFl_1p6to2p4;
+
+    TF1 *CSVM_SFl_0to2p4_min;
+    TF1 *CSVM_SFl_0to0p8_min;
+    TF1 *CSVM_SFl_0p8to1p6_min;
+    TF1 *CSVM_SFl_1p6to2p4_min;
+
+    TF1 *CSVM_SFl_0to2p4_max;
+    TF1 *CSVM_SFl_0to0p8_max;
+    TF1 *CSVM_SFl_0p8to1p6_max;
+    TF1 *CSVM_SFl_1p6to2p4_max;
+
+    double SFb_Unc_MultFactor;
+    TF1 *CSVM_SFl_Corr;
+
+    TFile *f_EffMap;
+
+    TH2D *h2_EffMapB;
+    TH2D *h2_EffMapC;
+    TH2D *h2_EffMapUDSG;
 
 
     //make some plots for the triplets
@@ -148,7 +174,7 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
 
-    
+
  private:
     TFile* fOutFile;
     TFile* fPUFile;
