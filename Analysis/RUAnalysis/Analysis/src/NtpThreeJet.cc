@@ -29,13 +29,13 @@ TString const OutFileName, TString const PUFile) : NtpReader(InFileNames, IsData
   string NameFile= ss.str();
   string::size_type found = NameFile.find("BtagMap");
   string::size_type found0 = NameFile.find("mc_");
-  int length=abs(int(found0+1)- int(found-7));
+  int length=abs(int(found0 + 3) - int(found - 1));
   //Should be TTjets for now its the RPV sample
     string BtagMap = "TTJets_MassiveB_AK5PF_CSVM_bTaggingEfficiencyMap.root";
 
    if (found!=string::npos && found0!=string::npos)
     {
-      BtagMap = NameFile.substr(found0+1,length)+"_AK5PF_CSVM_bTaggingEfficiencyMap.root";
+      BtagMap = NameFile.substr(found0 + 3, length) + "_AK5PF_CSVM_bTaggingEfficiencyMap.root";
     }
   
   cout<<"BtagMap: data/"<<BtagMap<<" as map for Btagging efficiencies"<<endl;
