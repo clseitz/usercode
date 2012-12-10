@@ -9,7 +9,8 @@
 
 #include <iostream>
 #include <cstdlib>
-
+#include <sstream>
+#include <fstream>
 #include "TString.h"
 
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
@@ -34,16 +35,25 @@ const TString PUFile)
 
 int main (int argc, char* argv[])
 {
-  if (argc < 3) {
-    std::cerr << "Usage: " << argv[0] << " [OutFileName] [FileName]s" << std::endl;
+
+  if (argc < 4) {
+    std::cerr << "Usage: " << argv[0] << "[Pileup] [OutFileName] [FileName]s" << std::endl;
     return 1;
   }
+
 
   // currently default to false
   bool const IsData = false;
 
   // Output file name
-  TString const PUFile = argv[1];
+
+TString const PUFile = argv[1];
+  if (PUFile.SubString("PUHisto").IsNull()){
+    std::cout<<"I think you are not including a pile up file, this will cause damage to input ntuples"<<std::endl;
+    std::cout<<"even if you don't have a real PUHistos.root file just write PUHistos.root as first argument"<<std::endl;
+    std::cout<<"until I fix the problem"<<std::endl;
+    throw;
+    }
   TString const OutFileName = argv[2];
 
   // Grab the filename itself for a quick check
