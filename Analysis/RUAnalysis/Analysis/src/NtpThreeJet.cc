@@ -27,8 +27,8 @@ TString const OutFileName, TString const PUFile) : NtpReader(InFileNames, IsData
   stringstream ss;
   ss<<OutFileName;
   string NameFile= ss.str();
-  string::size_type found = NameFile.find('BtagMap');
-  string::size_type found0 = NameFile.find('mc_');
+  string::size_type found = NameFile.find("BtagMap");
+  string::size_type found0 = NameFile.find("mc_");
   int length=abs(int(found0+1)- int(found-7));
   //Should be TTjets for now its the RPV sample
     string BtagMap = "TTJets_MassiveB_AK5PF_CSVM_bTaggingEfficiencyMap.root";
@@ -935,7 +935,7 @@ float NtpThreeJet::GetBTagSF (float pt, float eta, int meanminmax){
   if(meanminmax==0) return ScaleFactor;
   if(meanminmax==-1 || meanminmax == -2) return ScaleFactor_down;
   if(meanminmax==1 || meanminmax == 2) return ScaleFactor_up;
-
+  return ScaleFactor;
 }
 
 
@@ -979,5 +979,5 @@ float NtpThreeJet::GetLightJetSF (float pt, float eta, int meanminmax){
   if(meanminmax==0) return ScaleFactor;
   if(meanminmax==-1) return ScaleFactor_down;
   if(meanminmax==1) return ScaleFactor_up;
-
+  return ScaleFactor;
 }
