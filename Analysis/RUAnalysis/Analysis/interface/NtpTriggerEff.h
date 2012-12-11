@@ -2,7 +2,8 @@
 #define GUARD_NtpRUTopXAna_h
 
 //#include "TopBSM/RUTopXAna/interface/NtpReader.h"
-#include "RUAnalysis/Analysis/interface/NtpReader.h"
+
+#include "RUAnalysis/Ntupler/interface/NtpReader.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
