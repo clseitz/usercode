@@ -4,19 +4,25 @@ import os,sys
 
 print sys.argv[2]
 index = int (sys.argv[2])
-mass = int (sys.argv[3])
-flavor = sys.argv[4]
-isr = sys.argv[5]
+# mass = int (sys.argv[3])
+# flavor = sys.argv[4]
+# isr = sys.argv[5]
 suffix_list=[]
 output_list=[]
 dir_list=[]
 
 #suffix_list = os.popen("ls -1 /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/PAT/RPV"+str(isr)+"/RPV_M"+str(mass)+"_"+str(flavor)+"/*root").readlines()
-suffix_list = os.popen("ls -1 /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/PAT/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/*root").readlines()  
-newInd=index % 8
-this_fin_nocfi  = "file:"+suffix_list[newInd]
-this_fout0 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_plots.root"
-this_fout1 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_tree.root"
+
+suffix_list = os.popen('ls -1 ptpl_link/*root').readlines()
+
+# suffix_list = os.popen("ls -1 /cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/PAT/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/*root").readlines()  
+
+# newInd=index % 8
+# this_fin_nocfi  = "file:"+suffix_list[newInd]
+this_fin_nocfi  = "file:"+suffix_list[index]
+# this_fout0 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_plots.root"
+# this_fout1 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_tree.root"
+
 #suffix_list = os.popen('ls -1 /cms/clseitz/ThreeJet/TLBSM/TLBSM52xv5/QCD_HT'+str(flavor)+'/TLBSM/*.root').readlines()
 #suffix_list = os.popen('ls -1 /cms/dan/clseitz/ThreeJet/TLBSM53xv2/'+str(flavor)+'/TLBSM/*.root').readlines()
 #suffix_list = os.popen('ls -1 /cms/clseitz/ThreeJet/TLBSM/TLBSM52xv5/'+str(flavor)+'/TLBSM/*.root').readlines()
@@ -86,6 +92,9 @@ this_fout1 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbotto
 #this_fout1 = "test_QCD_"+str(index)+"_tree.root"
 #this_fout0 = "TEST"+str(index)+"_Allplots.root"
 #this_fout1 = "TEST"+str(index)+"_Alltree.root"
+this_fout0 = "ntuples/ntpl_"+str(index)+"_Allplots.root"
+this_fout1 = "ntuples/ntpl_"+str(index)+"_Alltree.root"
+
 
 print this_fin_nocfi
 
@@ -94,10 +103,25 @@ print this_fout1
 
 process = cms.Process("data2")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string( 'START53_V7E::All' )
+process.GlobalTag.globaltag = cms.string( 'START53_V15::All' )
+
+# START53_V7E is the old tag used by TLBSM53x
+# process.GlobalTag.globaltag = cms.string( 'START53_V7E::All' )
+# For data use an AN3 GT like the following
+# process.GlobalTag.globaltag = cms.string( 'FT_53_V10_AN3::All' )
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 2000
+
+# JetCorrectionService ak5PFLchs1FastL2L3 for MC
+# JetCorrectionService ak5PFchsL1FastL2L3Residual  for data
+# jetcorrserv = 'ak5PFchsL1FastL2L3Residual'
+jetcorrserv = 'ak5PFchsL1FastL2L3'
+
+## load jet corrections
+# process.load("JetMETCorrections.Configuration.JetCorrectionServicesAllAlgos_cff")
+process.load("RUAnalysis.Ntupler.ak5PFchsJetCorrectionServices_cff")
+process.prefer(jetcorrserv)
 
 
 process.maxEvents = cms.untracked.PSet(
@@ -151,6 +175,7 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                jetptcut       = cms.untracked.double(20),
                                etacut         = cms.untracked.double(3.),
                                jecAdj = cms.untracked.string('none'), # Can also be "up" or "down
+															 jetCorrectionService = cms.untracked.string(jetcorrserv),
                                #selection trigger
                                #Qua60_Di20
                                #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4',

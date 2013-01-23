@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.15 2012/11/02 10:03:12 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.16 2012/11/05 18:10:44 cvuosalo Exp $
 //
 //
 
@@ -43,7 +43,7 @@
 #include "DataFormats/JetReco/interface/Jet.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"  
 #include "DataFormats/JetReco/interface/GenJet.h"
-#include "DataFormats/JetReco/interface/PFJet.h"
+#include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "DataFormats/METReco/interface/PFMET.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
@@ -131,8 +131,10 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   _ntupleTree = iConfig.getUntrackedParameter<string>("NtupleTree", "PatJets_testTree.root");
   //  _patJetType      = iConfig.getUntrackedParameter<string>("PatJetType",      "selectedPatJets");
   _patJetType      = iConfig.getUntrackedParameter<std::vector<std::string> >("PatJetType", std::vector<std::string> ());
-  _primaryVertex   = iConfig.getUntrackedParameter<string> ("PrimaryVertex","goodOfflinePrimarVertices");
+  _primaryVertex   = iConfig.getUntrackedParameter<string> ("PrimaryVertex","goodOfflinePrimaryVertices");
   _jecAdj   			 = iConfig.getUntrackedParameter<string> ("jecAdj", "none");
+  _jetCorrectionService = iConfig.getUntrackedParameter<string> ("jetCorrectionService",
+		"ak5PFL1L2L3");
   _METtype   = iConfig.getUntrackedParameter<string> ("METtype","patMETsPFlow");
   _njetsMin        = iConfig.getUntrackedParameter<int>   ("NjetsMin",         4);
   _njetsMax        = iConfig.getUntrackedParameter<int>   ("NjetsMax",         4);
@@ -359,16 +361,27 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        nPFJets=nCleanPFJets;
        std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
        cout<<"NJets: "<<nPFJets<<endl;
+			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
       int i=0;
 			std::list<jetElem> adjJetList;
 			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+				 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
+				 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
+				 if (jec > 0.0)
+					 correctedJet.scaleEnergy(jec);                        // apply the correction
+				 else cout << "Bad jec " << jec << endl;
+				 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
+					 cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
+					 cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
+					 cout << " eta " << correctedJet.eta() << endl;
+				 }
 				 if (! _isData) {
 					jecUnc->setJetEta(Jet->eta());
-					jecUnc->setJetPt(Jet->pt()); // the uncertainty is a function of the corrected pt
+					jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
 				}
 				jetElem tmpjet;
 				tmpjet.origJet = &(*Jet);
-				tmpjet.adjJet = Jet->p4();
+				tmpjet.adjJet = correctedJet.p4();
 				double corrFactor = 1.0;
 				if (_isData)
 					tmpjet.jecUnc = 0;
@@ -379,15 +392,13 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					corrFactor -= tmpjet.jecUnc;
 				if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
 					tmpjet.adjJet *= corrFactor;
-				tmpjet.diffVec = Jet->p4() - tmpjet.adjJet;
+				tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
 				adjJetList.push_back(tmpjet);
       }
 			if (jecUnc != 0)
 				delete jecUnc;
-		  if (! _isData)
-				adjJetList.sort(cmpJets);
+			adjJetList.sort(cmpJets);
 
-       // for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
        for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
 				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
 			 	const pat::Jet *Jet = chngJet->origJet;
@@ -1161,8 +1172,7 @@ Ntupler::DoVertexID(const edm::Event& iEvent){
   h_nGoodVtx->Fill(CountVtx);
        nGoodVtx=CountVtx;
 
-  //cout<<CountVtx<<" "<< recVtxs->size()<<endl;
-  return;
+  cout<< "Vertices " << CountVtx<<" "<< recVtxs->size()<<endl;
 }
 
 void 

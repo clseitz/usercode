@@ -109,6 +109,7 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   std::string PatJetType;
   std::string _primaryVertex;
   std::string _jecAdj;
+  std::string _jetCorrectionService;
   std::string _METtype;
   int _njetsMin, _njetsMax;
   std::string _htTrigger;
