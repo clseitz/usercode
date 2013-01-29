@@ -1,0 +1,14 @@
+OutDir = /cms/clseitz/ThreeJet/RUNtuple/DataTest
+universe = vanilla
+Requirements = (Arch == "X86_64")
+Executable = run_Full2012Data.jdl
+should_transfer_files = NO
+
+Dataset = _53x
+Globaltag= HT1000-Inf
+nFile=1
+Output =  $(OutDir)/Log/TLBSM_$(Process).stdout
+Error  =  $(OutDir)/Log/TLBSM_$(Process).stderr
+Log    =  $(OutDir)/Log/TLBSM_$(Process).stdlog
+Arguments = $(Dataset) $(OutDir) $(Globaltag) $(Process)-nFile
+Queue nFile
