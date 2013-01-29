@@ -51,7 +51,11 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet4;
     TH1F* h_Jet5;
     TH1F* h_Jet6;
+    TH1F* h_BJet1;
+    TH1F* h_BJet2;
+    TH1F* h_BJet3;
     TH1F* h_HT;
+    TH1F* h_HMT;
 
     TH1F*  h_MET_Base;
     TH1F* h_nBJet35_Base;
@@ -63,7 +67,11 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet4_Base;
     TH1F* h_Jet5_Base;
     TH1F* h_Jet6_Base;
+    TH1F* h_BJet1_Base;
+    TH1F* h_BJet2_Base;
+    TH1F* h_BJet3_Base;
     TH1F* h_HT_Base;
+    TH1F* h_HMT_Base;
     TH2F* h_NeutralHad_JetPt;
     TH1F*  h_MET_BaseSel;
     TH1F* h_nBJet35_BaseSel;
@@ -75,12 +83,16 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet4_BaseSel;
     TH1F* h_Jet5_BaseSel;
     TH1F* h_Jet6_BaseSel;
+    TH1F* h_BJet1_BaseSel;
+    TH1F* h_BJet2_BaseSel;
+    TH1F* h_BJet3_BaseSel;
     TH1F* h_HT_BaseSel;
-    
+    TH1F* h_HMT_BaseSel;
     
     TH1F* h_nBJet35_EvtSel;
     TH1F* h_nJet35_EvtSel;
     TH1F* h_HT_EvtSel;
+    TH1F* h_HMT_EvtSel;
     TH1F* h_MET_EvtSel;
     TH1F* h_Jet0_EvtSel;
     TH1F* h_Jet1_EvtSel;
@@ -89,6 +101,9 @@ class NtpThreeJet : public NtpReader
     TH1F* h_Jet4_EvtSel;
     TH1F* h_Jet5_EvtSel;
     TH1F* h_Jet6_EvtSel;
+    TH1F* h_BJet1_EvtSel;
+    TH1F* h_BJet2_EvtSel;
+    TH1F* h_BJet3_EvtSel;
 
 
     //MC plots
@@ -173,6 +188,25 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_btag_pt_njet;
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HT_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_over_HT_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HMT_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >nBJet35_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >nJet35_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >nVertex_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet0_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet1_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet2_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet3_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet4_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet5_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Jet6_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >BJet1_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >BJet2_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >BJet3_bjet_pt_njet_diag;
+    
 
 
  private:
