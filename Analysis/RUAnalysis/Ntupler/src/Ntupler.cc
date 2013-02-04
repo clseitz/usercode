@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.16 2012/11/05 18:10:44 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.17 2013/01/23 21:00:21 cvuosalo Exp $
 //
 //
 
@@ -293,7 +293,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  if (! _isData) {
 				edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
 				// get the jet corrector parameters collection from the global tag
-				iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PF"), JetCorParColl);
+				iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PFchs"), JetCorParColl);
 				// get the uncertainty parameters from the collection
 				JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
 				// instantiate the jec uncertainty object
