@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.18 2013/02/04 10:32:58 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.19 2013/02/04 19:50:06 cvuosalo Exp $
 //
 //
 
@@ -223,7 +223,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 }
        }//triggers
 
-       getTriggerDecision2(iEvent, fTriggerMap2);
+       getTriggerDecision(iEvent, fTriggerMap2);
        for (std::map<std::string, bool>::iterator It = fTriggerMap2.begin(); It != fTriggerMap2.end(); ++It) {
          if (It->second) {
            HasTrigger2 = true;
@@ -649,15 +649,18 @@ Ntupler::beginJob()
     int n;
     
     ifstream JSONFile(JSONFilename.data());
+    if (JSONFile.fail()) {
+			cout << "JSON file not found: " << JSONFilename.data() << endl;
+			return;
+		}
     nGoodRuns=0;
     int run, lb, le;
     bool startlb = false;
-    while(!JSONFile.eof()){
+    while (! JSONFile.fail() && ! JSONFile.eof()) {
       c=JSONFile.peek();
-      while(!JSONFile.eof() && !( (c >= '0') && (c <= '9'))) {
-	c = JSONFile.get();
-	c = JSONFile.peek();
-
+      while(! JSONFile.fail() && !JSONFile.eof() && !( (c >= '0') && (c <= '9'))) {
+				c = JSONFile.get();
+				c = JSONFile.peek();
       }
       JSONFile>>n;
       if(n>100000){
@@ -947,51 +950,35 @@ void
 Ntupler::getTriggerDecision(const edm::Event& iEvent, std::map<std::string, bool>& TriggerMap)
 {
   edm::Handle<edm::TriggerResults> triggerResults;
-
   std::string menu = "HLT";
   iEvent.getByLabel(edm::InputTag("TriggerResults", "", menu), triggerResults);
-
-  const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
-
-
+  const edm::TriggerNames& triggerNames = iEvent.triggerNames(*triggerResults);
+	const std::vector<std::string> &nameList = triggerNames.triggerNames();
+	int triggerIndex = -1;
   for (std::map<std::string, bool>::iterator It = TriggerMap.begin(); It != TriggerMap.end(); ++It) {
-    It->second = false;
-    unsigned int triggerIndex = triggerNames.triggerIndex(It->first);
-
-    if (triggerIndex < triggerResults->size()) {
-      if (triggerResults->accept(triggerIndex)) {
-        It->second = true;
-      }
+		size_t length = It->first.size();
+		for (unsigned int index = 0; index < nameList.size(); ++index) {
+			if (length <= nameList[index].size() && It->first == nameList[index].substr(0, length)) {
+				 triggerIndex = index;
+				 break;
+			}
+		}
+		It->second = false;
+    if (triggerIndex >= 0 && triggerIndex < (int) triggerResults->size()) {
+			if (triggerResults->accept(triggerIndex)) {
+				It->second = true;
+				// cout << "Trigger " << It->first << " matches trigger " <<  nameList[triggerIndex];
+				// cout << " and is true.\n";
+			}
+			return;
     }
-
   }
-  return;
+	cout << "Bad trigger names ";
+  for (std::map<std::string, bool>::iterator It = TriggerMap.begin(); It != TriggerMap.end(); ++It)
+		cout << It->first << ", ";
+	cout << " with bad index " << triggerIndex << endl;
 }
 
-void
-Ntupler::getTriggerDecision2(const edm::Event& iEvent, std::map<std::string, bool>& TriggerMap2)
-{
-  edm::Handle<edm::TriggerResults> triggerResults;
-
-  std::string menu = "HLT";
-  iEvent.getByLabel(edm::InputTag("TriggerResults", "", menu), triggerResults);
-
-  const edm::TriggerNames& triggerNames = iEvent.triggerNames(* triggerResults);
-
-
-  for (std::map<std::string, bool>::iterator It = TriggerMap2.begin(); It != TriggerMap2.end(); ++It) {
-    It->second = false;
-    unsigned int triggerIndex = triggerNames.triggerIndex(It->first);
-
-    if (triggerIndex < triggerResults->size()) {
-      if (triggerResults->accept(triggerIndex)) {
-        It->second = true;
-      }
-    }
-
-  }
-  return;
-}
 
 void
 Ntupler::GetSUSYpoint(const edm::Event& iEvent, const edm::EventSetup& iSetup)
