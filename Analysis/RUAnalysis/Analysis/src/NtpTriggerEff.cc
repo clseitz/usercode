@@ -143,12 +143,13 @@ void NtpTriggerEff::Loop ()
 
 
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-    if(1==1){//run > 194270){
+    if(1==1){//run > 194270)
     
   ///////////////////Clear out variables/////////////////////
 
     std::vector<TLorentzVector* >      fCleanJets;
     std::vector<TLorentzVector* >      fCleanJets20;
+    std::vector<TLorentzVector* >      allJets;
 
     fCleanJets.clear();    fCleanJets20.clear(); 
   ////////////////////////////////////////////////////////////
@@ -161,7 +162,7 @@ void NtpTriggerEff::Loop ()
    int nBJet20=0; float HT20=0;
    for (int i=0; i<nPFJets; i++){
      TLorentzVector* Jet= new TLorentzVector(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-     
+		 allJets.push_back(Jet);
      if (jet_PF_pt[i]>30.0 && fabs(jet_PF_eta[i])<2.5){
        nJet20++;
        fCleanJets20.push_back(Jet);
@@ -229,8 +230,9 @@ void NtpTriggerEff::Loop ()
        }
      }
    }//4jet
-
+		for (std::vector<TLorentzVector *>::iterator it = allJets.begin(); it != allJets.end(); ++it)
+			if (*it)
+				delete(*it);
     }//run number if   
   }//get entry 
-  return;
 }
