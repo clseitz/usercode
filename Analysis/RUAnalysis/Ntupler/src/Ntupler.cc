@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.20 2013/02/07 17:32:02 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.21 2013/02/15 12:37:39 clseitz Exp $
 //
 //
 
@@ -214,7 +214,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      bool HasTrigger = false;
      bool HasTrigger2 = false;
-     bool DataIs = false;
+
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -247,6 +247,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      HasSelTrigger = HasTrigger;
      HasBaseTrigger = HasTrigger2;
      DataIs=_isData;
+
      if ((HasTrigger || HasTrigger2)){
 
        fGoodJets.clear(); fCleanJets.clear(); 
