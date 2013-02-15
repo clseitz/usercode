@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.19 2013/02/04 19:50:06 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.20 2013/02/07 17:32:02 cvuosalo Exp $
 //
 //
 
@@ -192,7 +192,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
-
+   //cout<<"starting code"<<endl;
    /////////////////
    //GET EVT INFO
    ///////////////////////////////////////////////////////////
@@ -214,6 +214,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      bool HasTrigger = false;
      bool HasTrigger2 = false;
+     bool DataIs = false;
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -245,6 +246,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
      HasBaseTrigger = HasTrigger2;
+     DataIs=_isData;
      if ((HasTrigger || HasTrigger2)){
 
        fGoodJets.clear(); fCleanJets.clear(); 
@@ -359,8 +361,9 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //make some kinematic plots and write out variables for the tree
        
        nPFJets=nCleanPFJets;
-       // std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
-       // cout<<"NJets: "<<nPFJets<<endl;
+       std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
+       //       cout<<"NJets: "<<nPFJets<<endl;
+
 			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
       int i=0;
 			std::list<jetElem> adjJetList;
@@ -439,32 +442,35 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscCSV_PF[i]=Jet->bDiscriminator("combinedSecondaryVertexBJetTags");
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
-	   int jetMom = -1; 
-		/*
-		const reco::GenParticle * part = Jet->genParton();
-	   if (part){
-	     
-	     cout<<"GenParton: "<<part->pdgId()<<endl;
-	         const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
-	     cout<<mom->pdgId()<<endl;
-	     for (int y = 0; y < int(parents->size()); ++y)
-	       if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
-	     if (jetMom == -1){
-	       jetMom = int(parents->size());
-	       reco::GenParticle cand(*mom);
-	       parents->push_back(cand);
-	       std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+
+	   if(1==1){
+	     int jetMom = -1; 
+	     const reco::GenParticle * part = Jet->genParton();
+	     if (part){
+	       
+	       cout<<"GenParton: "<<part->pdgId()<<endl;
+	       const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
+	       cout<<mom->pdgId()<<endl;
+	       for (int y = 0; y < int(parents->size()); ++y)
+		 if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
+	       if (jetMom == -1){
+		 jetMom = int(parents->size());
+		 reco::GenParticle cand(*mom);
+		 parents->push_back(cand);
+		 std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+
 	       }
-	 
-	       }
-				 */
-	   jet_PF_JetMom[i]=jetMom;	     
-		 // cout<<"jetmomL: "<<jetMom<<endl;
-}
-     i++;
-   }
-   // cout<<"================"<<endl;
-  nCA8PFJets=nCleanCA8PFJets;
+	       
+	     }
+	     jet_PF_JetMom[i]=jetMom;	     
+	     cout<<"jetmomL: "<<jetMom<<endl;
+	   }
+	   i++;
+	 }
+       }
+       //cout<<"================"<<endl;
+       nCA8PFJets=nCleanCA8PFJets;
+
 
        i=0;
        for (std::vector<pat::Jet>::const_iterator Jet = fCleanCA8PFJets->begin(); Jet != fCleanCA8PFJets->end(); ++Jet) {       
@@ -1166,7 +1172,8 @@ Ntupler::DoVertexID(const edm::Event& iEvent){
   h_nGoodVtx->Fill(CountVtx);
        nGoodVtx=CountVtx;
 
-  // cout<< "Vertices " << CountVtx<<" "<< recVtxs->size()<<endl;
+       // cout<< "Vertices " << CountVtx<<" "<< recVtxs->size()<<endl;
+
 }
 
 void 
