@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.21 2013/02/15 12:37:39 clseitz Exp $
+// $Id: Ntupler.cc,v 1.22 2013/02/15 13:45:53 clseitz Exp $
 //
 //
 
@@ -364,54 +364,54 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        nPFJets=nCleanPFJets;
        std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
        //       cout<<"NJets: "<<nPFJets<<endl;
-
-			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
-      int i=0;
-			std::list<jetElem> adjJetList;
-			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
-				 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
-				 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
-				 if (jec > 0.0)
-					 correctedJet.scaleEnergy(jec);                        // apply the correction
-				 else cout << "Bad jec " << jec << endl;
-				 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
-					 cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
-					 cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
-					 cout << " eta " << correctedJet.eta() << endl;
-				 }
-				 bool goodJecUnc = false;
-				 if (! _isData) {
-					// Apply sanity check to avoid exception for bad values
-					if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
-						jecUnc->setJetEta(Jet->eta());
-						jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
-						goodJecUnc = true;
-					} else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
-				}
-				jetElem tmpjet;
-				tmpjet.origJet = &(*Jet);
-				tmpjet.adjJet = correctedJet.p4();
-				double corrFactor = 1.0;
-				tmpjet.jecUnc = 0;
-				if (! _isData && goodJecUnc)
-					tmpjet.jecUnc = jecUnc->getUncertainty(true);
-				if (_jecAdj.compare("up") == 0)
+       
+       const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
+       int i=0;
+       std::list<jetElem> adjJetList;
+       for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+	 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
+	 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
+	 if (jec > 0.0)
+	   correctedJet.scaleEnergy(jec);                        // apply the correction
+	 else cout << "Bad jec " << jec << endl;
+	 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
+	   cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
+	   cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
+	   cout << " eta " << correctedJet.eta() << endl;
+	 }
+	 bool goodJecUnc = false;
+	 if (! _isData) {
+	   // Apply sanity check to avoid exception for bad values
+	   if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
+	     jecUnc->setJetEta(Jet->eta());
+	     jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
+	     goodJecUnc = true;
+	   } else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
+	 }
+	 jetElem tmpjet;
+	 tmpjet.origJet = &(*Jet);
+	 tmpjet.adjJet = correctedJet.p4();
+	 double corrFactor = 1.0;
+	 tmpjet.jecUnc = 0;
+	 if (! _isData && goodJecUnc)
+	   tmpjet.jecUnc = jecUnc->getUncertainty(true);
+	 if (_jecAdj.compare("up") == 0)
 					corrFactor += tmpjet.jecUnc;
-				else if (_jecAdj.compare("down") == 0)
-					corrFactor -= tmpjet.jecUnc;
-				if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
-					tmpjet.adjJet *= corrFactor;
-				tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
-				adjJetList.push_back(tmpjet);
-      }
-			if (jecUnc != 0)
-				delete jecUnc;
-			adjJetList.sort(cmpJets);
-
+	 else if (_jecAdj.compare("down") == 0)
+	   corrFactor -= tmpjet.jecUnc;
+	 if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
+	   tmpjet.adjJet *= corrFactor;
+	 tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
+	 adjJetList.push_back(tmpjet);
+       }
+       if (jecUnc != 0)
+	 delete jecUnc;
+       adjJetList.sort(cmpJets);
+       
        for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
-				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
-			 	const pat::Jet *Jet = chngJet->origJet;
-				
+	 const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
+	 const pat::Jet *Jet = chngJet->origJet;
+	 
 	 if(i<6){
 	   v_PFjet_pt[i]->Fill(Jet->pt()); 
 	   v_PFjet_eta[i]->Fill(Jet->eta()); 
@@ -466,8 +466,9 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	     jet_PF_JetMom[i]=jetMom;	     
 	     cout<<"jetmomL: "<<jetMom<<endl;
 	   }
-	   i++;
 	 }
+	   i++;
+	 
        }
        //cout<<"================"<<endl;
        nCA8PFJets=nCleanCA8PFJets;
