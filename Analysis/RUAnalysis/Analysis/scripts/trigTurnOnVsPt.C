@@ -51,8 +51,11 @@ void trigTurnOnVsPt()
 	 	TFile fnew1("TriggerPlots_BSix35_SSix45.root", "recreate");
 	*/
 		
-	filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
-	filenames.push_back("BMu40_SQuad60_Di20_Nov20");
+	filelist.push_back(TFile::Open("trigstudy/run2012Cv1_24Aug.root"));
+	// filelist.push_back(TFile::Open("trigstudy/runsABCD.root"));
+	// filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
+	// filenames.push_back("BMu40_SQuad60_Di20_2012D");
+	filenames.push_back("BMu40_SQuad60_Di20_2012Cv1_24Aug");
 	titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
 	ymaxlist.push_back(1.1);
 	TFile fnew1("TriggerPlots_BMu40_SQuad60_Di20.root", "recreate");
@@ -156,8 +159,9 @@ void trigTurnOnVsPt()
 		18.742, 8.553, 12.299, 151.942, 2.438, 4.624, 15.377, 1.2, 48.556};
 		
 	TH1F* h_RunNumber_Lumi = new TH1F("RunNumber_Lumi","RunNumber_Lumi",6000,190000,196000);
-	for (int a=0; a<sizeof(Runs); a++){
+	for (int a=0; a< sizeof(Runs) / sizeof(int); a++){
 	
+		// cout << "ind " << a << " run " << Runs[a] << " lumi " << Lumis[a] << endl;
 		h_RunNumber_Lumi->SetBinContent(Runs[a]-190000+1,Lumis[a]);
 	}
 
@@ -365,7 +369,9 @@ TLatex* tex = new TLatex();
  //f1->Draw("same");
 string suffix="_histodiv.png";
 			
-		c1->SaveAs((filenames[file]+plotnames[i]).c_str());
+		cout << "save file name " << filenames[file]+plotnames[i] << endl;
+		string svfile = filenames[file]+plotnames[i];
+		c1->SaveAs(svfile.c_str());
 		htop_data->Delete();
 		hbot_data->Delete();
 			std::cout << "Boom4" << std::endl;
