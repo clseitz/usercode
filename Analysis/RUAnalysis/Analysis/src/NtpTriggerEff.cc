@@ -62,6 +62,17 @@ void NtpTriggerEff::BookHistograms()
   h_Jet5_BaseSel = new TH1F("Jet5_BaseSel", "Jet5_BaseSel",200,0,1000); h_Jet5_BaseSel->Sumw2();
   h_Jet6_BaseSel = new TH1F("Jet6_BaseSel", "Jet6_BaseSel",200,0,1000); h_Jet6_BaseSel->Sumw2();
   
+  h_MET_InvSel = new TH1F("MET_InvSel", "MET_InvSel",200,0,1000); h_MET_InvSel->Sumw2();
+  h_HT_InvSel = new TH1F("HT_InvSel", "HT_InvSel",400,0,4000); h_HT_InvSel->Sumw2();
+  h_nBJet35_InvSel   = new TH1F("nBJet35_InvSel", "nBJet35_InvSel",20,0,20); h_nBJet35_InvSel->Sumw2();
+  h_nJet35_InvSel   = new TH1F("nJet20_InvSel", "nJet20_InvSel",20,0,20); h_nJet35_InvSel->Sumw2();
+  h_Jet0_InvSel = new TH1F("Jet0_InvSel", "Jet0_InvSel",200,0,1000); h_Jet0_InvSel->Sumw2();
+  h_Jet1_InvSel = new TH1F("Jet1_InvSel", "Jet1_InvSel",200,0,1000); h_Jet1_InvSel->Sumw2();
+  h_Jet2_InvSel = new TH1F("Jet2_InvSel", "Jet2_InvSel",200,0,1000); h_Jet2_InvSel->Sumw2();
+  h_Jet3_InvSel = new TH1F("Jet3_InvSel", "Jet3_InvSel",200,0,1000); h_Jet3_InvSel->Sumw2();
+  h_Jet4_InvSel = new TH1F("Jet4_InvSel", "Jet4_InvSel",200,0,1000); h_Jet4_InvSel->Sumw2();
+  h_Jet5_InvSel = new TH1F("Jet5_InvSel", "Jet5_InvSel",200,0,1000); h_Jet5_InvSel->Sumw2();
+  h_Jet6_InvSel = new TH1F("Jet6_InvSel", "Jet6_InvSel",200,0,1000); h_Jet6_InvSel->Sumw2();
 
   cout<<"before histos"<<endl;
   for(int i=0; i<20; i++){
@@ -126,6 +137,18 @@ void NtpTriggerEff::WriteHistograms()
    h_Jet5_BaseSel->Write();
    h_Jet6_BaseSel->Write();
 
+   h_MET_InvSel->Write();
+   h_nBJet35_InvSel->Write();
+   h_nJet35_InvSel->Write();
+   h_HT_InvSel->Write();
+   h_Jet0_InvSel->Write();
+   h_Jet1_InvSel->Write();
+   h_Jet2_InvSel->Write();
+   h_Jet3_InvSel->Write();
+   h_Jet4_InvSel->Write();
+   h_Jet5_InvSel->Write();
+   h_Jet6_InvSel->Write();
+
    for(int i=0; i<20; i++){
      for (int j=0; j<20; j++){
        h_Jet0_BaseSel_pt4_pt6[i][j]->Write();
@@ -143,8 +166,9 @@ void NtpTriggerEff::Loop ()
 
 
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-    if(1==1){//run > 194270)
-    
+    // if(run > 202970) {
+    if(1==1){ //run > 194270)
+ 
   ///////////////////Clear out variables/////////////////////
 
     std::vector<TLorentzVector* >      fCleanJets;
@@ -155,7 +179,7 @@ void NtpTriggerEff::Loop ()
   ////////////////////////////////////////////////////////////
    
     if (ientry % 500 == 0) {
-      printf("Processing entry: %i\n", ientry);
+      printf("Processing entry: %i for run %i\n", ientry, run);
     }
 
    int nJet20=0; int nJet35=0; 
@@ -226,6 +250,15 @@ void NtpTriggerEff::Loop ()
 	   h_Jet3_BaseSel->Fill(fCleanJets20[3]->Pt());
 	   if(nJet20>=5) h_Jet4_BaseSel->Fill(fCleanJets20[4]->Pt());
 	   if(nJet20>=6) h_Jet5_BaseSel->Fill(fCleanJets20[5]->Pt());
+	 } else {
+	   h_MET_InvSel->Fill(pfMET);
+	   h_HT_InvSel->Fill(HT20);
+	   h_Jet0_InvSel->Fill(fCleanJets20[0]->Pt());
+	   h_Jet1_InvSel->Fill(fCleanJets20[1]->Pt());
+	   h_Jet2_InvSel->Fill(fCleanJets20[2]->Pt());
+	   h_Jet3_InvSel->Fill(fCleanJets20[3]->Pt());
+	   if(nJet20>=5) h_Jet4_InvSel->Fill(fCleanJets20[4]->Pt());
+	   if(nJet20>=6) h_Jet5_InvSel->Fill(fCleanJets20[5]->Pt());
 	 }
        }
      }
