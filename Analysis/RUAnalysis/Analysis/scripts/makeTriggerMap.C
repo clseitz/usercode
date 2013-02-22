@@ -16,6 +16,7 @@
 #include "TH2F.h"
 #include "TLine.h"
 #include "TLatex.h"
+#include "TStyle.h"
 
 void makeTriggerMap()
 {
@@ -31,6 +32,8 @@ void makeTriggerMap()
   //Note that these next 6 lines are not road-tested.
 char hNAME[99];
 
+ gStyle->SetPaintTextFormat("5.3f");
+ gStyle->SetOptStat(kFALSE);
 
 	/*filelist.push_back(TFile::Open("data2012_MultiJet_BQuad50_SQuad60_Di20_TriggerMap_6jets20GeV_2p4pb_jun19.root"));
 	filenames.push_back("Quad50_Quad60_Di20_jun19.png");
@@ -46,8 +49,11 @@ titlename.push_back("Quad80 (base Quad70) efficiency");
 	titlename.push_back("Six45 (base Six35) efficiency");
 */
 
-		filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
-	filenames.push_back("BMu40_SQuad60_Di20_Nov20.pdf");
+		// filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
+	// filelist.push_back(TFile::Open("trigstudy/runsABCD.root"));
+	filelist.push_back(TFile::Open("trigstudy/run2012D.root"));
+	// filenames.push_back("BMu40_SQuad60_Di20_2012ABCD.pdf");
+	filenames.push_back("BMu40_SQuad60_Di20_2012D.pdf");
 	titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
 
 /*	filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SSix45_TriggerMap_6jets20GeV_jul3.root"));
