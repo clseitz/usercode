@@ -48,6 +48,18 @@ class NtpTriggerEff : public NtpReader
     TH1F* h_Jet5_BaseSel;
     TH1F* h_Jet6_BaseSel;
     TH1F* h_HT_BaseSel;
+    
+    TH1F*  h_MET_InvSel;
+    TH1F* h_nBJet35_InvSel;
+    TH1F* h_nJet35_InvSel;
+    TH1F* h_Jet0_InvSel;
+    TH1F* h_Jet1_InvSel;
+    TH1F* h_Jet2_InvSel;
+    TH1F* h_Jet3_InvSel;
+    TH1F* h_Jet4_InvSel;
+    TH1F* h_Jet5_InvSel;
+    TH1F* h_Jet6_InvSel;
+    TH1F* h_HT_InvSel;
 
     std::vector <std::vector<TH1F* > > h_Jet0_BaseSel_pt4_pt6;
     std::vector <std::vector<TH1F* > > h_Jet0_Base_pt4_pt6;
