@@ -115,8 +115,10 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   std::string _htTrigger;
   std::vector<std::string>          fTriggerNamesSel;
   std::vector<std::string>          fTriggerNamesBase;
+  std::vector<std::string>          fTriggerNamesBase2;
   std::map<std::string, bool>       fTriggerMap;
   std::map<std::string, bool>       fTriggerMap2;
+  std::map<std::string, bool>       fTriggerMapBase2;
   
   int countE;  
   
