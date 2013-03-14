@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.22 2013/02/15 13:45:53 clseitz Exp $
+// $Id$
 //
 //
 
@@ -167,6 +167,10 @@ Ntupler::Ntupler(const edm::ParameterSet& iConfig)
   for (std::vector<std::string>::iterator It = fTriggerNamesBase.begin(); It != fTriggerNamesBase.end(); ++It) {
     fTriggerMap2[*It] = false;
   }
+  fTriggerNamesBase2 = iConfig.getUntrackedParameter<std::vector<std::string> >("TriggerNamesBase2", std::vector<std::string>());
+  for (std::vector<std::string>::iterator It = fTriggerNamesBase2.begin(); It != fTriggerNamesBase2.end(); ++It) {
+    fTriggerMapBase2[*It] = false;
+  }
   JSONFilename  = iConfig.getUntrackedParameter<string>("JSONFilename","Cert_160404-166502_7TeV_PromptReco_Collisions11_JSON.txt");
 
 
@@ -186,13 +190,24 @@ Ntupler::~Ntupler()
 // member functions
 //
 
+
+static double getJERAdj(double recoPt, const pat::Jet &jet, bool down)
+{
+	double ptdiff = recoPt - jet.genJet()->pt();
+	if (down)
+		ptdiff *= -1.0;
+	double ptscale = ((ptdiff * 0.1) + recoPt) / recoPt;
+	return (ptscale);
+}
+
+
 // ------------ method called for each event  ------------
 void
 Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
-   //cout<<"starting code"<<endl;
+
    /////////////////
    //GET EVT INFO
    ///////////////////////////////////////////////////////////
@@ -214,7 +229,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      bool HasTrigger = false;
      bool HasTrigger2 = false;
-
+     bool HasTriggerBase2 = false;
      if (_isData) {
        getTriggerDecision(iEvent, fTriggerMap);
        for (std::map<std::string, bool>::iterator It = fTriggerMap.begin(); It != fTriggerMap.end(); ++It) {
@@ -231,11 +246,19 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
            break;
          }
        }//triggers
+       getTriggerDecision(iEvent, fTriggerMapBase2);
+       for (std::map<std::string, bool>::iterator It = fTriggerMapBase2.begin(); It != fTriggerMapBase2.end(); ++It) {
+         if (It->second) {
+           HasTriggerBase2 = true;
+           break;
+         }
+       }//triggers
 
      }//isData
      else {
        HasTrigger= true;
        HasTrigger2= true;
+       HasTriggerBase2 = true;
        if (_isSUSY){
 	 	 GetSUSYpoint(iEvent,iSetup);
 
@@ -245,10 +268,8 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ////CLEAN UP VARIABLES
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
-     HasBaseTrigger = HasTrigger2;
-     DataIs=_isData;
-
-     if ((HasTrigger || HasTrigger2)){
+     HasBaseTrigger = HasTrigger2 || HasTriggerBase2;
+     if (HasTrigger || HasTrigger2 || HasTriggerBase2){
 
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
@@ -362,56 +383,58 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //make some kinematic plots and write out variables for the tree
        
        nPFJets=nCleanPFJets;
-       std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
-       //       cout<<"NJets: "<<nPFJets<<endl;
-       
-       const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
-       int i=0;
-       std::list<jetElem> adjJetList;
-       for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
-	 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
-	 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
-	 if (jec > 0.0)
-	   correctedJet.scaleEnergy(jec);                        // apply the correction
-	 else cout << "Bad jec " << jec << endl;
-	 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
-	   cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
-	   cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
-	   cout << " eta " << correctedJet.eta() << endl;
-	 }
-	 bool goodJecUnc = false;
-	 if (! _isData) {
-	   // Apply sanity check to avoid exception for bad values
-	   if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
-	     jecUnc->setJetEta(Jet->eta());
-	     jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
-	     goodJecUnc = true;
-	   } else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
-	 }
-	 jetElem tmpjet;
-	 tmpjet.origJet = &(*Jet);
-	 tmpjet.adjJet = correctedJet.p4();
-	 double corrFactor = 1.0;
-	 tmpjet.jecUnc = 0;
-	 if (! _isData && goodJecUnc)
-	   tmpjet.jecUnc = jecUnc->getUncertainty(true);
-	 if (_jecAdj.compare("up") == 0)
+       // std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
+       // cout<<"NJets: "<<nPFJets<<endl;
+			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
+      int i=0;
+			std::list<jetElem> adjJetList;
+			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+				 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
+				 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
+				 if (jec > 0.0)
+					 correctedJet.scaleEnergy(jec);                        // apply the correction
+				 else cout << "Bad jec " << jec << endl;
+				 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
+					 cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
+					 cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
+					 cout << " eta " << correctedJet.eta() << endl;
+				 }
+				 bool goodJecUnc = false;
+				 if (! _isData) {
+					// Apply sanity check to avoid exception for bad values
+					if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
+						jecUnc->setJetEta(Jet->eta());
+						jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
+						goodJecUnc = true;
+					} else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
+				}
+				jetElem tmpjet;
+				tmpjet.origJet = &(*Jet);
+				tmpjet.adjJet = correctedJet.p4();
+				double corrFactor = 1.0;
+				tmpjet.jecUnc = 0;
+				if (! _isData && goodJecUnc)
+					tmpjet.jecUnc = jecUnc->getUncertainty(true);
+				if (_jecAdj.compare("jerup") == 0 || _jecAdj.compare("jerdown") == 0) {
+					bool jerdown = (_jecAdj.compare("jerdown") == 0);
+					corrFactor = getJERAdj(correctedJet.pt(), *Jet, jerdown);
+				} else if (_jecAdj.compare("up") == 0)
 					corrFactor += tmpjet.jecUnc;
-	 else if (_jecAdj.compare("down") == 0)
-	   corrFactor -= tmpjet.jecUnc;
-	 if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
-	   tmpjet.adjJet *= corrFactor;
-	 tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
-	 adjJetList.push_back(tmpjet);
-       }
-       if (jecUnc != 0)
-	 delete jecUnc;
-       adjJetList.sort(cmpJets);
-       
+				else if (_jecAdj.compare("down") == 0)
+					corrFactor -= tmpjet.jecUnc;
+				if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
+					tmpjet.adjJet *= corrFactor;
+				tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
+				adjJetList.push_back(tmpjet);
+      }
+			if (jecUnc != 0)
+				delete jecUnc;
+			adjJetList.sort(cmpJets);
+
        for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
-	 const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
-	 const pat::Jet *Jet = chngJet->origJet;
-	 
+				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
+			 	const pat::Jet *Jet = chngJet->origJet;
+				
 	 if(i<6){
 	   v_PFjet_pt[i]->Fill(Jet->pt()); 
 	   v_PFjet_eta[i]->Fill(Jet->eta()); 
@@ -443,36 +466,32 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscCSV_PF[i]=Jet->bDiscriminator("combinedSecondaryVertexBJetTags");
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
-
-	   if(1==1){
-	     int jetMom = -1; 
-	     const reco::GenParticle * part = Jet->genParton();
-	     if (part){
-	       
-	       cout<<"GenParton: "<<part->pdgId()<<endl;
-	       const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
-	       cout<<mom->pdgId()<<endl;
-	       for (int y = 0; y < int(parents->size()); ++y)
-		 if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
-	       if (jetMom == -1){
-		 jetMom = int(parents->size());
-		 reco::GenParticle cand(*mom);
-		 parents->push_back(cand);
-		 std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
-
+	   int jetMom = -1; 
+		/*
+		const reco::GenParticle * part = Jet->genParton();
+	   if (part){
+	     
+	     cout<<"GenParton: "<<part->pdgId()<<endl;
+	         const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
+	     cout<<mom->pdgId()<<endl;
+	     for (int y = 0; y < int(parents->size()); ++y)
+	       if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
+	     if (jetMom == -1){
+	       jetMom = int(parents->size());
+	       reco::GenParticle cand(*mom);
+	       parents->push_back(cand);
+	       std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
 	       }
-	       
-	     }
-	     jet_PF_JetMom[i]=jetMom;	     
-	     cout<<"jetmomL: "<<jetMom<<endl;
-	   }
-	 }
-	   i++;
 	 
-       }
-       //cout<<"================"<<endl;
-       nCA8PFJets=nCleanCA8PFJets;
-
+	       }
+				 */
+	   jet_PF_JetMom[i]=jetMom;	     
+		 // cout<<"jetmomL: "<<jetMom<<endl;
+}
+     i++;
+   }
+   // cout<<"================"<<endl;
+  nCA8PFJets=nCleanCA8PFJets;
 
        i=0;
        for (std::vector<pat::Jet>::const_iterator Jet = fCleanCA8PFJets->begin(); Jet != fCleanCA8PFJets->end(); ++Jet) {       
@@ -1174,8 +1193,7 @@ Ntupler::DoVertexID(const edm::Event& iEvent){
   h_nGoodVtx->Fill(CountVtx);
        nGoodVtx=CountVtx;
 
-       // cout<< "Vertices " << CountVtx<<" "<< recVtxs->size()<<endl;
-
+  // cout<< "Vertices " << CountVtx<<" "<< recVtxs->size()<<endl;
 }
 
 void 
