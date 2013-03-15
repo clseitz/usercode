@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id$
+// $Id: Ntupler.cc,v 1.24 2013/03/14 16:26:24 cvuosalo Exp $
 //
 //
 
@@ -193,10 +193,16 @@ Ntupler::~Ntupler()
 
 static double getJERAdj(double recoPt, const pat::Jet &jet, bool down)
 {
-	double ptdiff = recoPt - jet.genJet()->pt();
+	const reco::GenJet *genJetPtr = jet.genJet();
+	if (genJetPtr == NULL) {
+		// cout << "Bad GenJet pointer\n";
+		return (1.0);
+	}
+	double ptdiff = recoPt - genJetPtr->pt();
 	if (down)
 		ptdiff *= -1.0;
 	double ptscale = ((ptdiff * 0.1) + recoPt) / recoPt;
+	// cout << " JER scaling " << ptscale << " ";
 	return (ptscale);
 }
 
@@ -415,7 +421,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				tmpjet.jecUnc = 0;
 				if (! _isData && goodJecUnc)
 					tmpjet.jecUnc = jecUnc->getUncertainty(true);
-				if (_jecAdj.compare("jerup") == 0 || _jecAdj.compare("jerdown") == 0) {
+				if (! _isData && (_jecAdj.compare("jerup") == 0 || _jecAdj.compare("jerdown") == 0)) {
 					bool jerdown = (_jecAdj.compare("jerdown") == 0);
 					corrFactor = getJERAdj(correctedJet.pt(), *Jet, jerdown);
 				} else if (_jecAdj.compare("up") == 0)
