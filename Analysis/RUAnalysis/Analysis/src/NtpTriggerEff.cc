@@ -212,14 +212,15 @@ void NtpTriggerEff::Loop ()
 	 int iPt=20+i*5;
 	 int jPt=20+j*5;
 	 if(fCleanJets20[3]->Pt()>jPt && fCleanJets20[5]->Pt()>iPt){
-	   if(nBJet20 >= 2){
+	   // Eliminate b jet requirement
+	   // if(nBJet20 >= 2) {
 	     if(HasBaseTrigger){
 	       h_Jet0_Base_pt4_pt6[i][j]->Fill(1);
 	       h_Jet4[i][j]->Fill(fCleanJets20[3]->Pt());
 	       h_Jet6[i][j]->Fill(fCleanJets20[5]->Pt());	     
 	       if(HasSelTrigger) h_Jet0_BaseSel_pt4_pt6[i][j]->Fill(1);
 	     }
-	   }
+	   // } // b jet if
 	 }
        }
      }
