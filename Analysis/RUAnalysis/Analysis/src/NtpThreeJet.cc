@@ -1,6 +1,7 @@
 
 //#Includetr "RUAnalysis/Ntupler/interface/Ntupler.h"
 #include "RUAnalysis/Analysis/interface/NtpThreeJet.h"
+#include "RUAnalysis/Analysis/interface/EventShapeVariables.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -10,6 +11,13 @@
 #include "TLorentzVector.h"
 #include "TFile.h"
 #include "math.h"
+#include "TMath.h"
+#include "TROOT.h"
+#include "Math/VectorUtil.h"
+#include "Math/Boost.h"
+
+#include "Math/GenVector/Boost.h"
+#include "TVector3.h"
 //#include "../interface/BTagSFUtil.h"
 #include "../interface/BTagSFUtil_CSVM_BtagMap.h"
 //#include "../interface/BTagSFUtil_Loose.h"
@@ -186,6 +194,7 @@ void NtpThreeJet::BookHistograms()
   //after cuts
   h_MET_EvtSel = new TH1F("MET_EvtSel", "MET_EvtSel",200,0,1000); h_MET_EvtSel->Sumw2();
   h_HT_EvtSel = new TH1F("HT_EvtSel", "HT_EvtSel",400,0,4000); h_HT_EvtSel->Sumw2();
+  h_MJ_EvtSel = new TH1F("MJ_EvtSel", "MJ_EvtSel",400,0,4000); h_MJ_EvtSel->Sumw2();
   h_HMT_EvtSel = new TH1F("HMT_EvtSel", "HMT_EvtSel",400,0,4000); h_HMT_EvtSel->Sumw2();
   h_nBJet35_EvtSel  = new TH1F("nBJet35_EvtSel", "nBJet35_EvtSel",20,0,20); h_nBJet35_EvtSel->Sumw2();
   h_nJet35_EvtSel  = new TH1F("nJet35_EvtSel", "nJet35_EvtSel",20,0,20); h_nJet35_EvtSel->Sumw2();
@@ -199,45 +208,8 @@ void NtpThreeJet::BookHistograms()
   h_BJet1_EvtSel= new TH1F("BJet1_EvtSel", "BJet1_EvtSel",200,0,1000); h_BJet1_EvtSel->Sumw2();
   h_BJet2_EvtSel= new TH1F("BJet2_EvtSel", "BJet2_EvtSel",200,0,1000); h_BJet2_EvtSel->Sumw2();
   h_BJet3_EvtSel= new TH1F("BJet3_EvtSel", "BJet3_EvtSel",200,0,1000); h_BJet3_EvtSel->Sumw2();
-  //TriggerPlots
-  
-  h_MET_Base = new TH1F("MET_Base", "MET_Base",200,0,1000); h_MET_Base->Sumw2();
-  h_HT_Base = new TH1F("HT_Base", "HT_Base",400,0,4000); h_HT_Base->Sumw2();
-  h_HMT_Base = new TH1F("HMT_Base", "HMT_Base",400,0,4000); h_HMT_Base->Sumw2();
-  h_nBJet35_Base   = new TH1F("nBJet35_Base", "nBJet35_Base",20,0,20); h_nBJet35_Base->Sumw2();
-  h_nJet35_Base   = new TH1F("nJet20_Base", "nJet20_Base",20,0,20); h_nJet35_Base->Sumw2();
-  h_Jet0_Base = new TH1F("Jet0_Base", "Jet0_Base",200,0,1000); h_Jet0_Base->Sumw2();
-  h_Jet1_Base = new TH1F("Jet1_Base", "Jet1_Base",200,0,1000); h_Jet1_Base->Sumw2();
-  h_Jet2_Base = new TH1F("Jet2_Base", "Jet2_Base",200,0,1000); h_Jet2_Base->Sumw2();
-  h_Jet3_Base = new TH1F("Jet3_Base", "Jet3_Base",200,0,1000); h_Jet3_Base->Sumw2();
-  h_Jet4_Base = new TH1F("Jet4_Base", "Jet4_Base",200,0,1000); h_Jet4_Base->Sumw2();
-  h_Jet5_Base = new TH1F("Jet5_Base", "Jet5_Base",200,0,1000); h_Jet5_Base->Sumw2();
-  h_Jet6_Base = new TH1F("Jet6_Base", "Jet6_Base",200,0,1000); h_Jet6_Base->Sumw2();
-  h_BJet1_Base= new TH1F("BJet1_Base", "BJet1_Base",200,0,1000); h_BJet1_Base->Sumw2();
-  h_BJet2_Base= new TH1F("BJet2_Base", "BJet2_Base",200,0,1000); h_BJet2_Base->Sumw2();
-  h_BJet3_Base= new TH1F("BJet3_Base", "BJet3_Base",200,0,1000); h_BJet3_Base->Sumw2();
-
-  h_MET_BaseSel = new TH1F("MET_BaseSel", "MET_BaseSel",200,0,1000); h_MET_BaseSel->Sumw2();
-  h_HT_BaseSel = new TH1F("HT_BaseSel", "HT_BaseSel",400,0,4000); h_HT_BaseSel->Sumw2();
-  h_HMT_BaseSel = new TH1F("HMT_BaseSel", "HMT_BaseSel",400,0,4000); h_HMT_BaseSel->Sumw2();
-  h_nBJet35_BaseSel   = new TH1F("nBJet35_BaseSel", "nBJet35_BaseSel",20,0,20); h_nBJet35_BaseSel->Sumw2();
-  h_nJet35_BaseSel   = new TH1F("nJet20_BaseSel", "nJet20_BaseSel",20,0,20); h_nJet35_BaseSel->Sumw2();
-  h_Jet0_BaseSel = new TH1F("Jet0_BaseSel", "Jet0_BaseSel",200,0,1000); h_Jet0_BaseSel->Sumw2();
-  h_Jet1_BaseSel = new TH1F("Jet1_BaseSel", "Jet1_BaseSel",200,0,1000); h_Jet1_BaseSel->Sumw2();
-  h_Jet2_BaseSel = new TH1F("Jet2_BaseSel", "Jet2_BaseSel",200,0,1000); h_Jet2_BaseSel->Sumw2();
-  h_Jet3_BaseSel = new TH1F("Jet3_BaseSel", "Jet3_BaseSel",200,0,1000); h_Jet3_BaseSel->Sumw2();
-  h_Jet4_BaseSel = new TH1F("Jet4_BaseSel", "Jet4_BaseSel",200,0,1000); h_Jet4_BaseSel->Sumw2();
-  h_Jet5_BaseSel = new TH1F("Jet5_BaseSel", "Jet5_BaseSel",200,0,1000); h_Jet5_BaseSel->Sumw2();
-  h_Jet6_BaseSel = new TH1F("Jet6_BaseSel", "Jet6_BaseSel",200,0,1000); h_Jet6_BaseSel->Sumw2();
-  h_BJet1_BaseSel = new TH1F("BJet1_BaseSel", "BJet1_BaseSel",200,0,1000); h_BJet1_BaseSel->Sumw2();
-  h_BJet2_BaseSel = new TH1F("BJet2_BaseSel", "BJet2_BaseSel",200,0,1000); h_BJet2_BaseSel->Sumw2();
-  h_BJet3_BaseSel = new TH1F("BJet3_BaseSel", "BJet3_BaseSel",200,0,1000); h_BJet3_BaseSel->Sumw2();
-  
 
   cout<<"before histos"<<endl;
-  /*  Double_t tbins[68]={0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,86,92,99,106,114,122,131,141,151,
-		      162,174,187,201,216,232,249,267,286,307,329,353,379,406,435,466,500,536,575,617,
-		      662,710,761,816,875,938,1006,1079,1157,1241,1331,1427,1530,1641,1760,1887,2024,2170,2327,2495,2677,3000};*/
   Double_t tbins[59]={0,10,20,30,40,50,60,70,80,90,
 		      100,110,121,131,141,151,162,174,187,201,
 		      216,232,249,267,286,307,329,353,379,406,
@@ -246,63 +218,162 @@ void NtpThreeJet::BookHistograms()
 		      1760,1887,2024,2170,2327,2495,2677,3000,3400};
 
   for(int b=0; b<5; b++){
-  for (int i=0; i<10; i++){
-    int iPt=30+i*10;
-    //Triplet mass plots
-    Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
-    Mjjj_sumpt_btag_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
-    Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-     Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Mjjj_1btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    MET_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    MET_over_HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+    for (int i=0; i<11; i++){
+      int iPt=30+i*10;
+      //Triplet mass plots
+      Mjjj_sumpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
+      Mjjj_vecpt_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
+      Mjjj_P_bjet_pt_njet.push_back(std::vector<std::vector<TH2F*> >());
+      DeltaM_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      Mjjj_sumpt_btag_pt_njet.push_back(std::vector<std::vector<TH2F*> >());      
+      Aplanarity_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      Sphericity_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      Circularity_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      Isotropy_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      C_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      D_bjet_pt_njet.push_back(std::vector<std::vector<TH1F*> >());
+      
+      Mjjj_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
 
-    HMT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    nJet35_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    nBJet35_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    nVertex_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet0_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet1_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet2_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet3_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet4_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet5_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Jet6_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    BJet1_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    BJet2_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    BJet3_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_Sph4_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_Sph4_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
 
-    //Dalitz Plots
-    MjjHigh_MjjMid_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
-    MjjHigh_MjjLow_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
-    Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    Mjjj_1btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    MjjMid_MjjLow_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
-    //Dijet mass plots
-    M12_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    M13_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    M23_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-    for(int k=0; k<3; k++){
-      int iNjet=k+6;
-
+      MjjjSym_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());      
+      Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      Ntrip_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Ntrip_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      MjjjSym_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      MjjjSym_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      P_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      P_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      h31_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      h31_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      Maxtr_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Maxtr_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      MET_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      P_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      MET_over_HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      HMT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      nJet35_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      nBJet35_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      nVertex_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet0_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet1_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet2_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet3_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet4_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet5_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Jet6_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      BJet1_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      BJet2_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      BJet3_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      //Dalitz Plots
+      MjjHigh_MjjMid_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
+      MjjHigh_MjjLow_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
+      Mjjj_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      MjjMid_MjjLow_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH2F*> > >());
+      //Dijet mass plots
+      M12_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      M13_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      M23_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      for(int k=0; k<3; k++){
+	int iNjet=k+6;
+	
       Mjjj_sumpt_bjet_pt_njet[b].push_back(std::vector<TH2F*> ());
+      Mjjj_vecpt_bjet_pt_njet[b].push_back(std::vector<TH2F*> ());
+      Mjjj_P_bjet_pt_njet[b].push_back(std::vector<TH2F*> ());
+      DeltaM_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
       Mjjj_sumpt_btag_pt_njet[b].push_back(std::vector<TH2F*> ());
+
+      Aplanarity_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+      Sphericity_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+      Circularity_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+      Isotropy_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+      C_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+      D_bjet_pt_njet[b].push_back(std::vector<TH1F*> ());
+
+
       sprintf(hNAME, "Mjjj_sumpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
       Mjjj_sumpt_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Sumw2();
+
+      sprintf(hNAME, "Mjjj_vecpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Mjjj_vecpt_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
+      Mjjj_vecpt_bjet_pt_njet[b][i][k]->Sumw2();
+
+      sprintf(hNAME, "Aplanarity_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Aplanarity_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      Aplanarity_bjet_pt_njet[b][i][k]->Sumw2();
+      sprintf(hNAME, "Sphericity_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Sphericity_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      Sphericity_bjet_pt_njet[b][i][k]->Sumw2();
+
+      sprintf(hNAME, "Circularity_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Circularity_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      Circularity_bjet_pt_njet[b][i][k]->Sumw2();
+      
+      sprintf(hNAME, "Isotropy_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Isotropy_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      Isotropy_bjet_pt_njet[b][i][k]->Sumw2();
+      sprintf(hNAME, "C_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      C_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      C_bjet_pt_njet[b][i][k]->Sumw2();
+      sprintf(hNAME, "D_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      D_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,100,0,1));
+      D_bjet_pt_njet[b][i][k]->Sumw2();
+
+      sprintf(hNAME, "Mjjj_P_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      Mjjj_P_bjet_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,20,200,0,2000));
+      Mjjj_P_bjet_pt_njet[b][i][k]->Sumw2();
+
+      sprintf(hNAME, "DeltaM_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
+      DeltaM_bjet_pt_njet[b][i].push_back(new TH1F(hNAME,hNAME,200,-2000,2000));
+      DeltaM_bjet_pt_njet[b][i][k]->Sumw2();
+
       sprintf(hNAME, "Mjjjbtag_sumpt_bjet%i_pt%i_GE%ijet", b, iPt,iNjet);
       Mjjj_sumpt_btag_pt_njet[b][i].push_back(new TH2F(hNAME,hNAME,200,0,2000,200,0,2000));
       Mjjj_sumpt_btag_pt_njet[b][i][k]->Sumw2();
+
       Mjjj_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
-      Mjjj_1btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      Mjjj_Sph4_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+
+      MjjjSym_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());      
       Mjjj_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      Ntrip_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Ntrip_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      MjjjSym_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      MjjjSym_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      P_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      P_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      h31_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      h31_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      Maxtr_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Maxtr_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
       MET_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       HT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      P_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       MET_over_HT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       HMT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       nBJet35_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
@@ -329,40 +400,104 @@ void NtpThreeJet::BookHistograms()
       for(int j=0; j<25; j++){
 	
 	int iDiag=j*10+40;
-	
+	bool ResBin=false;
 	Mjjj_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2500,0,2500));
-	//Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	if(!ResBin)Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
 	Mjjj_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-	
+
 	Mjjj_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	if(b<1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
 	if(b>=1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_pt%i_diag%i_GE%ijet", 1,b,iPt,iDiag,iNjet);
-	
-	Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2500,0,2500));
-	//Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
-
+	if(!ResBin)Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
 	Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
-	Mjjj_1btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "Mjjj_1btag_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	Mjjj_1btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,2500,0,2500));
-	//Mjjj_1btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
 
-	Mjjj_1btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	Mjjj_Sph4_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+	sprintf(hNAME, "Mjjj_Sph4_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
+	if(!ResBin)Mjjj_Sph4_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_Sph4_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+	if(b<1) sprintf(hNAME, "Mjjj_Sph4_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
+	if(b>=1) sprintf(hNAME, "Mjjj_Sph4_btag%i_bjet%i_pt%i_diag%i_GE%ijet", 1,b,iPt,iDiag,iNjet);
+	if(!ResBin)Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	MjjjSym_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+	sprintf(hNAME, "MjjjSym_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
+	MjjjSym_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,100,0,1));
+	MjjjSym_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	Mjjj_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
-	Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,2500,0,2500));
-	//Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	if(!ResBin)Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
         Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
 
 	Mjjj_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
-	Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,2500,0,2500));
-	//Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	if(!ResBin)Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
         Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+	Ntrip_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Ntrip_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,20,0,20));
+        Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	Ntrip_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Ntrip_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,20,0,20));
+        Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+	MjjjSym_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "MjjjSym_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	MjjjSym_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,100,0,1));
+        MjjjSym_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	MjjjSym_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "MjjjSym_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	MjjjSym_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,100,0,1));
+        MjjjSym_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+	P_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "P_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	P_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,20));
+        P_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	P_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "P_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	P_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,20));
+        P_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+       h31_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "h31_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	h31_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,100,0,1));
+       h31_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	h31_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "h31_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	h31_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,100,0,1));
+        h31_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+	Maxtr_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Maxtr_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	Maxtr_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,200,-2,2));
+        Maxtr_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+	Maxtr_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Maxtr_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	Maxtr_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,200,-2,2));
+        Maxtr_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
 
 	MET_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "MET_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
@@ -371,8 +506,14 @@ void NtpThreeJet::BookHistograms()
 
 	HT_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "HT_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        HT_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,500,0,4000));
+	HT_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,500,0,4000));
         HT_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+
+	P_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "P_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
+	P_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,20));
+        P_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	MET_over_HT_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "MET_over_HT_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
@@ -450,35 +591,6 @@ void NtpThreeJet::BookHistograms()
         BJet3_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 
-	/*	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i].push_back(std::vector<TH2F*> ());
-	sprintf(hNAME, " MjjHigh_MjjMid_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k].push_back(new TH2F(hNAME,hNAME,100,0,1,100,0,1));
-	MjjHigh_MjjMid_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-
-	MjjHigh_MjjLow_bjet_pt_njet_diag[b][i].push_back(std::vector<TH2F*> ());
-	sprintf(hNAME, " MjjHigh_MjjLow__bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k].push_back(new TH2F(hNAME,hNAME,100,0,1,100,0,1));
-	MjjHigh_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-
-	MjjMid_MjjLow_bjet_pt_njet_diag[b][i].push_back(std::vector<TH2F*> ());
-	sprintf(hNAME, " MjjHigh_MjjLow_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k].push_back(new TH2F(hNAME,hNAME,100,0,1,100,0,1));
-	MjjMid_MjjLow_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-
-	M12_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "M12_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	M12_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
-	M12_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-
-	M13_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "M13_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	M13_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
-	M13_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
-
-	M23_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
-	sprintf(hNAME, "M23_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
-	M23_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,200,0,2000));
-	M23_bjet_pt_njet_diag[b][i][k][j]->Sumw2();*/
       }
     }
   }
@@ -524,45 +636,13 @@ void NtpThreeJet::WriteHistograms()
    fOutFile->mkdir("Trigger");
    fOutFile->cd("Trigger");
 
-   h_MET_Base->Write();
-   h_nBJet35_Base->Write();
-   h_nJet35_Base->Write();
-   h_HT_Base->Write();
-   h_HMT_Base->Write();
-   h_Jet0_Base->Write();
-   h_Jet1_Base->Write();
-   h_Jet2_Base->Write();
-   h_Jet3_Base->Write();
-   h_Jet4_Base->Write();
-   h_Jet5_Base->Write();
-   h_Jet6_Base->Write();
-   h_BJet1_Base->Write();
-   h_BJet2_Base->Write();
-   h_BJet3_Base->Write();
-
-   h_MET_BaseSel->Write();
-   h_nBJet35_BaseSel->Write();
-   h_nJet35_BaseSel->Write();
-   h_HT_BaseSel->Write();
-   h_HMT_BaseSel->Write();
-   h_Jet0_BaseSel->Write();
-   h_Jet1_BaseSel->Write();
-   h_Jet2_BaseSel->Write();
-   h_Jet3_BaseSel->Write();
-   h_Jet4_BaseSel->Write();
-   h_Jet5_BaseSel->Write();
-   h_Jet6_BaseSel->Write();
-   h_BJet1_BaseSel->Write();
-   h_BJet2_BaseSel->Write();
-   h_BJet3_BaseSel->Write();
-
-
    TDirectory* triplets=fOutFile->mkdir("Triplets");
    fOutFile->cd("Triplets");
    h_MET_EvtSel->Write();
    h_nBJet35_EvtSel->Write();
    h_nJet35_EvtSel->Write();
    h_HT_EvtSel->Write();
+   h_MJ_EvtSel->Write();
    h_HMT_EvtSel->Write();
    h_Jet0_EvtSel->Write();
    h_Jet1_EvtSel->Write();
@@ -578,12 +658,23 @@ void NtpThreeJet::WriteHistograms()
      sprintf(FOLDER, "bjet_%i", b);
      TDirectory* now=triplets->mkdir(FOLDER);
      triplets->cd(FOLDER);
-       for (int i=0; i<10; i++){
+       for (int i=0; i<11; i++){
 	 sprintf(FOLDER, "jetpt_%i", i*10+30);
 	 TDirectory* now2=now->mkdir(FOLDER);
 	 now->cd(FOLDER);
 	 for (int k=0; k<3; k++){
 	   Mjjj_sumpt_bjet_pt_njet[b][i][k]->Write();
+	   Mjjj_vecpt_bjet_pt_njet[b][i][k]->Write();
+	   Mjjj_P_bjet_pt_njet[b][i][k]->Write();
+	   DeltaM_bjet_pt_njet[b][i][k]->Write();
+	
+	   Aplanarity_bjet_pt_njet[b][i][k]->Write();
+	   Sphericity_bjet_pt_njet[b][i][k]->Write();
+	   Circularity_bjet_pt_njet[b][i][k]->Write();
+	   Isotropy_bjet_pt_njet[b][i][k]->Write();
+	   C_bjet_pt_njet[b][i][k]->Write();
+	   D_bjet_pt_njet[b][i][k]->Write();
+	   
 	   Mjjj_sumpt_btag_pt_njet[b][i][k]->Write();
 	   for(int j=0; j<25; j++){ 
 	     /*	     sprintf(FOLDER, "diagcut_%i_%i",k,j*10+40);
@@ -591,14 +682,34 @@ void NtpThreeJet::WriteHistograms()
 	     now2->cd(FOLDER);*/
 	     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Write();  
 	     Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
-	     
+
+	     Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Write();  
+	     Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
+
 	     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
 	     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
+	     Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
 	     
-	     bool WriteFull=false;
+	     bool WriteFull=true;
 	     if(WriteFull){
+	     MjjjSym_bjet_pt_njet_diag[b][i][k][j]->Write();  
+	     MjjjSym_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     MjjjSym_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
+	     P_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     P_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
+	     h31_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     h31_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
+	     Maxtr_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     Maxtr_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
 	     MET_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     HT_bjet_pt_njet_diag[b][i][k][j]->Write();
+	     P_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     HMT_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     nJet35_bjet_pt_njet_diag[b][i][k][j]->Write();
@@ -623,48 +734,47 @@ void NtpThreeJet::WriteHistograms()
   cout << "end of writing\n";
 }
 
+std::vector<math::XYZVector> makeVecForEventShape(std::vector<JetLV* > jets) {
+  std::vector<math::XYZVector> p;
+  for(int i=0; i< jets.size(); i++){
+    math::XYZVector Vjet;
+    Vjet = math::XYZVector(jets[i]->Px(), jets[i]->Py(), jets[i]->Pz());
+   
+    p.push_back(Vjet);
+  }
+  
+  return p;
+}
 
 void NtpThreeJet::Loop ()
 {
-
+  
   /////////////////IMPORTANT DEFINE SOME CUTS//////////////////
   /////////////////////////////////////////////////////////////
-  //St cut
-  float st_cut=700.0;
-  //leadin jet pt cut
-  float pt0_cut=180.0;
-  float pt1_cut=90.0;
   int njetsMin=6;
   bool DoPileUpReweight=true;
   bool DoBtagSF=true;  
-////////////////////////////////////////////////////////////
-
+  ////////////////////////////////////////////////////////////
+  
   // Run over all entries and do what you like!
   int countallhad=0;
   int countlep=0;
   int countsemilep=0;
   
-  reweight::LumiReWeighting LumiWeights_;
+  //Initialize the lumi reweighting
+  reweight::LumiReWeighting LumiWeights_;  
   std::vector< float > DataJun01 ;
   std::vector< float > Summer2012;
-      
-	// Distribution used for S10 Summer2012 MC.
- float Summer2012_f [60] = {2.560E-06, 5.239E-06, 1.420E-05, 
-			     5.005E-05, 1.001E-04, 2.705E-04, 1.999E-03, 
-			     6.097E-03, 1.046E-02, 1.383E-02, 1.685E-02, 
-			     2.055E-02, 2.572E-02, 3.262E-02, 4.121E-02, 
-			     4.977E-02, 5.539E-02, 5.725E-02, 5.607E-02, 
-			     5.312E-02, 5.008E-02, 4.763E-02, 4.558E-02, 
-			     4.363E-02, 4.159E-02, 3.933E-02, 3.681E-02, 
-			     3.406E-02, 3.116E-02, 2.818E-02, 2.519E-02, 
-			     2.226E-02, 1.946E-02, 1.682E-02, 1.437E-02, 
-			     1.215E-02, 1.016E-02, 8.400E-03, 6.873E-03, 
-			     5.564E-03, 4.457E-03, 3.533E-03, 2.772E-03, 
-			     2.154E-03, 1.656E-03, 1.261E-03, 9.513E-04, 
-			     7.107E-04, 5.259E-04, 3.856E-04, 2.801E-04, 
-			     2.017E-04, 1.439E-04, 1.017E-04, 7.126E-05, 
-			     4.948E-05, 3.405E-05, 2.322E-05, 1.570E-05, 
-			     5.005E-06};
+  
+  // Distribution used for S10 Summer2012 MC.
+  float Summer2012_f [60] = {2.560E-06, 5.239E-06, 1.420E-05, 5.005E-05, 1.001E-04, 2.705E-04, 1.999E-03, 
+			     6.097E-03, 1.046E-02, 1.383E-02, 1.685E-02, 2.055E-02, 2.572E-02, 3.262E-02, 4.121E-02, 
+			     4.977E-02, 5.539E-02, 5.725E-02, 5.607E-02, 5.312E-02, 5.008E-02, 4.763E-02, 4.558E-02, 
+			     4.363E-02, 4.159E-02, 3.933E-02, 3.681E-02, 3.406E-02, 3.116E-02, 2.818E-02, 2.519E-02,
+			     2.226E-02, 1.946E-02, 1.682E-02, 1.437E-02, 1.215E-02, 1.016E-02, 8.400E-03, 6.873E-03, 
+			     5.564E-03, 4.457E-03, 3.533E-03, 2.772E-03, 2.154E-03, 1.656E-03, 1.261E-03, 9.513E-04, 
+			     7.107E-04, 5.259E-04, 3.856E-04, 2.801E-04, 2.017E-04, 1.439E-04, 1.017E-04, 7.126E-05, 
+			     4.948E-05, 3.405E-05, 2.322E-05, 1.570E-05, 5.005E-06};
 
   float data_f[60]={0,8.66979e-07,1.99567e-06,7.0944e-06,0.00115866,0.00304481,9.37811e-05,0.000438788,0.00369376,
 		    0.0132685,0.0250747,0.035147,0.0466437,0.0612746,0.0752654,0.0879549,0.0977272,0.0971447,
@@ -672,113 +782,126 @@ void NtpThreeJet::Loop ()
 		    0.014462,0.0116675,0.00926419,0.00722899,0.00553611,0.00415629,0.0030565,0.00220048,0.00155038,
 		    0.00106882,0.00072095,0.000475842,0.000307359,0.000194338,0.000120318,7.29651e-05,4.33587e-05,
 		    2.52569e-05,1.44273e-05,8.08416e-06,4.44472e-06,2.39826e-06,1.27011e-06,0.00018054};
-
-	TH1D *puhist = (TH1D *) gDirectory->Get("pileup");
-	if (puhist) {
-		double numEvts = puhist->Integral();
-		if (numEvts > 0)
-			puhist->Scale(1.0/numEvts);
-	}
+  
+  TH1D *puhist = (TH1D *) gDirectory->Get("pileup");
+  if (puhist) {
+    double numEvts = puhist->Integral();
+    if (numEvts > 0)
+      puhist->Scale(1.0/numEvts);
+  }
   for( int z=0; z<50; ++z) {
     Summer2012.push_back(Summer2012_f[z]);
     double dataVal = data_f[z];
-		if (puhist)
-			dataVal =  puhist->GetBinContent(z + 1);
+    if (puhist)
+      dataVal =  puhist->GetBinContent(z + 1);
     DataJun01.push_back(dataVal);
   }
-	cout << endl;
-  
+  cout << endl;
+  //actually calculate the weights
   LumiWeights_ = reweight::LumiReWeighting(Summer2012,DataJun01);
-    std::vector<TLorentzVector* >      fBJets;
-    std::vector<TLorentzVector* >      fNoBJets;
-    std::vector<JetLV* >      				 fCleanJets;
-    std::vector<TLorentzVector* >      fTestJets;
-    std::vector<TLorentzVector* >      fCleanJets20;  
-    vector<TLorentzVector* > fdummyCleanJets;  
-
-    std::vector<int >   JetMoms;
-    std::vector<int >   TripletMoms;
-    std::vector<float >   sumScalarPtTriplet;
-    std::vector<float >   massTriplet;
-
-    std::vector<float >   massDoublet12;
-    std::vector<float >   massDoublet13;
-    std::vector<float >   massDoublet23;
-
-    std::vector<float >   massDoubletHigh;
-    std::vector<float >   massDoubletMid;
-    std::vector<float >   massDoubletLow;
-
-    std::vector<float >   sumVectorPtTriplet;
-    std::vector <std::vector<JetLV* > > Triplet;
-
-      TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
-	int notrig = 0;
+  
+  //initialize some quantities needed
+  std::vector<TLorentzVector* >      fBJets;
+  std::vector<TLorentzVector* >      fNoBJets;
+  std::vector<JetLV* >      	       fCleanJets;
+  std::vector<JetLV* >      	       fClean6Jets;
+  std::vector<TLorentzVector* >      fTestJets;
+  std::vector<TLorentzVector* >      fCleanJets20;  
+  
+  vector<TLorentzVector* > fdummyCleanJets;  
+  
+  std::vector<int >   JetMoms;
+  std::vector<int >   TripletMoms;
+  std::vector<float >   sumScalarPtTriplet;
+  std::vector<float >   massTriplet;
+  std::vector<float >   Maxtr;
+  
+  std::vector<float >   sumScalarPtTripletComp;
+  std::vector<float >   massTripletComp;
+  std::vector<float >   PTriplet;
+  std::vector<float >   h31Triplet;
+  
+  std::vector<float >   massDoublet12;
+  std::vector<float >   massDoublet13;
+  std::vector<float >   massDoublet23;
+  
+  std::vector<float >   massDoubletHigh;
+  std::vector<float >   massDoubletMid;
+  std::vector<float >   massDoubletLow;
+  
+  std::vector<float >   sumVectorPtTriplet;
+  std::vector <std::vector<JetLV* > > Triplet;
+  
+  TLorentzVector* dummyJet= new TLorentzVector (0,0,0,0);
+  int notrig = 0;
+  ////////////////////////////////////////////////////////////////
+  //////////////////////////EVENT LOOP////////////////////////////
+  ////////////////////////////////////////////////////////////////
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-
-    //do pile up reweighintg
-	
+    //    cout<<"-----------------------------------------"<<endl;
+    //do pile up reweighting if we use MonteCarlo
     double MyWeight = LumiWeights_.weight(nTruePileUp);
     double weight=1;
-        if(!DataIs)
-	  weight = MyWeight;
-    //cout << " nTruePileUp " << nTruePileUp << ", assigned weight " << weight << " ";
-  ///////////////////Clear out variables/////////////////////
+    if(!DataIs) weight = MyWeight;
 
-  Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
-  fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear(); 
-  fdummyCleanJets.clear();
-  massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
-  massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
-  JetMoms.clear(); TripletMoms.clear();
-  ////////////////////////////////////////////////////////////
+    ///////////////////Clear out variables/////////////////////    
+    Triplet.clear();    sumScalarPtTriplet.clear();  sumVectorPtTriplet.clear(); massTriplet.clear();
+    PTriplet.clear();    h31Triplet.clear();    Maxtr.clear();
+    fBJets.clear(); fNoBJets.clear();fCleanJets.clear(); fClean6Jets.clear();    
+    fCleanJets20.clear(); fTestJets.clear();     fdummyCleanJets.clear();
+    massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
+    massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
+    JetMoms.clear(); TripletMoms.clear();
+    ////////////////////////////////////////////////////////////
     
-
+    //count something for every 100 events
     if (ientry % 100 == 0) {
       printf("\n=================Processing entry: %i\n", ientry);
     }
-    //cout<<HasSelTrigger<<" "<<HasBaseTrigger<<endl;
+    //can be used to run SUSY scans, then change the If statement
     if(1==1){//MSquark == 375 && MLSP ==75)
       
-      //JETS///////
+      ////////JETS///////
       //Count all the jets above 35 Gev, also calculated HT=SumptAllJet, count number of b-jets
-      int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0; 
-      
+      int nJet20=0; int nJet35=0; int nBJet35=0; int nNoBJet35=0;       
       float SumptAllJet=0;
+      float MassAllJet=0;
       float SumptAllJet20=0;
       float SumMetPtAllJet=0;
       float SumMetPtAllJet20=0;
       
       int dummycounter=0;     
-      //    cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
+      //cout<<"Shouldn't be anyting "<<fCleanJets.size()<<" "<<nPFJets<<" "<<sizeof(jet_PF_pt)<<endl;
       for (int i=0; i<nPFJets; i++){
 	//cout<<i<<". th jet: "<<jet_PF_pt[i]<<" eta: "<< fabs(jet_PF_eta[i])<<endl;
 	JetLV* Jet=new JetLV(jet_PF_px[i],jet_PF_py[i],jet_PF_pz[i],jet_PF_e[i]);
-	
 	if (jet_PF_pt[i]>20.0 && fabs(jet_PF_eta[i])<2.5){
 	  bool isTagged = false;
-	  //CSVL > 0.244, CSVM > 0.679, CSVT > 0.898
+	  //CSVL > 0.244, CSVM > 0.679, CSVT > 0.898, JPM > 
 	  if (bdiscCSV_PF[i] >  0.679)
-	    isTagged = true;
-	  //Add isData check here (need to add variable to the ntuple first)
-	  //set a unique seed                                                                                                                                                
-	  //implementing b-tagging scale factors
+	  isTagged = true;
+	  //if (bdiscJP_PF[i] >  0.545)
+	  //isTagged = true;
+
+ //implementing b-tagging scale factors
 	  int jet_flavor =jet_PF_PartonFlav[i];
 	  float jet_pt = jet_PF_pt[i];
 	  float jet_phi = jet_PF_phi[i];
 	  float jet_eta = jet_PF_eta[i];
+	  //apply upgrading/downgrading for MC
 	  
 	  if(!DataIs){
+	  if(DoBtagSF){
+	    
 	    double phi = jet_phi;
 	    double sin_phi = sin(phi*1000000);
 	    double seed = abs(static_cast<int>(sin_phi*100000));
-	    //Initialize class                                                                                                                                                
+	    //Initialize class   
 	    BTagSFUtil* btsfutil = new BTagSFUtil( seed );
 	    bool temp=isTagged;
-	    //modify tags                                                                                                                                                      
+	    //For uncertainties use BtagSys=-1,1 
 	    int BtagSys =0;
-	    //modify tags  
-	    //For uncertainties use BtagSys=-1,1                                                                                                                                  
+	    
 	    float Btag_SF =  GetBTagSF(jet_pt,jet_eta,BtagSys*1);
 	    float Btag_eff =  h2_EffMapB->GetBinContent( h2_EffMapB->GetXaxis()->FindBin(jet_pt), h2_EffMapB->GetYaxis()->FindBin(fabs(jet_eta)) );
 	    
@@ -794,13 +917,14 @@ void NtpThreeJet::Loop ()
 	    // cout<< endl << "GOT ONE!!!!!!!!!!!: "<<temp<<"  "<<isTagged<<" "<<jet_flavor<<"  "<<bdiscCSV_PF[i]<<endl;
 	    delete btsfutil;
 	  }
-	  
+	  }
 	  Jet->setBtag(isTagged);
 	  nJet20++;
 	  fCleanJets20.push_back(Jet);
 	  SumptAllJet20=SumptAllJet20+jet_PF_pt[i];
 	  if(jet_PF_pt[i]>35.0){
 	    SumptAllJet=SumptAllJet+jet_PF_pt[i];
+	    MassAllJet=MassAllJet+jet_PF_mass[i];
 	    fCleanJets.push_back(Jet);
 	    h_NeutralHad_JetPt->Fill(jet_PF_pt[i],jet_PF_NeutralHad[i],weight);
 	    JetMoms.push_back(jet_PF_JetMom[i]);
@@ -822,110 +946,44 @@ void NtpThreeJet::Loop ()
 		fdummyCleanJets.push_back(Jet);
 		
 	      }
+	    }
 	  }
+	
 	}
-      }
-      
-
+	
+	
         SumMetPtAllJet = pfMET + SumptAllJet;
 	SumMetPtAllJet20 = pfMET + SumptAllJet20;
-	//cout<<nTruePileUp<<" "<<MyWeight<<" "<<weight<<endl;
-
-
+      
 
 	//MUON/////
 	//make some plots for the muons
-	  
-    for (int i=0; i<nMuons; i++){
-       TLorentzVector Muon(mpx[i],mpy[i],mpz[i],me[i]);
-       //lets look at the leading muon for now
-       if(i==0){
-	 h_mPFIso->Fill(mPFIso[i],weight);
-	 h_mpt->Fill(Muon.Pt(),weight);
-       //calcualte the minimum dR to one of the jets
-       float mindRMuonJet=9999;
-       for (int j=0; j<nJet35; j++){
-	 TLorentzVector Jet1(fCleanJets[j]->Px(),fCleanJets[j]->Py(),fCleanJets[j]->Pz(),fCleanJets[j]->E());
-	 float dRMuonJet=Jet1.DeltaR(Muon);
-	 if (dRMuonJet < mindRMuonJet) mindRMuonJet=dRMuonJet;
-	 //	 cout<<"All: "<<dRMuonJet<<endl;
-
-       }
-       //cout<<mindRMuonJet<<endl;
-       h_mindRMuonJet->Fill(mindRMuonJet,weight);
-
-       h_mindRMuonJet_mPFIso->Fill(mPFIso[i],mindRMuonJet,weight);
-       }
-       }
 	
-     ////TRIGGER////////////
-     if(nJet20>=4){
-     if(HasBaseTrigger){
-       h_MET_Base->Fill(pfMET,weight);
-       h_HT_Base->Fill(SumptAllJet20,weight);
-       h_HMT_Base->Fill(SumMetPtAllJet20,weight);
-       h_Jet0_Base->Fill(fCleanJets20[0]->Pt(),weight);
-       h_Jet1_Base->Fill(fCleanJets20[1]->Pt(),weight);
-       h_Jet2_Base->Fill(fCleanJets20[2]->Pt(),weight);
-       h_Jet3_Base->Fill(fCleanJets20[3]->Pt(),weight);
-       if(nBJet35>2){
-	 h_BJet1_Base->Fill(fBJets[0]->Pt(),weight);
-	 h_BJet2_Base->Fill(fBJets[1]->Pt(),weight);
-	 h_BJet3_Base->Fill(fBJets[2]->Pt(),weight);
-	} 
-       if(nJet20>=5) h_Jet4_Base->Fill(fCleanJets20[4]->Pt(),weight);
-       if(nJet20>=6) h_Jet5_Base->Fill(fCleanJets20[5]->Pt(),weight);
-            if(HasSelTrigger){
-	      h_MET_BaseSel->Fill(pfMET,weight);
-	      h_HT_BaseSel->Fill(SumptAllJet20,weight);
-	      h_HMT_BaseSel->Fill(SumMetPtAllJet20,weight);
-	      h_Jet0_BaseSel->Fill(fCleanJets20[0]->Pt(),weight);
-	      h_Jet1_BaseSel->Fill(fCleanJets20[1]->Pt(),weight);
-	      h_Jet2_BaseSel->Fill(fCleanJets20[2]->Pt(),weight);
-	      h_Jet3_BaseSel->Fill(fCleanJets20[3]->Pt(),weight);
-	      if(nBJet35>2){           
-                  h_BJet1_BaseSel->Fill(fBJets[0]->Pt(),weight);
-		  h_BJet2_BaseSel->Fill(fBJets[1]->Pt(),weight);
-                  h_BJet3_BaseSel->Fill(fBJets[2]->Pt(),weight);
-	      }
-	      if(nJet20>=5) h_Jet4_BaseSel->Fill(fCleanJets20[4]->Pt(),weight);
-	      if(nJet20>=6) h_Jet5_BaseSel->Fill(fCleanJets20[5]->Pt(),weight);
+	for (int i=0; i<nMuons; i++){
+	  TLorentzVector Muon(mpx[i],mpy[i],mpz[i],me[i]);
+	  //lets look at the leading muon for now
+	  if(i==0){
+	    h_mPFIso->Fill(mPFIso[i],weight);
+	    h_mpt->Fill(Muon.Pt(),weight);
+	    //calcualte the minimum dR to one of the jets
+	    float mindRMuonJet=9999;
+	    for (int j=0; j<nJet35; j++){
+	      TLorentzVector Jet1(fCleanJets[j]->Px(),fCleanJets[j]->Py(),fCleanJets[j]->Pz(),fCleanJets[j]->E());
+	      float dRMuonJet=Jet1.DeltaR(Muon);
+	      if (dRMuonJet < mindRMuonJet) mindRMuonJet=dRMuonJet;
+	      //	 cout<<"All: "<<dRMuonJet<<endl;
+	      
 	    }
-     }
-
-     }
-     //Possible Triggers selections
+	    //cout<<mindRMuonJet<<endl;
+	    h_mindRMuonJet->Fill(mindRMuonJet,weight);
+	    
+	    h_mindRMuonJet_mPFIso->Fill(mPFIso[i],mindRMuonJet,weight);
+	  }
+	}
 	
-    if (HasSelTrigger){
-      if (nJet35>=6 && nMuons>=1) {
-       h_PossibleTrigger->Fill(1);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(5);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(9);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(13);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(17);
-     }
-     if (nJet35>=6 && SumptAllJet>900)
-       { h_PossibleTrigger->Fill(2);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(6);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(10);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(14);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(18);
-       }
-     if (nJet35>=6){
-       if(fCleanJets[0]->Pt() > 85 && fCleanJets[1]->Pt() > 80 && fCleanJets[2]->Pt() > 65 && fCleanJets[3]->Pt() > 65 && fCleanJets[4]->Pt() > 25 &&
-	  fCleanJets[5]->Pt() > 25){
-	 h_PossibleTrigger->Fill(3);
-       if(nBJet35 >= 1) h_PossibleTrigger->Fill(7);
-       if(nBJet35 >= 2) h_PossibleTrigger->Fill(11);
-       if(nBJet35 >= 3) h_PossibleTrigger->Fill(15);
-       if(nBJet35 >= 4) h_PossibleTrigger->Fill(19);
-       }
-       }
-
-
-
-     //  if ( nJet35>=6 && nMuons>=1)
-     //     if ( nJet35>=6 && SumptAllJet>800)
+	//Possible Triggers selections
+	
+   if (HasSelTrigger){
      h_nBJet35->Fill(nBJet35,weight);
      h_nJet35->Fill(nJet35,weight);
      h_MET->Fill(pfMET,weight);
@@ -935,40 +993,48 @@ void NtpThreeJet::Loop ()
      h_HT->Fill(SumptAllJet,weight);
      h_HMT->Fill(SumMetPtAllJet,weight);
      if(nBJet35>2){           
-         h_BJet1->Fill(fBJets[0]->Pt(),weight);
-         h_BJet2->Fill(fBJets[1]->Pt(),weight);
-         h_BJet3->Fill(fBJets[2]->Pt(),weight);
-      }
+       h_BJet1->Fill(fBJets[0]->Pt(),weight);
+       h_BJet2->Fill(fBJets[1]->Pt(),weight);
+       h_BJet3->Fill(fBJets[2]->Pt(),weight);
+     }
      if(nJet35>=1)h_Jet0->Fill(fCleanJets[0]->Pt(),weight);
      if(nJet35>=2)h_Jet1->Fill(fCleanJets[1]->Pt(),weight);
      if(nJet35>=3)h_Jet2->Fill(fCleanJets[2]->Pt(),weight);
      if(nJet35>=4)h_Jet3->Fill(fCleanJets[3]->Pt(),weight);
      if(nJet35>=5)h_Jet4->Fill(fCleanJets[4]->Pt(),weight);
      if(nJet35>=6)h_Jet5->Fill(fCleanJets[5]->Pt(),weight);
-        
-     	      
+     
+     
      if ( nJet35>=6){
        //cout<<nJet35<<" "<<fCleanJets.size()<<" s"<<fCleanJets[0]->Pt()<<" "<<fCleanJets[1]->Pt()<<" "<<fCleanJets[2]->Pt()<<" "<<fCleanJets[3]->Pt()<<" "<<fCleanJets[4]->Pt()<<" "<<fCleanJets[5]->Pt()<<endl;
        //       if(fCleanJets[0]->Pt() > 80.0 && fCleanJets[1]->Pt() > 80. && fCleanJets[2]->Pt() > 80.0 && fCleanJets[3]->Pt() > 80.0 && 
        //fCleanJets[4]->Pt() > 60.0 && fCleanJets[5]->Pt() > 60.0)
-
+       
        if(fCleanJets[3]->Pt() > 80 ){
-       //      if(SumptAllJet>900)
+	 //      if(SumptAllJet>900)
 	 if(1==1){//nBJet35 >= 3)
-
+	   //GetEvent Shape
+	   //EventShape = EventShapeVariables(fCleanJets3Vec);
+	   
+	   //	   cout<<aplanarity_<<" "<<sphericity_<<" "<<circularity_<<" "<<isotropy_<<" "<<C_<<" "<<D_<<endl;
 	   h_nBJet35_EvtSel->Fill(nBJet35,weight);
 	   h_nJet35_EvtSel->Fill(nJet35,weight);
 	   h_MET_EvtSel->Fill(pfMET,weight);
+	
+	   /*	   if(pfMET > 50.0)h_HT_EvtSel->Fill(SumptAllJet+pfMET,weight);
+	   else if (pfMET <=50.0) h_HT_EvtSel->Fill(SumptAllJet,weight);
+	   */
 	   h_HT_EvtSel->Fill(SumptAllJet,weight);
+	   h_MJ_EvtSel->Fill(MassAllJet,weight);
 	   h_HMT_EvtSel->Fill(SumMetPtAllJet,weight);
 	   h_Jet0_EvtSel->Fill(fCleanJets[0]->Pt(),weight);
 	   h_Jet1_EvtSel->Fill(fCleanJets[1]->Pt(),weight);
 	   h_Jet2_EvtSel->Fill(fCleanJets[2]->Pt(),weight);
 	   if(nBJet35>2){           
-                  h_BJet1_EvtSel->Fill(fBJets[0]->Pt(),weight);
-		  h_BJet2_EvtSel->Fill(fBJets[1]->Pt(),weight);
-                  h_BJet3_EvtSel->Fill(fBJets[2]->Pt(),weight);
-	      }
+	     h_BJet1_EvtSel->Fill(fBJets[0]->Pt(),weight);
+	     h_BJet2_EvtSel->Fill(fBJets[1]->Pt(),weight);
+	     h_BJet3_EvtSel->Fill(fBJets[2]->Pt(),weight);
+	   }
 	   if(nJet35>=4) h_Jet3_EvtSel->Fill(fCleanJets[3]->Pt(),weight);
 	   if(nJet35>=5) h_Jet4_EvtSel->Fill(fCleanJets[4]->Pt(),weight);
 	   if(nJet35>=6) h_Jet5_EvtSel->Fill(fCleanJets[5]->Pt(),weight);
@@ -977,190 +1043,237 @@ void NtpThreeJet::Loop ()
 	   //  	   int numJetForTriplet=fCleanJets.size();
 	   //only the six leading jets make triplets
 	   unsigned int numJetForTriplet=6;
-       int nTriplets=0;
-       for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
-	 for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
-	   for (unsigned int k=j+1; k<numJetForTriplet-0; ++k) {
-	     Triplet.push_back(std::vector<JetLV* > ());
-	     
-	     JetLV* Jet1; JetLV* Jet2; JetLV* Jet3;
-	     Jet1=fCleanJets[i]; Jet2=fCleanJets[j]; Jet3=fCleanJets[k];
-	     TLorentzVector Triplet123; Triplet123=(*Jet1+*Jet2+*Jet3);
-	     TLorentzVector Doublet12; Doublet12=*Jet1+*Jet2;
-	     TLorentzVector Doublet13; Doublet13=*Jet1+*Jet3;
-	     TLorentzVector Doublet23; Doublet23=*Jet2+*Jet3;
-
-	     sumScalarPtTriplet.push_back(Jet1->Pt()+Jet2->Pt()+Jet3->Pt());
-	     massTriplet.push_back(Triplet123.M());
-	     sumVectorPtTriplet.push_back(Triplet123.Pt());
-	     int TripletMomGood=-1;
-	     if(JetMoms[i]==-1 || JetMoms[j]==-1 || JetMoms[k]==-1) TripletMomGood=-1;
-	     if((JetMoms[i]!=-1 && JetMoms[j]!=-1 && JetMoms[k]!=-1) && (JetMoms[i]==JetMoms[j] && JetMoms[i]==JetMoms[k] && JetMoms[j]==JetMoms[k])) TripletMomGood=JetMoms[i];
-	    
-
-	     TripletMoms.push_back(TripletMomGood);
-	     //	     cout<<"Combo: "<<i<<" "<<j<<" "<<k<<" JetMoms: "<<JetMoms[i]<<" "<<JetMoms[j]<<" "<<JetMoms[k]<<" TripleMoms: "<<TripletMoms[nTriplets]<<endl;
-	     massDoublet12.push_back(Doublet12.M());  
-	     massDoublet13.push_back(Doublet13.M()); 
-	     massDoublet23.push_back(Doublet23.M());
-	     vector<float > dijetmass_3m;
-
-	     dijetmass_3m.push_back(Doublet12.M()*Doublet12.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
-	     dijetmass_3m.push_back(Doublet13.M()*Doublet13.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
-	     dijetmass_3m.push_back(Doublet23.M()*Doublet23.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
-	     sort(dijetmass_3m.begin(),dijetmass_3m.end());
-
-
-
-	     massDoubletHigh.push_back(dijetmass_3m[2]);  
-	     massDoubletMid.push_back(dijetmass_3m[1]);  
-	     massDoubletLow.push_back(dijetmass_3m[0]);
-
-	     Triplet[nTriplets].push_back(Jet1);
-	     Triplet[nTriplets].push_back(Jet2);
-	     Triplet[nTriplets].push_back(Jet3);
-
-	     nTriplets++;
-
-
+	   int nTriplets=0;
+	   for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
+	     for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
+	       for (unsigned int k=j+1; k<numJetForTriplet-0; ++k) {
+		 Triplet.push_back(std::vector<JetLV* > ());
+		 
+		 JetLV* Jet1; JetLV* Jet2; JetLV* Jet3;
+		 Jet1=fCleanJets[i]; Jet2=fCleanJets[j]; Jet3=fCleanJets[k];
+		 
+		 JetLV* Jet4; JetLV* Jet5; JetLV* Jet6;
+		 Jet4=fCleanJets[5-k]; Jet5=fCleanJets[5-j]; Jet6=fCleanJets[5-i];
+		 
+		 TLorentzVector Triplet123; Triplet123=(*Jet1+*Jet2+*Jet3);
+		 TLorentzVector Triplet456; Triplet456=(*Jet4+*Jet5+*Jet6);
+		 TVector2 TripletPhiRapidity; TripletPhiRapidity.Set(Triplet123.Rapidity(),Triplet123.Phi());
+		 
+		 TripletPhiRapidity=TripletPhiRapidity/sqrt(TripletPhiRapidity.X()*TripletPhiRapidity.X()+TripletPhiRapidity.Y()*TripletPhiRapidity.Y());
+		 TVector2 Jet1PhiRapidity; Jet1PhiRapidity.Set(Jet1->Rapidity(),Jet1->Phi());
+		 Jet1PhiRapidity=Jet1PhiRapidity/sqrt(Jet1PhiRapidity.X()*Jet1PhiRapidity.X()+Jet1PhiRapidity.Y()*Jet1PhiRapidity.Y());
+		 
+		 TVector2 Jet2PhiRapidity; Jet2PhiRapidity.Set(Jet2->Rapidity(),Jet2->Phi());
+		 Jet2PhiRapidity=Jet2PhiRapidity/sqrt(Jet2PhiRapidity.X()*Jet2PhiRapidity.X()+Jet2PhiRapidity.Y()*Jet2PhiRapidity.Y());
+		 
+		 TVector2 Jet3PhiRapidity; Jet3PhiRapidity.Set(Jet3->Rapidity(),Jet3->Phi());
+		 Jet3PhiRapidity=Jet3PhiRapidity/sqrt(Jet3PhiRapidity.X()*Jet3PhiRapidity.X()+Jet3PhiRapidity.Y()*Jet3PhiRapidity.Y());
+		 
+		 Maxtr.push_back(1/3.0*((TripletPhiRapidity.X()*Jet1PhiRapidity.X()+TripletPhiRapidity.Y()*Jet1PhiRapidity.Y())+(TripletPhiRapidity.X()*Jet2PhiRapidity.X()+TripletPhiRapidity.Y()*Jet2PhiRapidity.Y())+(TripletPhiRapidity.X()*Jet3PhiRapidity.X()+TripletPhiRapidity.Y()*Jet3PhiRapidity.Y())));
+		 
+		 TLorentzVector Doublet12; Doublet12=*Jet1+*Jet2;
+		 TLorentzVector Doublet13; Doublet13=*Jet1+*Jet3;
+		 TLorentzVector Doublet23; Doublet23=*Jet2+*Jet3;
+		 
+		 float fP=Jet1->DeltaR(*Jet2)+Jet2->DeltaR(*Jet3)+Jet1->DeltaR(*Jet3);
+		 PTriplet.push_back(fP);
+		 
+		 sumScalarPtTriplet.push_back(Jet1->Pt()+Jet2->Pt()+Jet3->Pt());
+		 massTriplet.push_back(Triplet123.M());
+		 h31Triplet.push_back(Jet3->Pt()/Jet1->Pt());
+		 
+		 sumScalarPtTripletComp.push_back(Jet4->Pt()+Jet5->Pt()+Jet6->Pt());
+		 massTripletComp.push_back(Triplet456.M());
+		 
+		 sumVectorPtTriplet.push_back(Triplet123.Pt());
+		 int TripletMomGood=-1;
+		 if(JetMoms[i]==-1 || JetMoms[j]==-1 || JetMoms[k]==-1) TripletMomGood=-1;
+		 if((JetMoms[i]!=-1 && JetMoms[j]!=-1 && JetMoms[k]!=-1) && (JetMoms[i]==JetMoms[j] && JetMoms[i]==JetMoms[k] && JetMoms[j]==JetMoms[k])) TripletMomGood=JetMoms[i];
+		 
+		 
+		 TripletMoms.push_back(TripletMomGood);
+		 //	     cout<<"Combo: "<<i<<" "<<j<<" "<<k<<" JetMoms: "<<JetMoms[i]<<" "<<JetMoms[j]<<" "<<JetMoms[k]<<" TripleMoms: "<<TripletMoms[nTriplets]<<endl;
+		 massDoublet12.push_back(Doublet12.M());  
+		 massDoublet13.push_back(Doublet13.M()); 
+		 massDoublet23.push_back(Doublet23.M());
+		 vector<float > dijetmass_3m;
+		 
+		 dijetmass_3m.push_back(Doublet12.M()*Doublet12.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
+		 dijetmass_3m.push_back(Doublet13.M()*Doublet13.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
+		 dijetmass_3m.push_back(Doublet23.M()*Doublet23.M()/(Triplet123.M()*Triplet123.M()+Jet1->M()*Jet1->M()+Jet2->M()*Jet2->M()+Jet3->M()*Jet3->M()));
+		 sort(dijetmass_3m.begin(),dijetmass_3m.end());
+		 
+		 
+		 
+		 massDoubletHigh.push_back(dijetmass_3m[2]);  
+		 massDoubletMid.push_back(dijetmass_3m[1]);  
+		 massDoubletLow.push_back(dijetmass_3m[0]);
+		 
+		 Triplet[nTriplets].push_back(Jet1);
+		 Triplet[nTriplets].push_back(Jet2);
+		 Triplet[nTriplets].push_back(Jet3);
+		 
+		 nTriplets++;
+		 
+		 
+	       }
+	     }
 	   }
-	 }
-       }
-     
-       
+	   
+	   EventShapeVariables eventshape(makeVecForEventShape(fCleanJets));
+	   //actually (r) with r=2 for normal and r=1 infrared safe defintion
+	   float aplanarity_  = eventshape.aplanarity();
+	   float sphericity_  = eventshape.sphericity();
+	   float circularity_ = eventshape.circularity();
+	   float isotropy_    = eventshape.isotropy();
+	   float C_           = eventshape.C();
+	   float D_           = eventshape.D();
+	   
+	   for(int b=0; b<5; b++){
+	     
+	     for (int i=3; i<11; i++)
+	       {
+		 float iPt=30.0+(float)i*10.0;
+		 for(int k=0; k<1; k++)
+		   { 
+		     unsigned int iNjet=k+6;
+		     //count njets with the pt cut -> gonna be slow
+		     
+		     
+		     if(iNjet<=fCleanJets.size()){
+		       //pt cut is applied to the N (loop) highes jets, all others are 35 GeV
+		       if(fCleanJets[iNjet-1]->Pt()>iPt && nBJet35>=b)
+			 {
+			   Aplanarity_bjet_pt_njet[b][i][k]->Fill(aplanarity_,weight);
+			   Sphericity_bjet_pt_njet[b][i][k]->Fill(sphericity_,weight);
+			   Circularity_bjet_pt_njet[b][i][k]->Fill(circularity_,weight);
+			   Isotropy_bjet_pt_njet[b][i][k]->Fill(isotropy_,weight);
+			   C_bjet_pt_njet[b][i][k]->Fill(C_,weight);
+			   D_bjet_pt_njet[b][i][k]->Fill(D_,weight);
+			   
+			   
+			   
+			   for(int j=0; j<25; j++){
+			     int countMatchTrip=0;
+			     int countCombTrip=0;
+			     int countT=0;
+			     for(unsigned int q=0; q<massTriplet.size(); q++){  
+			       //only fill the following plots once
+			       
+			       if(Triplet[q][2]->Pt()>iPt){
+				 if(j==0){
 
-	 for(int b=0; b<5; b++){
-
-	 for (int i=0; i<10; i++)
-	   {
-	     float iPt=30.0+(float)i*10.0;
-	     for(int k=0; k<3; k++)
-	       { 
-		 unsigned int iNjet=k+6;
-		 //count njets with the pt cut -> gonna be slow
-	       for(unsigned int q=0; q<massTriplet.size(); q++){
-		  
-       
-		 if(iNjet<=fCleanJets.size()){
-		  
-		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
-		     {	
-		       Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
-		     }
-		   if(Triplet[q][2]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt &&
-		   	 nBJet35>=b && (Triplet[q][0]->btagged ||
-		   	 	 Triplet[q][1]->btagged || Triplet[q][2]->btagged))
-		     {	
-		       Mjjj_sumpt_btag_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
-		     }
-		   for(int j=0; j<25; j++){
-		        
-		     float iDiag=(float)j*10.0+40.0;
-		     //to implement the pt cut we only keep triplets where the lowest jet passes pt cut
-		     //also we check if the njetsMin cut satisfies this pt cut
-		     //std::cout<<"before selection"<<endl;
-		     // std::cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
-		     //if(iNjet>fCleanJets.size())
-		     // cout<<Triplet[q][2].pt()<<endl;
-		     // cout<<fCleanJets.size()<<endl;
-		     // cout<<iNjet-1<<endl;
-		     if(Triplet[q][2]->Pt()>iPt && fCleanJets[njetsMin-1]->Pt()>iPt && fCleanJets[iNjet-1]->Pt()>iPt && nBJet35==b)
-		       {
-			 //cout<<"after selection"<<endl;
-			 //cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
-			 if(massTriplet[q]<(sumScalarPtTriplet[q]-iDiag))
-			   {
-			     float countT=0;
-			     Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-			    
-			     if(TripletMoms[q]==0 || TripletMoms[q]==1)
-			       Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
-			     if(TripletMoms[q]!=0 && TripletMoms[q]!=1)
-			       Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(massTriplet[q],weight);
-			     
-			     if(b==0)
-			       {Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-				  MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
-			     HT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
-			     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET/SumptAllJet, weight);
-			     HMT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumMetPtAllJet20, weight);
-			     nJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nJet35, weight);
-			     nBJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nBJet35, weight);
-			     nVertex_bjet_pt_njet_diag[b][i][k][j]->Fill(nGoodVtx,weight);
-			     Jet0_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[0]->Pt(), weight);
-			     Jet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[1]->Pt(), weight);
-			     Jet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[2]->Pt(), weight);
-			     if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
-			     if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
-			     if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nBJet35>2){ 
-			       BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
-			       BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);
-			       BJet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[2]->Pt(), weight);
-			       }
-
-			       }
-			     if (b>=1){
-			       if (Triplet[q][0]->btagged || Triplet[q][1]->btagged || Triplet[q][2]->btagged)
-				 {
-				   Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-				   MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
-			     HT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
-			     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET/SumptAllJet, weight);
-			     HMT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumMetPtAllJet20, weight);
-			     nJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nJet35, weight);
-			     nBJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nBJet35, weight);
-			     nVertex_bjet_pt_njet_diag[b][i][k][j]->Fill(nGoodVtx,weight);
-			     Jet0_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[0]->Pt(), weight);
-			     Jet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[1]->Pt(), weight);
-			     Jet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[2]->Pt(), weight);
-			     if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
-			     if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
-			     if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nBJet35>2){ 
-			       BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
-			       BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);
-			       BJet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[2]->Pt(), weight);
-			       } 
+				     Mjjj_sumpt_bjet_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
+				     Mjjj_vecpt_bjet_pt_njet[b][i][k]->Fill(sumVectorPtTriplet[q],massTriplet[q],weight);
+				     Mjjj_P_bjet_pt_njet[b][i][k]->Fill(PTriplet[q],massTriplet[q],weight);
+				     DeltaM_bjet_pt_njet[b][i][k]->Fill(massTriplet[q]-massTripletComp[q],weight);
+				     Mjjj_sumpt_btag_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
+				   
+				   if(b >= 1 && (Triplet[q][0]->btagged ||
+								  Triplet[q][1]->btagged || Triplet[q][2]->btagged))
+				     {	
+				       Mjjj_sumpt_btag_pt_njet[b][i][k]->Fill(sumScalarPtTriplet[q],massTriplet[q],weight);
+				     }		  
 				 }
+			       float iDiag=(float)j*10.0+40.0;
+			       //to implement the pt cut we only keep triplets where the lowest jet passes pt cut
+			       //also we check if the njetsMin cut satisfies this pt cut
+			       
+			       //cout<<"after selection"<<endl;
+			       //cout<<Triplet[q][2].pt()<<" "<<fCleanJets.size()<<" "<<fCleanJets[iNjet-1].pt()<<endl;
+			       if(massTriplet[q]<(sumScalarPtTriplet[q]-iDiag))
+				 {
+				   countT++;
+				   float JetMassSym=fabs(massTriplet[q]-massTripletComp[q])/(massTriplet[q]+massTripletComp[q])/2;
+				   Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				   if(sphericity_ >= 0.4) Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				   MjjjSym_bjet_pt_njet_diag[b][i][k][j]->Fill(JetMassSym,weight);
+				   P_bjet_pt_njet_diag[b][i][k][j]->Fill(PTriplet[q], weight);	
+				   if(b==0){
+				     Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				     if(sphericity_ >= 0.4) Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				   }
+				   if (b>=1){
+				     if (Triplet[q][0]->btagged || Triplet[q][1]->btagged || Triplet[q][2]->btagged){
+				       Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				     if(sphericity_ >= 0.4) Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				     }
+				   }
+				   
+				   if(TripletMoms[q]==0 || TripletMoms[q]==1){
+				     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
+				     MjjjSym_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(JetMassSym,weight);
+				     P_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(PTriplet[q],weight);
+				     h31_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(h31Triplet[q],weight);
+				     Maxtr_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(Maxtr[q],weight);
+				     countMatchTrip++;
+				   }
+				   if(TripletMoms[q]!=0 && TripletMoms[q]!=1){
+				     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(massTriplet[q],weight);
+				     MjjjSym_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(JetMassSym,weight);
+				     P_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(PTriplet[q],weight);
+				     h31_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(h31Triplet[q],weight);
+				     Maxtr_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(Maxtr[q],weight);
+				     countCombTrip++;
+				   }
+				   
+				   
+				   
+				   
+				 }          
+			       
+			       //cout<<"!!!!!!!!!!!!!KEEP!!!!!!!!!!"<<endl;
+			       
+			       }
 			     }
-			     
-			     countT++;
-			          
-			    
-			     //cout<<"!!!!!!!!!!!!!KEEP!!!!!!!!!!"<<endl;
+			   
+			   if(countT>=1){
+			     MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
+			     HT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
+
+			     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET/SumptAllJet, weight);
+			     HMT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumMetPtAllJet20, weight);
+			     nJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nJet35, weight);
+			     nBJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nBJet35, weight);
+			     nVertex_bjet_pt_njet_diag[b][i][k][j]->Fill(nGoodVtx,weight);
+			     Jet0_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[0]->Pt(), weight);
+			     Jet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[1]->Pt(), weight);
+			     Jet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[2]->Pt(), weight);
+			     if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
+			     if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
+			     if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
+			     if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
+			     if(nBJet35>2){ 
+			       BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
+			       BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);
+			       BJet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[2]->Pt(), weight);
+			     }
 			   }
-		       }
-		   }
-		 }//diag cut loop
-	       }//njetloop
-	   }//pt loop
-	 }//bjet loop
-	   }//triplet loop
-	 }//3 or more b jets
-	 }//jetp
-	 } //minjet
+			   Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(countMatchTrip);
+			   Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(countCombTrip);
+			 }//njet pt cut
+		     }//diag cut loop
+		   }//njetloop
+	       }//pt loop
+	   }//bjet loop
+	 }//triplet loop
+       }//3 or more b jets
+     }//jetp
+   } //minjet
      //lets see if the top branching ratios work
+   
+    } else notrig++;
+      }//Msquqark
+      
+      
+    }//get entrye
+    cout << "\n events w/o trigger " << notrig << endl;
     
-  } else notrig++;
- }//Msquqark
-
-  //delete Triplet; 
-    //delete &sumScalarPtTriplet; delete  &sumVectorPtTriplet; delete &massTriplet;
-    /*delete &fBJets; delete &fNoBJets; delete &fCleanJets;  delete  &fCleanJets20; delete &fTestJets;
-    delete  &massDoublet12; delete &massDoublet13; delete &massDoublet23;
-    delete  &massDoubletHigh; delete &massDoubletMid; delete  &massDoubletLow;
-    */
- }//get entrye
- cout << "\n events w/o trigger " << notrig << endl;
-
-  /*  fBJets.clear(); fNoBJets.clear();fCleanJets.clear();    fCleanJets20.clear(); fTestJets.clear();
-  massDoublet12.clear();  massDoublet13.clear(); massDoublet23.clear();
-  massDoubletHigh.clear();  massDoubletMid.clear();  massDoubletLow.clear();
-  */
-}
+  }
+  
+  
+  
+  
 
 float NtpThreeJet::GetBTagSF (float pt, float eta, int meanminmax){
   float jetPt=pt;
