@@ -11,6 +11,9 @@
 #include "TH2F.h"
 #include "TLorentzVector.h"
 
+#include "math.h"
+#include "TMath.h"
+#include "Math/VectorUtil.h"
 class NtpThreeJet : public NtpReader
 {
   public:
@@ -22,6 +25,8 @@ class NtpThreeJet : public NtpReader
     void WriteHistograms();
     float GetBTagSF (float pt, float eta, int meanminmax);
     float GetLightJetSF (float pt, float eta, int meanminmax);
+    //        std::vector<math::XYZVector> makeVecForEventShape(std::vector<JetLV*> jets);
+    // std::vector<math::XYZVector> makeVecForEventShape(std::vector<JetLV*> jets, bool only6Jets, ROOT::Math::Boost boost);
     //some variables needed
     /*   std::vector<TLorentzVector >      fBJets;
    std::vector<TLorentzVector >      fNoBJets;
@@ -92,6 +97,7 @@ class NtpThreeJet : public NtpReader
     TH1F* h_nBJet35_EvtSel;
     TH1F* h_nJet35_EvtSel;
     TH1F* h_HT_EvtSel;
+    TH1F* h_MJ_EvtSel;
     TH1F* h_HMT_EvtSel;
     TH1F* h_MET_EvtSel;
     TH1F* h_Jet0_EvtSel;
@@ -173,10 +179,30 @@ class NtpThreeJet : public NtpReader
 
     //make some plots for the triplets
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MjjjSym_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH2F* > > > >DeltaM_vs_AvM_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_btag_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_1btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCmatch;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCcomb;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_bjet_pt_njet_diag_MCcomb;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MjjjSym_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MjjjSym_bjet_pt_njet_diag_MCcomb;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >P_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >P_bjet_pt_njet_diag_MCcomb;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >h31_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >h31_bjet_pt_njet_diag_MCcomb;
+
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Maxtr_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Maxtr_bjet_pt_njet_diag_MCcomb;
+
     std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjHigh_MjjMid_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjHigh_MjjLow_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH2F* > > > >MjjMid_MjjLow_bjet_pt_njet_diag;
@@ -185,12 +211,23 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M13_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >M23_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH2F* > > > Mjjj_vecpt_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH2F* > > > Mjjj_P_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > > DeltaM_bjet_pt_njet;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_sumpt_btag_pt_njet;
     std::vector <std::vector <std::vector<TH1F* > > > M4j_pt_njet_diag;
     std::vector <std::vector <std::vector<TH2F* > > > Mjjj_M4j_pt_njet_diag; 
 
+    std::vector <std::vector <std::vector<TH1F* > > >    Aplanarity_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > >     Sphericity_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > >     Circularity_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > >     Isotropy_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > >     C_bjet_pt_njet;
+    std::vector <std::vector <std::vector<TH1F* > > >     D_bjet_pt_njet;
+
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HT_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >P_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_over_HT_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HMT_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >nBJet35_bjet_pt_njet_diag;
