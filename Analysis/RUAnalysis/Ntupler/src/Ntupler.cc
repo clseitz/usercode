@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.24 2013/03/14 16:26:24 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.25 2013/03/15 11:19:52 cvuosalo Exp $
 //
 //
 
@@ -203,6 +203,8 @@ static double getJERAdj(double recoPt, const pat::Jet &jet, bool down)
 		ptdiff *= -1.0;
 	double ptscale = ((ptdiff * 0.1) + recoPt) / recoPt;
 	// cout << " JER scaling " << ptscale << " ";
+	if (ptscale < 0.0)
+		ptscale = 1.0;
 	return (ptscale);
 }
 
@@ -389,7 +391,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //make some kinematic plots and write out variables for the tree
        
        nPFJets=nCleanPFJets;
-       // std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
+       std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
        // cout<<"NJets: "<<nPFJets<<endl;
 			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
       int i=0;
@@ -473,24 +475,22 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
 	   int jetMom = -1; 
-		/*
 		const reco::GenParticle * part = Jet->genParton();
 	   if (part){
 	     
-	     cout<<"GenParton: "<<part->pdgId()<<endl;
+	     // cout<<"GenParton: "<<part->pdgId()<<endl;
 	         const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
-	     cout<<mom->pdgId()<<endl;
+	     // cout<<mom->pdgId()<<endl;
 	     for (int y = 0; y < int(parents->size()); ++y)
 	       if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
 	     if (jetMom == -1){
 	       jetMom = int(parents->size());
 	       reco::GenParticle cand(*mom);
 	       parents->push_back(cand);
-	       std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+	       // std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
 	       }
 	 
 	       }
-				 */
 	   jet_PF_JetMom[i]=jetMom;	     
 		 // cout<<"jetmomL: "<<jetMom<<endl;
 }
