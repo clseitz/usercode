@@ -36,7 +36,7 @@ void mk_sigaccanplots(string flavor = "112")
 	gStyle->SetOptFit(1); // chi2 and prob, not parameters
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
-	gStyle->SetStatY(0.5);
+	gStyle->SetStatY(0.4);
 	TLatex *   tex = new TLatex(0.678392,0.9283217,"CMS Preliminary 9.95 fb^{-1} at #sqrt{s}  =  8 TeV");
 	tex->SetNDC();
 	tex->SetTextAlign(22);
@@ -140,6 +140,11 @@ void mk_sigaccanplots(string flavor = "112")
       cout<< histname << endl;
       TGraphErrors *h_GluinoHist_MCcomb = (TGraphErrors*) filelist_kin[0]->Get(histname.c_str())->Clone();
       
+       histname = string("FullAcceptance_vs_Mass_" + flavor) + "_" + ptcut;
+      // histname = string("GausAcceptance_vs_Mass_112") + ptcut;
+      cout<< histname << endl;
+      TGraphErrors *h_FullAccept = (TGraphErrors*) filelist_kin[0]->Get(histname.c_str())->Clone();
+     
       TCanvas * cGluinoFitsOpti = new TCanvas(("RPV_"+ptcut+"_"+cuts).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
       //h_GluinoHist_Fit->SetFillColor(kOrange-2);
       // h_GluinoHist_Fit->SetLineColor(kBlack);
@@ -182,10 +187,26 @@ void mk_sigaccanplots(string flavor = "112")
 			title="Acceptance for " + titlepart;
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance");
-      h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.3);
+      h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("RPV Mass [GeV]");
+      if (flavor.compare("113_223") == 0 && ptcut == "110") {
+      	gStyle->SetStatY(0.8);
+				h_GluinoHist_MCcomb->GetYaxis()->SetRangeUser(0.0, 0.035);
+			}
+
       // h_GluinoHist_MCcomb->Draw("AL");	
-      h_GluinoHist_MCcomb->Draw("A*");	
+      h_GluinoHist_MCcomb->Draw("A*");
+      
+      cGluinoFitsOpt2->Write();
+      cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
+      gStyle->SetStatY(0.4);
+      TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+ptcut+"_"+cuts).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
+			title="Full Acceptance for " + titlepart;
+      h_FullAccept->SetTitle(title.c_str());
+      h_FullAccept->GetYaxis()->SetTitle("Acceptance");
+      h_FullAccept->GetYaxis()->SetTitleOffset(1.4);
+      h_FullAccept->GetXaxis()->SetTitle("RPV Mass [GeV]");
+      h_FullAccept->Draw("A*");	
       
       // h_GluinoHist_MCcomb->SetFillColor(10);
       // h_GluinoHist_MCcomb->SetLineColor(kBlack);
@@ -199,8 +220,8 @@ void mk_sigaccanplots(string flavor = "112")
 
 		
 		
-      cGluinoFitsOpt2->Write();
-      cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
+      cGluinoFitsOpt3->Write();
+      cGluinoFitsOpt3->SaveAs((folder + "RPVfullacc" +flavor + ptcut+uncert+postfix).c_str());
 		
 		/////////////////Make some DataPlots///////////////////////
     }
