@@ -44,11 +44,8 @@ void make_ANplots(const string flavor = "112")
 	tex->SetLineWidth(2);
   cout<<"blabl"<<endl; 	
   // for(int k=0; k<3; k++){	
-  // for(int k=0; k<2; k++){	
-  for(int k=2; k<3; k++){	
-  //Which plots to make
-  int WhichPlot=0; //0 = normal all backgrounds+error bars and data, 1= include W' on top of the background for W' mass
-  int bkgC=5;//38;
+  for(int k=0; k<2; k++){	
+  // for(int k=2; k<3; k++){	
   //define input variables
   vector <string > namelist;
   vector <string > VarList;
@@ -74,18 +71,11 @@ void make_ANplots(const string flavor = "112")
   vector<float> RightEdge;
   vector<vector<float  > > MassBins;
   vector <TH1F* > v_Asym;
-  char dir[99];
-  char AxisLabel[99];
-  char dirout[99];
-  float upRange=1100;
-  float lumi=2420;
-  float TriggerS = 1;
-  int nRebin=10;
 
   // string uncert="btagup";
   // if(k==1) uncert="btagdown";
-  string uncert="up";
-  if(k==1) uncert="down";
+  string uncert="jecup";
+  if(k==1) uncert="jecdown";
   if(k==2) uncert="";
   
   namelist.push_back("KinematicOptimization");
@@ -138,8 +128,8 @@ void make_ANplots(const string flavor = "112")
       TH1F* h_GluinoHist_Fit = (TH1F*) filelist_kin[0]->Get(("P4Gaus_RealFit"+to_string(masses[i])+"_"+ptcut).c_str())->Clone();
       cout<<("P4Pre"+to_string(masses[i])+"_"+ptcut).c_str()<<endl;
       TH1F* h_GluinoHist_MCcomb = (TH1F*) filelist_kin[0]->Get(("P4Pre"+to_string(masses[i])+"_"+ptcut).c_str())->Clone();
-      cout<<(("P4Pre"+to_string(masses[i])+"_"+ptcut).c_str())<<endl;
-      TF1* f_GluinoP4 = (TF1*) filelist_kin[0]->Get(("P4_"+to_string(masses[i])+"_"+ptcut).c_str())->Clone();
+      // cout<<(("P4Pre"+to_string(masses[i])+"_"+ptcut).c_str())<<endl;
+      // TF1* f_GluinoP4 = (TF1*) filelist_kin[0]->Get(("P4_"+to_string(masses[i])+"_"+ptcut).c_str())->Clone();
       cout<<(("Gaus_P4"+to_string(masses[i])+"_"+ptcut).c_str())<<endl;
       TF1* f_GluinoGauss = (TF1*) filelist_kin[0]->Get(("Gaus_P4"+to_string(masses[i])+"_"+ptcut).c_str())->Clone();
       
@@ -153,8 +143,13 @@ void make_ANplots(const string flavor = "112")
 			tag = "Light";
 		else if (ptcut == "60")
 			sphericity = "";
+		string uncertTitle = "";
+		if (uncert.compare("jecup") == 0)
+			uncertTitle = " JES up";
+		else if (uncert.compare("jecdown") == 0)
+			uncertTitle = " JES down";
 		title= tag + "-flavor RPV " + flavor + " " + to_string(masses[i]) +
-			" GeV p_{T} = " + ptcut + " " + sphericity;
+			" GeV p_{T} = " + ptcut + " " + sphericity + uncertTitle;
 		/*
 		if(k==0){
 		title="RPV gluino #bf{" + systematic + " up} m="+to_string(masses[i])+", ptcut = "+ptcut+", #Delta = 110 GeV, #bf{6^{th} Jet p_{T} = 60 GeV}";
