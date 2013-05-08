@@ -39,7 +39,7 @@ void mk_sigaccanplots(string flavor = "112")
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
 	gStyle->SetStatY(0.4);
-	TLatex *   tex = new TLatex(0.2,0.78,"CMS Simulation");
+	TLatex *   tex = new TLatex(0.2,0.78,"CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
