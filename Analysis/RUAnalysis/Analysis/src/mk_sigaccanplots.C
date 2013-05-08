@@ -269,7 +269,7 @@ void mk_sigaccanplots(string flavor = "112")
 		
 		
       cGluinoFitsOpt3->Write();
-      cGluinoFitsOpt3->SaveAs((folder + "RPVfullacc" +flavor + ptcut+uncert+postfix).c_str());
+      cGluinoFitsOpt3->SaveAs((folder + "RPVmean" +flavor + ptcut+uncert+postfix).c_str());
 		
 		/////////////////Make some DataPlots///////////////////////
     }
