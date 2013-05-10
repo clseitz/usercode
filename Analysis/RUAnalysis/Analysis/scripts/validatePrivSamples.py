@@ -27,14 +27,15 @@ def plotMttbar():
     qcdScale = {'default':1.72, 'withMETAndAsymJets': 3.03};
 
     # data =  TFile.Open("samples/mc2012_QCD_HT250-Inf_Summer12_8TeV_4pt80_6pt60_geqB_RelXsec_2p4fb_k1p16_Aug15_GeneralDist.root");
-    data =  TFile.Open("samples/data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4pt80_6pt60_geqB_Aug15.root");
-    ttbar =  TFile.Open("samples/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
-    stsusy300 =  TFile.Open("samples/stsusy300.root");
-    stsusy300_v2 =  TFile.Open("samples/stsusy300_53x_v2a.root");
-    rpv200 =  TFile.Open("samples/rpv200Official_53x_v2a.root");
-    rpv200priv =  TFile.Open("samples/rpv200_53x_v2a.root");
-    rpv400 =  TFile.Open("samples/rpv400Official.root");
-    rpv400priv =  TFile.Open("samples/rpv400_53x_v2a.root");
+    data =  TFile.Open("samples/RUFull/data/Run2012ABCD_MultiJet53xv2_Quad50_Quad60_Di20_19448pb_BtagMap_4th80_CSVM_10GeV_WriteFull.root");
+    # ttbar =  TFile.Open("samples/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
+    # stsusy300 =  TFile.Open("samples/stsusy300.root");
+    # stsusy300_v2 =  TFile.Open("samples/stsusy300_53x_v2a.root");
+    rpv200 =  TFile.Open("samples/RUFull/RPV/mc_RPV_M200_113_223_BtagMap_4th80_CSVM_10GeV_WriteFull.root");
+    # Using official for 200 private just to quiet error messages
+    rpv200priv =      TFile.Open("samples/RUFull/RPV/mc_RPV_M200_113_223_BtagMap_4th80_CSVM_10GeV_WriteFull.root");
+    rpv400 =  TFile.Open("samples/RUFull/RPV/mc_RPV_M400_113_223_BtagMap_4th80_CSVM_10GeV_WriteFull.root");
+    rpv400priv =  TFile.Open("samples/privjecdecsph/mc_RPV_M400_113_223_BtagMap_Officialpu206940privsupu.root");
     # ttbar =  TFile.Open("TT_Tune_4000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WJetsToLNu_5000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WToENu_4000pb_PFElectron_PF2PATJets_PFMET.root");
@@ -92,9 +93,9 @@ def plotMttbar():
     hists.append("Events/Jet3");
     hists.append("Events/Jet4");
     hists.append("Events/Jet5");
-    hists.append("Events/Jet6");
     hists.append("Events/MET");
     hists.append("Events/nTruePileUp");
+    hists.append("Triplets/bjet_1/jetpt_110/Mjjj_Sph4_btag1_bjet1_pt110_diag110_GE6jet");
     print hists
     
     gcd = gROOT.cd
@@ -111,9 +112,12 @@ def plotMttbar():
 #            hist_data2 = TH1F(*hist_data);
 #        hist_data.Sumw2();
 #        hist_data2.Sumw2();
-        hist_ttbar =  ttbar.Get(histname);
-        hist_stsusy300 =  stsusy300.Get(histname);
-        hist_stsusy300_v2 =  stsusy300_v2.Get(histname);
+        # hist_ttbar =  ttbar.Get(histname);
+        # hist_stsusy300 =  stsusy300.Get(histname);
+        # hist_stsusy300_v2 =  stsusy300_v2.Get(histname);
+        hist_ttbar =  rpv400.Get(histname);
+        hist_stsusy300 =  rpv400.Get(histname);
+        hist_stsusy300_v2 =  rpv400.Get(histname);
         hist_rpv200 =  rpv200.Get(histname);
         hist_rpv200priv =  rpv200priv.Get(histname);
         hist_rpv400 =  rpv400.Get(histname);
@@ -258,69 +262,74 @@ def plotMttbar():
         # hist_mc.Add(hist_wjets);
         # hist_mc.Add(hist_singleTop);
 
-        hist_data = hist_rpv200.Clone("test");
+        hist_data = hist_rpv400.Clone("test");
         rebin = 1;
         Urange = (0,5000)
         Yrange = (0,0)
         
         if ("nBJet35" in histname):
-            hist_data.SetXTitle("Number of b jets");
+            hist_data.SetXTitle("Number of b Jets");
             hist_data.SetYTitle("Events");
             Urange = (0, 6)
         elif ("HT" in histname):
             hist_data.SetXTitle("HT [GeV]");
-            hist_data.SetYTitle("Events/(200 GeV)");
-            rebin = 20;
-            Urange = (400, 3500)
+            hist_data.SetYTitle("Events/(20 GeV)");
+            rebin = 2;
+            Urange = (500, 1300)
         elif ("MET" in histname):
             hist_data.SetXTitle("MET [GeV]");
-            hist_data.SetYTitle("Events/(50 GeV)");
-            rebin = 10;
-            Urange = (0, 400)
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (0, 100)
         elif ("nJet35" in histname):
-            hist_data.SetXTitle("Number of jets");
+            hist_data.SetXTitle("Number of Jets");
             hist_data.SetYTitle("Events");
             Urange = (4, 15)
         elif ("Jet0" in histname):
-            hist_data.SetXTitle("Leading jet p_{T}");
-            hist_data.SetYTitle("Events/(125 GeV)");
-            rebin = 25;
-            Urange = (50, 1800)
+            hist_data.SetXTitle("Leading-jet p_{T}");
+            hist_data.SetYTitle("Events/(10 GeV)");
+            rebin = 2;
+            Urange = (120, 400)
         elif ("Jet1" in histname):
-            hist_data.SetXTitle("2nd jet p_{T}");
-            hist_data.SetYTitle("Events/(100 GeV)");
-            rebin = 20;
-            Urange = (50, 1500)
+            hist_data.SetXTitle("2nd-jet p_{T}");
+            hist_data.SetYTitle("Events/(10 GeV)");
+            rebin = 2;
+            Urange = (90, 350)
         elif ("Jet2" in histname):
-            hist_data.SetXTitle("3rd jet p_{T}");
-            hist_data.SetYTitle("Events/(50 GeV)");
-            rebin = 10;
-            Urange = (50, 700)
+            hist_data.SetXTitle("3rd-jet p_{T}");
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (70, 250)
         elif ("Jet3" in histname):
-            hist_data.SetXTitle("4th jet p_{T}");
-            hist_data.SetYTitle("Events/(50 GeV)");
-            rebin = 10;
-            Urange = (50, 500)
+            hist_data.SetXTitle("4th-jet p_{T}");
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (70, 200)
         elif ("Jet4" in histname):
-            hist_data.SetXTitle("5th jet p_{T}");
-            hist_data.SetYTitle("Events/(40 GeV)");
-            rebin = 8;
-            Urange = (50, 350)
+            hist_data.SetXTitle("5th-jet p_{T}");
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (30, 150)
         elif ("Jet5" in histname):
-            hist_data.SetXTitle("6th jet p_{T}");
-            hist_data.SetYTitle("Events/(25 GeV)");
-            rebin = 5;
-            Urange = (50, 250)
+            hist_data.SetXTitle("6th-jet p_{T}");
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (20, 120)
         elif ("Jet6" in histname):
-            hist_data.SetXTitle("7th jet p_{T}");
-            hist_data.SetYTitle("Events/(25 GeV)");
-            # rebin = 2;
-            Urange = (50, 150)
+            hist_data.SetXTitle("7th-jet p_{T}");
+            hist_data.SetYTitle("Events/(5 GeV)");
+            rebin = 1;
+            Urange = (20, 100)
         elif ("PileUp" in histname):
-            hist_data.SetXTitle("Number of pile-up events");
+            hist_data.SetXTitle("Number of Pile-up Events");
             hist_data.SetYTitle("Events");
-            rebin = 5;
-            Urange = (0, 70)
+            rebin = 1;
+            Urange = (0, 40)
+        elif ("Mjjj" in histname):
+            hist_data.SetXTitle("Triplet mass [GeV]");
+            hist_data.SetYTitle("Events/(20 GeV)");
+            rebin = 2;
+            Urange = (150, 850)
         elif (histname == "electron_et"):
             hist_data.SetXTitle("electron E_{T} [GeV]");
             hist_data.SetYTitle("Events/(10 GeV)");
@@ -612,7 +621,7 @@ def plotMttbar():
        
 
         hist_data.SetTitleOffset(1.5, "Y");
-        if ('jet1' in histname):
+        if (false and 'jet1' in histname):
                   hist_data.Rebin2D();
                   hist_ttbar.Rebin2D();
                   hist_Tprime300.Rebin2D();
@@ -627,11 +636,11 @@ def plotMttbar():
                   # hist_Tprime350.SetAxisRange(0, 600, "Y");
         else:
                   hist_data.Rebin(rebin);
-                  hist_ttbar.Rebin(rebin);
-                  hist_stsusy300.Rebin(rebin);
-                  hist_stsusy300_v2.Rebin(rebin);
-                  hist_rpv200.Rebin(rebin);
-                  hist_rpv200priv.Rebin(rebin);
+                  # hist_ttbar.Rebin(rebin);
+                  # hist_stsusy300.Rebin(rebin);
+                  # hist_stsusy300_v2.Rebin(rebin);
+                  # hist_rpv200.Rebin(rebin);
+                  # hist_rpv200priv.Rebin(rebin);
                   hist_rpv400.Rebin(rebin);
                   hist_rpv400priv.Rebin(rebin);
                   # hist_zjets.Rebin(rebin);
@@ -790,7 +799,7 @@ def plotMttbar():
 #        qcdUncert.SetFillColor(kGray + 3);
 #        qcdUncert.SetFillStyle(3003);
 
-        leg = TLegend(0.72, 0.6, 0.98, 0.85);
+        leg = TLegend(0.63, 0.7, 0.99, 0.95);
         leg.SetBorderSize(0);
         leg.SetLineStyle(0);
         leg.SetTextFont(42);
@@ -799,10 +808,10 @@ def plotMttbar():
         # leg.AddEntry(hist_data, "QCD", "P");
         #        leg.AddEntry(hist_data2, "data(no HLT)", "P");
         # leg.AddEntry(hist_ttbar, "t#bar{t}", "L");
-        leg.AddEntry(hist_rpv200, "RPV 200 Official", "P");
-        leg.AddEntry(hist_rpv200priv, "RPV 200 Private", "P");
-        leg.AddEntry(hist_rpv400, "RPV 400 Official", "P");
-        leg.AddEntry(hist_rpv400priv, "RPV 400 Private", "P");
+        # leg.AddEntry(hist_rpv200, "RPV 200 Official", "P");
+        # leg.AddEntry(hist_rpv200priv, "RPV 200 Private", "P");
+        leg.AddEntry(hist_rpv400, "Official HF RPV 400", "P");
+        leg.AddEntry(hist_rpv400priv, "Private HF RPV 400", "P");
         # leg.AddEntry(hist_stsusy300, "StealthSUSY 300 v1", "L");
         # leg.AddEntry(hist_stsusy300_v2, "StealthSUSY 300 v2", "L");
         # leg.AddEntry(hist_wjets, "W#rightarrowl#nu", "f");
@@ -834,7 +843,7 @@ def plotMttbar():
         canvases[-1].SetGrid();
         canvases[-1].cd().SetRightMargin(0.04);
         
-        if ('jet1' in histname):
+        if (false and 'jet1' in histname):
           hist_data.SetMarkerStyle(8);
           hist_ttbar.SetMarkerStyle(21);
           hist_ttbar.SetMarkerColor(kRed);
@@ -850,12 +859,13 @@ def plotMttbar():
           # hs.Add(hist_singleTop);
           hs.Add(hist_ttbar);
           max = 0
-          if hs.GetMaximum() > hist_data.GetMaximum():
-              max = hs.GetMaximum()*1.1
-          else:
-              max = hist_data.GetMaximum()*1.1
-          if hist_rpv200priv.GetMaximum() > max :
-              max = hist_rpv200priv.GetMaximum() * 1.1
+          # if hs.GetMaximum() > hist_data.GetMaximum():
+              # max = hs.GetMaximum()*1.1
+          # else:
+              # max = hist_data.GetMaximum()*1.1
+          max = hist_rpv400priv.GetMaximum() * 1.1
+          if hist_rpv400.GetMaximum() * 1.1 > max :
+              max = hist_rpv400.GetMaximum() * 1.1
 #           if hist_wpm400.GetMaximum() > max :
               # max = hist_wpm400.GetMaximum() * 1.1
           
@@ -873,21 +883,21 @@ def plotMttbar():
           hist_data.GetYaxis().SetRangeUser(0.01, max);
         if (logscale):
             canvases[-1].SetLogy();
-        hist_data.SetStats(1);
+        hist_data.SetStats(0);
         # hist_data.Draw('error hist');
         hist_data.Draw('axis');
 
         # hist_data.Draw("hist");
         hist_data.SetMarkerStyle(8);
-        if ('jet1' in histname):
+        if (false and 'jet1' in histname):
           hist_ttbar.Draw("same");
         else:
           # hs.Draw("hist same");
           # hist_ttbar.Draw("hist same");
           # hist_stsusy300.Draw("hist same");
           # hist_stsusy300_v2.Draw("hist same");
-          hist_rpv200.Draw("hist error same");
-          hist_rpv200priv.Draw("hist error same");
+          # hist_rpv200.Draw("hist error same");
+          # hist_rpv200priv.Draw("hist error same");
           hist_rpv400.Draw("hist error same");
           hist_rpv400priv.Draw("hist error same");
         # hist_Zprime500.Draw("same");
@@ -911,15 +921,15 @@ def plotMttbar():
         # hist_data.Draw("same");
         leg.Draw();
 
-        text1 = TLatex(3.570061, 23.08044, "CMS Preliminary");
+        text1 = TLatex(3.570061, 22.8044, "CMS Preliminary Simulation");
         text1.SetNDC();
         text1.SetTextAlign(13);
-        text1.SetX(0.38);
-        text1.SetY(0.938);
+        text1.SetX(0.18);
+        text1.SetY(0.92);
                 #text1.SetLineWidth(2);
         text1.SetTextFont(42);
         text1.SetTextSizePixels(24);# dflt=28
-        text1.SetTextSize(0.02);
+        text1.SetTextSize(0.033);
         text1.Draw();
 
         # text2 = TLatex(3.570061, 23.08044, "#sqrt{s} = 8 TeV");
@@ -932,7 +942,7 @@ def plotMttbar():
         text2.SetTextFont(42);
         text2.SetTextSizePixels(24);# dflt=28
         text2.SetTextSize(0.02);
-        text2.Draw();
+        #text2.Draw();
         # canvases[-1].SaveAs('plots/' + histname + '.png')
         if (false and 'iso' in histname):
           canvases[-1].SaveAs('plots/' + histname + '.root')
@@ -1026,8 +1036,8 @@ def plotMttbar():
         # cu_hist_ttbar.Draw("hist same");
         # cu_hist_stsusy300.Draw("hist same");
         # cu_hist_stsusy300_v2.Draw("hist same");
-        cu_hist_rpv200.Draw("same");
-        cu_hist_rpv200priv.Draw("same");
+        # cu_hist_rpv200.Draw("same");
+        # cu_hist_rpv200priv.Draw("same");
         cu_hist_rpv400.Draw("same");
         cu_hist_rpv400priv.Draw("same");
         # if (not 'num' in histname or not 'Top' in histname):
