@@ -184,6 +184,8 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector <std::vector<TH2F* > > > >DeltaM_vs_AvM_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_btag_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >
+    	Mjjj_Sph4_btag_trpwt_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_1btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCmatch;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCcomb;
