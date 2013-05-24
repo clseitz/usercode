@@ -1,0 +1,282 @@
+%\documentclass[12pt]{article}
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\renewcommand{\labelitemi}{$-$}
+\renewcommand{\labelitemii}{$-$}
+\title{ARC Comments v1}
+\usepackage{color}
+\author{EXO-12-049}
+\date{\today}
+
+
+
+\begin{document}
+\maketitle
+\section{GENERAL STATEMENT}
+We believe that the analysis is in a very mature state and there are no major issues. In this first set of comments we mostly address physics questions, while more detailed textual comments will be made in the second round.
+
+The comments below are based on V4 of the PAS and V7 of the AN note.
+
+\section{TYPE B (Physics) COMMENTS}
+\begin{itemize}
+
+\item[B1.]  We could not find any jet control plots in the AN note to show the sanity of the data sample. Please add the following distributions (data \& MC) for each of the 6 jet separately: pt, eta, phi, charged hadron/neutral hadron/photon/electron/muon energy fractions.
+
+\textcolor{red}{Answer}\\
+
+\item[B2.] Demonstrate that the HLT\_QuadJet50 trigger is suitable (unbiased) for the measurement of the signal trigger. This could be done with data, or otherwise a QCD MC study with simulated trigger would suffice.
+
+\textcolor{red}{Answer}\\
+
+
+\item[B3.] Optimization of cuts
+\begin{itemize}
+
+\item The delta cut optimization is done so that the triplet-mass turn-on is pushed as low as possible. Why is this so critical, given that the masses up to 460 GeV have already been excluded? On the other hand, the 6th-jet pt optimization targets the high masses. Isn't this contradictory?
+
+\textcolor{magenta}{You are correct that for the inclusive analysis we don't use these cuts, however for the event selection requiring b-tags this
+allows us to access the kinematic region of the top quark which used to show the validity of the method.}\\
+
+\item It is not very clear to us what exactly are the Nsig and Nbkg in the figure of merit used for the various optimizations. Is the Nsig the gaussian component only, or the total (gaussian + combinatorics) of the signal in the 2-sigma window? Similarly, is Nbkg the QCD-only contribution, or the sum of QCD and combinatorics from the signal?
+
+\textcolor{magenta}{In general changing the pT will have an effect on QCD/Data background as well as combinatorial background of the signal, mostly changing the peak position of the Mjjj distributon. Also applying b-tagging will effect the composition of the data distribution (now the amount of ttbar increases) and therefore again the shape of the background distribution changes. For the optimization however we starte fitting above the ttbar peak. In these two selection crietea pT and btagging we use as Nsig the number of events only in the Gaussian since and as Nbkg the number of events in the same region of the fit to the data. Tests with QCD MC as background yield the same optimization as shown in the AN. 
+In case of the event shape variables we find that a cut does not significantly change either the QCD/data or combinatorial distribution and therefore decided to use as the figure of merit Nsig beeing the number of exptected events passing a certain and Nbkg the number of events in the data passing that same cut.
+}\\
+\textcolor{red}{?? make plot showing this}
+
+
+\item The various optimisations are performed sequentially. Is there an argument which shows that this is reasonable? (In finding the maximum of an n-dimensional function, doing n separate 1-D maximisations will not find the global maximum if the variables are correlated). Also is S/sqrt(S+B) the best approximation to optimise for the signal significance?
+
+\textcolor{magenta}{We tried the pT optimization for the different b-tagging categories and found them independent of each other.}
+\textcolor{red}{?? S/sqrt(S+B) }\\
+\end{itemize}
+
+\item[B4.] We find the definition of acceptance as highly misleading, since it is the ratio of two different quantities (number of triplets over number of events). In principle, the expected number of signal triplets in the gaussian peak would be expressed as NTgauss = (xsection * L * trig.eff * jet-id eff.) x f1 x f2 x f3, where f1 is the fraction of independent events that survive the selection and the delta cut, f2 is the average number of triplets contributed per selected event, and f3 is the fraction of the gaussian component over the total surviving triplets. It turns out that what you call "acceptance" is the product f1 x f2 x f3 (so it is mathematically correct), but it has no real physical meaning, unlike the fractions f1,f2,f3. In the approach where you only use the gaussian core, the "acceptance" is much smaller than unity (because f3 is small), and no
+concerns are raised. However, when you use the full signal shape, you are left with f1 x f2 which, rightfully so, can be larger than 1 (it is the transition factor from events to triplets: if you applied no cuts, it would be exactly 20). Therefore, we find the discussion in appendix C about the "artificially raised acceptance" or "correlated triplets" as rather irrelevant: the search can be performed equally well with the full signal shape.
+\begin{itemize}
+\item we strongly encourage you to use a different word for what you call "acceptance" -- provide the plots of f1, f2, f3 above, as a function of the resonance mass -- how would a higher cut on delta affect f3, and the total f1 x f2 x f3 for higher signal masses? Wouldn't it reduce the combinatorics background, in favor of the gaussian peak?
+
+\textcolor{red}{Answer}\\
+\end{itemize}
+
+\item[B5.] From the AN note and the PAS it is not quite clear how you actually perform the fits
+and the search in the light and heavy flavor cases. Please confirm the following: 
+\begin{itemize}
+\item[a.] for the light-flavor and heavy flavor-high mass gluino search you use a parametrized PDF (eq. 2 in AN note) for the background hypothesis, which you pass to the limit code ("combine" tool of Higgs PAG) and it takes automatically into account the fit-parameters' uncertainties and their correlations. In this case, no other background systematics is taken into account. For the signal hypothesis you use a gaussian PDF, with 2 parameters (mean \& sigma), while the signal strength is the quantity on which the limit is set. In this setup the signal combinatorial background is absorbed by the background model.
+\textcolor{magenta}{Yes that is correct.}\\
+\item[b.] for the heavy-flavor, low-mass gluino extraction you use histogrammed pdfs. The background hypothesis is composed of the ttbar template from MC and the QCD template, which is taken from the data, using the b-tag vetoed dataset. The signal template is again a gaussian.
+If our understanding is correct, please answer the questions below: 
+\begin{itemize}
+\item which binning do you use in the datacards for the gluino search? The constant one, or the one based on resolution? BTW: where did you get the 7\% resolution for mjjj? 
+
+\textcolor{magenta}{We use the 10 GeV bins for the limit setting.}\\
+\textcolor{red}{?? 7\% binning, The 7\% come from the expected resolution of combing 3 jets.}\\
+
+\item in case b, how do you deal with the combinatorial background from the signal? Apparently it cannot be absorbed by the QCD template now (because it is taken from the data control region). 
+
+\textcolor{magenta}{The pT spectrum of low mass gluinos is fairly similar to the one from QCD therefore the combinatorial background and QCD
+Mjjj distributions are very similar. We have shown in a closure test for example for ttbar that the 0b data can absorb the combinatorial background of the signal since the overall scaling is allowed to float freely.}\\
+\textcolor{red}{?? add plot to AN or here}
+
+\item produce a MC closure plot showing that the mjjj template from the b-tag vetoed QCD events agrees well with the one of the signal region.
+
+\textcolor{red}{?? not sure what he means}\\
+
+\end{itemize}
+\end{itemize}
+\item[B6.] Systematic uncertainties: 
+\begin{itemize}
+\item have you assigned a systematic uncertainty on the signal acceptance due to PDFs? 
+\textcolor{red}{?? I thought we didn't have to?}\\
+\item the JES \& JER uncertainties have been assigned on the signal acceptance, but have you considered their effect on the signal peak position and gaussian sigma? The latter should enter the datacards and the workspace that contain the signal PDFs.
+
+\textcolor{magenta}{To account for the uncertainty on the JER we assign a 10\% uncertainty on the width of the Gaussian not just on the acceptance.}\\
+\textcolor{red}{?? make plot showing how the mean changes for JES}\\
+\end{itemize}
+
+\item[B7.] Signal extraction with toys -- in the AN note, Appendix C4, you describe the signal injection \& fit procedure. You take as background the P4 fit of the data, and for the extraction you use again the P4. By construction then, if things are done properly, this procedure yields the correct signal strength. Have you tried to generate the background with a different model than P4, and fit with P4? Perhaps you could use the QCD background shape directly from the MC, and normalized to the data, as the generating template.
+
+\textcolor{red}{?? can try}\\
+
+
+\item[B8.] Do you understand why the full signal shape analysis yields better limits?
+
+\textcolor{red}{?? I still think it is because of the higher acceptance.}\\
+
+\end{itemize}
+\section{PAS SPECIFIC COMMENTS}
+\begin{itemize}
+\item Abstract line 4: Presumably the different models result in different acceptances, even for a given resonance mass. Does this still make it 'model independent'?
+
+\textcolor{green}{Our search is sensitive to any significant bump on our
+smooth background. Our limits are model-dependent, but the fact that the data
+matches the background estimate shows that there is no evidence of new physics
+of any type.}\\
+
+\item line 9: different technique $==>$ better to say a little bit clearly.
+
+\textcolor{green}{Text clarified.}\\
+
+\item line 42: Should it be 100\%/sqrt(E), rather than 100\% * sqrt(E) ?
+
+\textcolor{green}{Fixed.}\\
+
+\item Fig 1: a) Why is the red line shown at 100 GeV, when the value used is 110? b)''flavor = 112'' (113\_223 in Fig.2 also) $==>$ we couldn't find an explanation of these legend clearly in the text
+
+\textcolor{red}{Carl: Add plot similar to Paper from last year, matched/unmatched 2D.}\\
+
+\item line 73: Two different scenarios... $==>$ Any particular reasons to choose these two scenarios?,
+
+\textcolor{magenta}{The text has been clarified to indicate that the
+light-flavor search provides comparison with previous similar searches,
+while the heavy-flavor search extends these searches for the first time to
+include b jets.}\\
+
+
+\item line 75: ... one b jet and two light-flavor jets $==>$ How about two b jets plus one light jet, for example.
+
+\textcolor{red}{Why don't we use a signal model that decays to two b jets?}\\
+
+\item line 76-77: As far as we understand all high mass samples are produced privately. So, it would be nice to compare your dample with a few centrally produced sample for sanity check.
+
+\textcolor{green}{This check has been added to the analysis note and we find good agreement between 
+centrally and private produced samples.}
+
+\item line 78: ... the natural width ... of the detector $==>$ Is this always true? no resonance mass dependence?
+
+\textcolor{magenta}{The signal MC samples were generated with negligible
+resonance widths. The reconstructed signal width is due purely to 
+detector resolution, which widens for higher-mass resonances
+because resolution is proportional to jet pT, and average jet pT increases for
+higher-mass resonances.}\\
+
+
+\item line 115: Maybe change 'signal sensitivity' to 'signal efficiency' (reducing the background would result in increased signal sensitivity)
+
+\textcolor{green}{Fixed.}\\
+
+\item Tables in Fig 2 and Fig 3: Does the normalisation really help? It fails to show that no 6th jet cut gives any chance of seeing a signal at high gluino masses. Make the text above the tables in the two diagrams compatible.
+
+\textcolor{red}{Table plot headers need fixing. The normalization helps to
+show the trend in signal significance over the range of masses. If the
+unnormalized significance was shown, the trend would be less clear to the reader.}\\
+
+\item Paragraph right after the Fig.2 caption: Its medium operating point... $==>$ Better to have more info about medium operating point.
+
+\textcolor{magenta}{Additional detail added to text.}\\
+
+\item Eqn 2: We assume that alpha and beta are the components wrt two axes; and that the choice of axes is irrelevant for the extraction of the eigenvalues. Is this correct?
+
+\textcolor{magenta}{Yes, you are correct.}\\
+
+\item Eqn 3: Did you try other parameter functions?
+
+\textcolor{magenta}{The previous 2011 analysis, EXO-11-060, studied two other
+fit functions and found that they gave very similar results.}\\
+
+\item Fig 4 and 5: a) dN/dMjjj has units b) It is better to give chi\^2 and ndf, rather than just chi\^2\/ndf c) Is chi\^2 calculated using the likelihood parameters, and is it calculated from the likelihood by Baker and Cousins, or in a conventional chi\^2 way? The latter would have problems with the bins with very few events. d) In fig 4, does something funny happen at 1000 GeV (e.g. change in event selection), or is the jump a statistical fluctuation?
+
+\textcolor{red}{Questions for Claudia, and plot needs to be fixed.}\\
+
+\item line 128: ... contribute minimally $==>$ Where can we find a supporting sentence(s) for this argument in the text?
+
+\textcolor{red}{We are adding comparison plots of QCD background and 
+wrongly combined signal triplets to the analysis note.}\\
+
+\item line 132: the underlying kinematic distributions are .. $==>$ What kinds of distributions did you look at? Triplet invariant mass distribution and what else?
+
+\textcolor{magenta}{This confusing sentence has been deleted. We have added
+plots of several kinematic distributions to the analysis note.}\\
+
+\item line 135: When b tag ... $==>$ How did you control (or treat) the ISR jet from ttbar or QCD multijet production?
+
+\textcolor{red}{Why does ISR matter? We account for ISR uncertainty.}\\
+
+
+\item line 143: What are we supposed to deduce from the value of r? That tt is suppressed? That tt is OK if systematics are included?........
+
+\textcolor{magenta}{The text has been clarified to say that the measurement
+of r acts as a validation of the analysis technique.}\\
+
+\item Fig 6, right plot: It would be more useful to plot the offset versus mass.
+
+\textcolor{red}{How does the offset vary with mass??}\\
+
+\item Fig.7: It would be nice to see the final limit with full shape including signal systematics.
+
+\textcolor{magenta}{We consider the full-shape analysis as a cross check and not a final
+result and thus do not want to include it in the PAS.}\\
+
+\item lines 177-8 and 190-1: Is that a significant difference in the wording for the ranges quoted for gluinos decaying to light and heavy quarks? The former are excluded BELOW 770, while the latter are excluded BETWEEN 200 and 860 GeV.
+
+\textcolor{magenta}{The previous light-flavor analysis excluded gluinos below 460 GeV, and our
+results extend that exclusion up to 770 GeV. But there are no previous heavy-flavor results,
+and our analysis is not sensitive below 200 GeV, so that is why we specify a mass range for
+the heavy-flavor results. The text has been rephrased to clarify this point.}\\
+
+\end{itemize}
+\section{TYPE A (textual) COMMENTS on the PAS}
+\begin{itemize}
+\item ABSTRACT, line 6:	Delete one of the two 'includes'.
+
+\textcolor{green}{Fixed.}\\
+
+\item line 9: It is not obvious that 'respectively' applies to the Tevatron and LHC.
+
+\textcolor{green}{Text clarified.}\\
+
+ \item Fig 2 caption, bottom line: Change 'bottom row' to 'table'.
+
+\textcolor{green}{Fixed.}\\
+
+
+\item Fig2 caption, line 3: '.... from selectiNG events....' 
+
+\textcolor{green}{Fixed.}\\
+
+\item line 142: '... can be extractED relative....' 
+
+\textcolor{green}{Fixed.}\\
+
+\item Eqn 3: Put this higher in the text (e.g. line 134) 
+
+\textcolor{green}{Fixed.}\\
+
+\item line 164: 'sensitive TO uncertainties Affecting..... events. thesE' 
+
+\textcolor{green}{Fixed.}\\
+
+\item Ref [24]: Why are 'MCFM' and 'LHC' in curly brackets?
+
+\textcolor{green}{This error has been fixed.}\\
+
+\end{itemize}
+\section{AN NOTE SPECIFIC COMMENTS}
+\begin{itemize}
+\item Table 2: Too many sig figs for the cross-section
+
+\item line 113: we still don't see why the mass of background triplets must scale with p\_T. The PAS actually uses what we regard as better wording for this.
+
+\item line 119: "The horizontal band ..." As has always been the case for this analysis, it is essentially impossible to see the horizontal band since it is overwhelmed by the distribution of background points. It would be good to somehow make the band more visible, e.g., by using a different color for points that represent correctly paired triplets. Same thing in Fig.1 of the PAS.
+
+\item Eqn 2: Is this the Landau distribution, referred to later (e.g. Fig 7 caption)? \item Fig.1 caption: "The left graph" should be "The right graph"
+
+\item Figs.3, 4: Are these events signal events only (with the wrong-combination background) or do they include QCD background as well. It would be good to make this clear in the figure captions, similar to what is done in Fig.6. Same thing in Fig.1 of the PAS.
+
+\item Fig 7, right plot: Is this fit for background and just Gaussian signal (or signal = Gauss plus combinatorics)?
+
+\item Fig 8: The significances are quoted to too many sig figs. (e.g. 282.356) In caption, line 3: '....The bottom PAIR OF TABLES represent.....
+
+\item line 175 "...signal Gaussian and background are combined..." Does "background" mean the QCD background? What about the background from the signal-event wrong combinations? Same thing in Fig.12. Shouldn't the signal-event wrong combinations be included?
+
+\item line 196: Here it refers to QCD MC giving the same optimisation. What was used before?
+
+\item Section 6.6: could you explain the Madgraph-Pythia matching issue in one sentence (also in the PAS).
+
+\item line 417: Are the correlations between the uncertainties in the fit parameters also used?
+
+\item line 544: '.... Section 4.2 and 4.2....' ! -- line 568: '.... the the .......' -- line 569: Change first '(right)' to '(left)' -- line 590: '.....The MIDDLE row of...'
+\end{itemize}
+
+
+
+\end{document}
