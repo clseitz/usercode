@@ -4,6 +4,7 @@
 \renewcommand{\labelitemii}{$-$}
 \title{ARC Comments v1}
 \usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
 \author{EXO-12-049}
 \date{\today}
 
@@ -21,7 +22,7 @@ The comments below are based on V4 of the PAS and V7 of the AN note.
 
 \item[B1.]  We could not find any jet control plots in the AN note to show the sanity of the data sample. Please add the following distributions (data \& MC) for each of the 6 jet separately: pt, eta, phi, charged hadron/neutral hadron/photon/electron/muon energy fractions.
 
-\textcolor{red}{Answer}\\
+\textcolor{ForestGreen}{We have added kinematic plots of the six leading jets as wells as control plots for the jet ID varibales to the AN.}\\
 
 \item[B2.] Demonstrate that the HLT\_QuadJet50 trigger is suitable (unbiased) for the measurement of the signal trigger. This could be done with data, or otherwise a QCD MC study with simulated trigger would suffice.
 
@@ -33,7 +34,7 @@ The comments below are based on V4 of the PAS and V7 of the AN note.
 
 \item The delta cut optimization is done so that the triplet-mass turn-on is pushed as low as possible. Why is this so critical, given that the masses up to 460 GeV have already been excluded? On the other hand, the 6th-jet pt optimization targets the high masses. Isn't this contradictory?
 
-\textcolor{magenta}{You are correct that for the inclusive analysis we don't use these cuts, however for the event selection requiring b-tags this
+\textcolor{ForestGreen}{You are correct that for the inclusive analysis we don't use these cuts, however for the event selection requiring b-tags this
 allows us to access the kinematic region of the top quark which used to show the validity of the method.}\\
 
 \item It is not very clear to us what exactly are the Nsig and Nbkg in the figure of merit used for the various optimizations. Is the Nsig the gaussian component only, or the total (gaussian + combinatorics) of the signal in the 2-sigma window? Similarly, is Nbkg the QCD-only contribution, or the sum of QCD and combinatorics from the signal?
@@ -107,18 +108,18 @@ Mjjj distributions are very similar. We have shown in a closure test for example
 \begin{itemize}
 \item Abstract line 4: Presumably the different models result in different acceptances, even for a given resonance mass. Does this still make it 'model independent'?
 
-\textcolor{green}{Our search is sensitive to any significant bump on our
+\textcolor{ForestGreen}{Our search is sensitive to any significant bump on our
 smooth background. Our limits are model-dependent, but the fact that the data
 matches the background estimate shows that there is no evidence of new physics
 of any type.}\\
 
 \item line 9: different technique $==>$ better to say a little bit clearly.
 
-\textcolor{green}{Text clarified.}\\
+\textcolor{ForestGreen}{Text clarified.}\\
 
 \item line 42: Should it be 100\%/sqrt(E), rather than 100\% * sqrt(E) ?
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item Fig 1: a) Why is the red line shown at 100 GeV, when the value used is 110? b)''flavor = 112'' (113\_223 in Fig.2 also) $==>$ we couldn't find an explanation of these legend clearly in the text
 
@@ -134,11 +135,14 @@ include b jets.}\\
 
 \item line 75: ... one b jet and two light-flavor jets $==>$ How about two b jets plus one light jet, for example.
 
-\textcolor{red}{Why don't we use a signal model that decays to two b jets?}\\
+\textcolor{ForestGreen}{The RPV coupling is u\_i d\_j d\_k  (in our case 112 or 113\_223) where i,j,k and
+generation indices, and j and k are antisymmetric.
+For decay of an SU(3)\_C adjoint fermion, the antisymmetry is a required by gauge invariance.
+This means that there can be only at most one b-quark (direct) in the decay.}\\
 
 \item line 76-77: As far as we understand all high mass samples are produced privately. So, it would be nice to compare your dample with a few centrally produced sample for sanity check.
 
-\textcolor{green}{This check has been added to the analysis note and we find good agreement between 
+\textcolor{ForestGreen}{This check has been added to the analysis note and we find good agreement between 
 centrally and private produced samples.}
 
 \item line 78: ... the natural width ... of the detector $==>$ Is this always true? no resonance mass dependence?
@@ -152,7 +156,7 @@ higher-mass resonances.}\\
 
 \item line 115: Maybe change 'signal sensitivity' to 'signal efficiency' (reducing the background would result in increased signal sensitivity)
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item Tables in Fig 2 and Fig 3: Does the normalisation really help? It fails to show that no 6th jet cut gives any chance of seeing a signal at high gluino masses. Make the text above the tables in the two diagrams compatible.
 
@@ -218,36 +222,36 @@ the heavy-flavor results. The text has been rephrased to clarify this point.}\\
 \begin{itemize}
 \item ABSTRACT, line 6:	Delete one of the two 'includes'.
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item line 9: It is not obvious that 'respectively' applies to the Tevatron and LHC.
 
-\textcolor{green}{Text clarified.}\\
+\textcolor{ForestGreen}{Text clarified.}\\
 
  \item Fig 2 caption, bottom line: Change 'bottom row' to 'table'.
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 
 \item Fig2 caption, line 3: '.... from selectiNG events....' 
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item line 142: '... can be extractED relative....' 
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item Eqn 3: Put this higher in the text (e.g. line 134) 
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item line 164: 'sensitive TO uncertainties Affecting..... events. thesE' 
 
-\textcolor{green}{Fixed.}\\
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item Ref [24]: Why are 'MCFM' and 'LHC' in curly brackets?
 
-\textcolor{green}{This error has been fixed.}\\
+\textcolor{ForestGreen}{This error has been fixed.}\\
 
 \end{itemize}
 \section{AN NOTE SPECIFIC COMMENTS}
