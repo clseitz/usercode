@@ -39,7 +39,7 @@ void mk_sigaccanplots(string flavor = "112")
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
 	gStyle->SetStatY(0.4);
-	TLatex *   tex = new TLatex(0.2,0.78,"CMS Simulation Preliminary");
+	TLatex *tex = new TLatex(0.2,0.78,"CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
@@ -70,7 +70,6 @@ void mk_sigaccanplots(string flavor = "112")
   vector<float> McXsec;
   vector<float> lumis;
   vector<float> DataLumi;
-  vector<float> GaussMeanIni;
   vector<float> LeftEdge;
   vector<float> RightEdge;
   vector<vector<float  > > MassBins;
@@ -100,7 +99,7 @@ void mk_sigaccanplots(string flavor = "112")
   string postfix;
   string folder;
   string ptcut;
-  folder="plots_test/";
+  folder="plots_massdev/";
   postfix=".pdf";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
@@ -125,6 +124,10 @@ void mk_sigaccanplots(string flavor = "112")
       cout<< histname << endl;
       // TGraphErrors *h_FullAccept = (TGraphErrors*) filelist_kin[0]->Get(histname.c_str())->Clone();
       TGraph *h_FullAccept = (TGraph*) filelist_kin[0]->Get(histname.c_str())->Clone();
+     
+      histname = string("GausMeanOffset_vs_Mass_" + flavor) + "_" + ptcut;
+      cout<< histname << endl;
+      TGraph *h_MeanOffset = (TGraph*) filelist_kin[0]->Get(histname.c_str())->Clone();
      
       TCanvas * cGluinoFitsOpti = new TCanvas(("RPV_"+ptcut+"_"+cuts).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
       //h_GluinoHist_Fit->SetFillColor(kOrange-2);
@@ -158,13 +161,13 @@ void mk_sigaccanplots(string flavor = "112")
 						*/
       h_GluinoHist_Fit->SetTitle(title.c_str());
       float titpos = 0.2;
-			TLatex *   tex2 = new TLatex(titpos, 0.89, title.c_str());
+			TLatex *tex2 = new TLatex(titpos, 0.89, title.c_str());
 			tex2->SetNDC();
 			tex2->SetTextAlign(12); // Left-adjusted
 			tex2->SetTextFont(42);
 			tex2->SetTextSize(textsiz);
 			tex2->SetLineWidth(2);
-			TLatex *   tex3 = new TLatex(titpos, 0.84, titleln2.c_str());
+			TLatex *tex3 = new TLatex(titpos, 0.84, titleln2.c_str());
 			tex3->SetNDC();
 			tex3->SetTextAlign(12);
 			tex3->SetTextFont(42);
@@ -195,13 +198,17 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_Fit->SetMarkerStyle(1);
       h_GluinoHist_Fit->SetMarkerColor(kWhite);
       // h_GluinoHist_Fit->SetTitleSize(0.01);
+      float labsiz = 0.045;
       h_GluinoHist_Fit->GetYaxis()->SetTitle("Width [GeV]");
       h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.3);
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
+      h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
+      h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
       // h_GluinoHist_Fit->Draw("AL");	
       // h_GluinoHist_Fit->Draw("A*");	
       h_GluinoHist_Fit->Draw("APX");	
 			// leg->Draw();
+      tex->SetX(titpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
@@ -216,6 +223,8 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance");
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
+      h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
+      h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
       if (false && flavor.compare("113_223") == 0 && ptcut == "110") {
       	gStyle->SetStatY(0.8);
 				h_GluinoHist_MCcomb->GetYaxis()->SetRangeUser(0.0, 0.035);
@@ -224,6 +233,7 @@ void mk_sigaccanplots(string flavor = "112")
       // h_GluinoHist_MCcomb->Draw("AL");	
       h_GluinoHist_MCcomb->Draw("APX");
       // h_GluinoHist_MCcomb->Draw("A*");
+      tex->SetX(titpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
@@ -231,6 +241,7 @@ void mk_sigaccanplots(string flavor = "112")
       
       cGluinoFitsOpt2->Write();
       cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
+
       gStyle->SetStatY(0.4);
       TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+ptcut+"_"+cuts).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
       float axsize = 0.035;
@@ -246,8 +257,8 @@ void mk_sigaccanplots(string flavor = "112")
       h_FullAccept->GetYaxis()->SetTitle("Gaussian Mean [GeV]");
       h_FullAccept->GetXaxis()->SetTitleOffset(1.3);
       h_FullAccept->GetXaxis()->SetTitle("Gluino Mass [GeV]");
-      h_FullAccept->GetXaxis()->SetTitleSize(axsize);
-      h_FullAccept->GetYaxis()->SetTitleSize(axsize);
+      h_FullAccept->GetXaxis()->SetTitleSize(labsiz);
+      h_FullAccept->GetYaxis()->SetTitleSize(labsiz);
       h_FullAccept->GetXaxis()->SetLabelSize(axsize);
       h_FullAccept->GetYaxis()->SetLabelSize(axsize);
       h_FullAccept->Draw("AL");	
@@ -261,18 +272,46 @@ void mk_sigaccanplots(string flavor = "112")
       //f_GluinoGauss->Draw("same");
       
       //f_GluinoP4->Draw("same");
+      tex->SetX(titpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
       f1.cd();
-
-		
-		
       cGluinoFitsOpt3->Write();
       cGluinoFitsOpt3->SaveAs((folder + "RPVmean" +flavor + ptcut+uncert+postfix).c_str());
-		
-		/////////////////Make some DataPlots///////////////////////
-    }
+
+      gStyle->SetStatY(0.4);
+      TCanvas *cMeanOffset = new TCanvas(("RPVMeanOffset_"+ptcut+"_"+cuts).c_str(),
+      	("RPVMeanOffset_" + ptcut + "_" + cuts).c_str(), 800, 600);
+      axsize = 0.035;
+			title="Mass Deviation for " + titlepart;
+			titpos = 0.35;
+			tex2->SetText(titpos, 0.89, title.c_str());
+      h_MeanOffset->SetMarkerStyle(1);
+      h_MeanOffset->SetLineColor(kRed);
+      h_MeanOffset->SetLineWidth(2.0);
+      h_MeanOffset->GetYaxis()->SetTitleOffset(1.3);
+      h_MeanOffset->GetYaxis()->SetTitle("Fractional Mass Deviation");
+      h_MeanOffset->GetXaxis()->SetTitleOffset(1.3);
+      h_MeanOffset->GetXaxis()->SetTitle("Gluino Mass [GeV]");
+      h_MeanOffset->GetXaxis()->SetTitleSize(labsiz);
+      h_MeanOffset->GetYaxis()->SetTitleSize(labsiz);
+      h_MeanOffset->GetXaxis()->SetLabelSize(axsize);
+      h_MeanOffset->GetYaxis()->SetLabelSize(axsize);
+      TLine *max = new TLine(0.5, 0.1, 0.5, 0.9);
+			max->SetLineColor(kGreen + 2);
+			max->SetLineWidth(3);
+      h_MeanOffset->Draw("AL");	
+			max->DrawLineNDC(0.16, 0.49, 0.98, 0.49);
+      tex->SetX(titpos);
+      tex->Draw();
+      tex2->Draw();
+      tex3->SetX(titpos);
+      tex3->Draw();
+      f1.cd();
+      cMeanOffset->Write();
+      cMeanOffset->SaveAs((folder + "RPVmassdev" +flavor + ptcut+uncert+postfix).c_str());
+  }
   	
   }
 	
