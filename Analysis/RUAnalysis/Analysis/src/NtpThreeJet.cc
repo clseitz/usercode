@@ -239,13 +239,22 @@ void NtpThreeJet::BookHistograms()
 
       Mjjj_Sph4_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       Mjjj_Sph4_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-      Mjjj_Sph4_btag_trpwt_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_btag_bjet_trpwt_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       MjjjSym_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());      
       Mjjj_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       Mjjj_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_Sph4_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Mjjj_Sph4_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       
+      HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      HT_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      HT_Sph4_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       Ntrip_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       Ntrip_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+
+      Ntrip_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      Ntrip_Sph4_btag_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       
       MjjjSym_bjet_pt_njet_diag_MCmatch.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       MjjjSym_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
@@ -260,7 +269,8 @@ void NtpThreeJet::BookHistograms()
       Maxtr_bjet_pt_njet_diag_MCcomb.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       
       MET_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
-      HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
+      
+      
       P_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       MET_over_HT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
       HMT_bjet_pt_njet_diag.push_back(std::vector<std::vector<std::vector<TH1F*> > >());
@@ -351,14 +361,21 @@ void NtpThreeJet::BookHistograms()
 
       Mjjj_Sph4_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
-      Mjjj_Sph4_btag_trpwt_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_btag_bjet_trpwt_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
 
       MjjjSym_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());      
       Mjjj_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
       Mjjj_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
 
+      Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
       Ntrip_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
       Ntrip_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
+
+      Ntrip_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+      Ntrip_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
 
       MjjjSym_bjet_pt_njet_diag_MCmatch[b].push_back(std::vector<std::vector<TH1F*> > ());
       MjjjSym_bjet_pt_njet_diag_MCcomb[b].push_back(std::vector<std::vector<TH1F*> > ());
@@ -374,6 +391,8 @@ void NtpThreeJet::BookHistograms()
 
       MET_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       HT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+HT_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
+HT_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       P_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       MET_over_HT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
       HMT_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ());
@@ -430,12 +449,18 @@ void NtpThreeJet::BookHistograms()
 	else if(ResBin)Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
 	Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
-	Mjjj_Sph4_btag_trpwt_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+	Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	if(b<1) sprintf(hNAME, "Mjjj_Sph4_btag%i_bjet%i_trpwt_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
 	if(b>=1) sprintf(hNAME, "Mjjj_Sph4_btag%i_bjet%i_trpwt_pt%i_diag%i_GE%ijet", 1,b,iPt,iDiag,iNjet);
-	Mjjj_Sph4_btag_trpwt_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME, hNAME,
-		250, 0, 2500));
-	Mjjj_Sph4_btag_trpwt_pt_njet_diag[b][i][k][j]->Sumw2();
+	Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME, hNAME,250, 0, 2500));
+	Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Sumw2();
+
+
+	Mjjj_btag_bjet_trpwt_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+	if(b<1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_trpwt_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
+	if(b>=1) sprintf(hNAME, "Mjjj_btag%i_bjet%i_trpwt_pt%i_diag%i_GE%ijet", 1,b,iPt,iDiag,iNjet);
+	Mjjj_btag_bjet_trpwt_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME, hNAME,250, 0, 2500));
+	Mjjj_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Sumw2();
 
 
 	MjjjSym_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
@@ -455,6 +480,20 @@ void NtpThreeJet::BookHistograms()
 	else if(ResBin)Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
         Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
 
+	Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i].push_back(std::vector<TH1F*> ());
+	sprintf(hNAME, "Mjjj_Sph4_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
+	if(!ResBin)Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+	Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
+	sprintf(hNAME, "Mjjj_Sph4_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
+	if(!ResBin)Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
+	else if(ResBin)Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i][k].push_back(new TH1F(hNAME,hNAME,58,tbins));
+	Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Sumw2();
+
+
 
 	Ntrip_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Ntrip_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
@@ -465,6 +504,18 @@ void NtpThreeJet::BookHistograms()
         sprintf(hNAME, "Ntrip_bjet%i_pt%i_diag%i_GE%ijet_MCcomb", b,iPt,iDiag,iNjet);
 	Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k].push_back(new TH1F(hNAME,hNAME,20,0,20));
         Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Sumw2();
+
+
+
+	Ntrip_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Ntrip_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
+	Ntrip_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,20,0,20));
+        Ntrip_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "Ntrip_Sph4_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag,iNjet);
+	Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,20,0,20));
+        Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	MjjjSym_bjet_pt_njet_diag_MCmatch[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "MjjjSym_bjet%i_pt%i_diag%i_GE%ijet_MCmatch", b,iPt,iDiag,iNjet);
@@ -517,6 +568,18 @@ void NtpThreeJet::BookHistograms()
         sprintf(hNAME, "HT_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
 	HT_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,500,0,4000));
         HT_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	HT_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "HT_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag, iNjet);
+	HT_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,500,0,4000));
+        HT_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+	HT_Sph4_btag_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
+        sprintf(hNAME, "HT_Sph4_btag%i_bjet%i_pt%i_diag%i_GE%ijet", b,b,iPt,iDiag, iNjet);
+	HT_Sph4_btag_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,500,0,4000));
+        HT_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
+
+
 
 
 	P_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
@@ -694,13 +757,20 @@ void NtpThreeJet::WriteHistograms()
 
 	     Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Write();  
 	     Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
-	     Mjjj_Sph4_btag_trpwt_pt_njet_diag[b][i][k][j]->Write();  
+	     Mjjj_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Write();  
+	     Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Write();  
 
 	     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
 	     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
 
+	     // Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
+	     //Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
 	     Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Write();  
 	     Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
+
+	     Ntrip_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
+	     Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Write();  
 
 	     
 	     bool WriteFull=true;
@@ -719,6 +789,8 @@ void NtpThreeJet::WriteHistograms()
 	     Maxtr_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Write();  
 	     MET_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     HT_bjet_pt_njet_diag[b][i][k][j]->Write();
+	     HT_btag_bjet_pt_njet_diag[b][i][k][j]->Write();
+	     HT_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     P_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Write();
 	     HMT_bjet_pt_njet_diag[b][i][k][j]->Write();
@@ -849,7 +921,7 @@ void NtpThreeJet::Loop ()
   //////////////////////////EVENT LOOP////////////////////////////
   ////////////////////////////////////////////////////////////////
   for (int ientry = 0; GetEntry(ientry) > 0; ++ientry) {
-    //    cout<<"-----------------------------------------"<<endl;
+    //  cout<<"-----------------------------------------"<<endl;
     //do pile up reweighting if we use MonteCarlo
     double MyWeight = LumiWeights_.weight(nTruePileUp);
     double weight=1;
@@ -1057,20 +1129,22 @@ void NtpThreeJet::Loop ()
 	   if(nJet35>=6) h_Jet5_EvtSel->Fill(fCleanJets[5]->Pt(),weight);
 	   if(nJet35>=7) h_Jet6_EvtSel->Fill(fCleanJets[6]->Pt(),weight);
 	   //all the jets make triplets
-	   //  	   int numJetForTriplet=fCleanJets.size();
+	   //unsigned int numJetForTriplet=fCleanJets.size();
+	   //	   cout<<fCleanJets.size()<<endl;
 	   //only the six leading jets make triplets
-	   unsigned int numJetForTriplet=6;
+	    unsigned int numJetForTriplet=6;
 	   int nTriplets=0;
 	   for (unsigned int i=0+0; i<numJetForTriplet-2; ++i) {
 	     for (unsigned int j=i+1; j<numJetForTriplet-1; ++j) {
 	       for (unsigned int k=j+1; k<numJetForTriplet-0; ++k) {
+		 // cout<<nTriplets<<endl;
 		 Triplet.push_back(std::vector<JetLV* > ());
 		 
 		 JetLV* Jet1; JetLV* Jet2; JetLV* Jet3;
 		 Jet1=fCleanJets[i]; Jet2=fCleanJets[j]; Jet3=fCleanJets[k];
 		 
 		 JetLV* Jet4; JetLV* Jet5; JetLV* Jet6;
-		 Jet4=fCleanJets[5-k]; Jet5=fCleanJets[5-j]; Jet6=fCleanJets[5-i];
+		 Jet4=fCleanJets[numJetForTriplet-1-k]; Jet5=fCleanJets[numJetForTriplet-1-j]; Jet6=fCleanJets[numJetForTriplet-1-i];
 		 
 		 TLorentzVector Triplet123; Triplet123=(*Jet1+*Jet2+*Jet3);
 		 TLorentzVector Triplet456; Triplet456=(*Jet4+*Jet5+*Jet6);
@@ -1209,23 +1283,26 @@ void NtpThreeJet::Loop ()
 				   P_bjet_pt_njet_diag[b][i][k][j]->Fill(PTriplet[q], weight);	
 				   if(b==0){
 				     Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				     massTripletPassBtag[b].push_back(massTriplet[q]);
 				     if(sphericity_ >= 0.4) {
 				     	 Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-				     	 massTripletPassBtag[b].push_back(massTriplet[q]);
+
 				     }
 				   }
 				   if (b>=1){
 				     if (Triplet[q][0]->btagged || Triplet[q][1]->btagged || Triplet[q][2]->btagged){
 				       Mjjj_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				       massTripletPassBtag[b].push_back(massTriplet[q]);
 				       if(sphericity_ >= 0.4){
 				     	 Mjjj_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-				     	 massTripletPassBtag[b].push_back(massTriplet[q]);
+				     	
 				     }
 				     }
 				   }
 				   
 				   if(TripletMoms[q]==0 || TripletMoms[q]==1){
 				     Mjjj_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
+				     //				     if(sphericity_ >= 0.4)				     Mjjj_Sph4_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(massTriplet[q],weight);
 				     MjjjSym_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(JetMassSym,weight);
 				     P_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(PTriplet[q],weight);
 				     h31_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(h31Triplet[q],weight);
@@ -1234,6 +1311,7 @@ void NtpThreeJet::Loop ()
 				   }
 				   if(TripletMoms[q]!=0 && TripletMoms[q]!=1){
 				     Mjjj_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(massTriplet[q],weight);
+				     //if(sphericity_ >= 0.4) Mjjj_Sph4_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(massTriplet[q],weight);
 				     MjjjSym_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(JetMassSym,weight);
 				     P_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(PTriplet[q],weight);
 				     h31_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(h31Triplet[q],weight);
@@ -1246,33 +1324,44 @@ void NtpThreeJet::Loop ()
 			int mtpbsiz = massTripletPassBtag[b].size();
 			double new_wt = weight;
 			if (mtpbsiz > 1)
-				new_wt *= 1.0/mtpbsiz;
+			  new_wt *= 1.0/mtpbsiz;
+			
 			for(unsigned int q = 0; q < mtpbsiz; q++){
-					Mjjj_Sph4_btag_trpwt_pt_njet_diag[b][i][k][j]->Fill(massTripletPassBtag[b][q],
-						 new_wt);
-			}
-			   if(countT>=1){
-			     MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
-			     HT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
+			  Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Fill(massTripletPassBtag[b][q],new_wt);
+			  if(sphericity_ >= 0.4) Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag[b][i][k][j]->Fill(massTripletPassBtag[b][q],new_wt);
+			 if (q==0)
+			   {
+			     //for f1, count all events where at least one triplet passed the diagonal cut
+			     HT_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
+			      Ntrip_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(mtpbsiz);
+			      if(sphericity_ >= 0.4) {
+				HT_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
+				Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(mtpbsiz);
+			      }
 
-			     MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET/SumptAllJet, weight);
-			     HMT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumMetPtAllJet20, weight);
-			     nJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nJet35, weight);
-			     nBJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nBJet35, weight);
-			     nVertex_bjet_pt_njet_diag[b][i][k][j]->Fill(nGoodVtx,weight);
-			     Jet0_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[0]->Pt(), weight);
-			     Jet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[1]->Pt(), weight);
-			     Jet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[2]->Pt(), weight);
-			     if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
-			     if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
-			     if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			     if(nBJet35>2){ 
-			       BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
-			       BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);
-			       BJet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[2]->Pt(), weight);
-			     }
-			   }
+			      MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
+			      MET_over_HT_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET/SumptAllJet, weight);
+			      HMT_bjet_pt_njet_diag[b][i][k][j]->Fill(SumMetPtAllJet20, weight);
+			      nJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nJet35, weight);
+			      nBJet35_bjet_pt_njet_diag[b][i][k][j]->Fill(nBJet35, weight);
+			      nVertex_bjet_pt_njet_diag[b][i][k][j]->Fill(nGoodVtx,weight);
+			      Jet0_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[0]->Pt(), weight);
+			      Jet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[1]->Pt(), weight);
+			      Jet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[2]->Pt(), weight);
+			      if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
+			      if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
+			      if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
+			      if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
+			      if(nBJet35>2){
+				BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
+				BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);
+				BJet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[2]->Pt(), weight);
+			      }
+			      }
+			    
+			      }
+			//cout<<"bjet: "<<b<<" "<<mtpbsiz<<" "<<countT<<endl;
+
 			   Ntrip_bjet_pt_njet_diag_MCmatch[b][i][k][j]->Fill(countMatchTrip);
 			   Ntrip_bjet_pt_njet_diag_MCcomb[b][i][k][j]->Fill(countCombTrip);
 			 }//njet pt cut

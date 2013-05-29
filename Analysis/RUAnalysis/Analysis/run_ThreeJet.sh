@@ -15,7 +15,7 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 
 
 export MYSCRIPT=RunThreeJet
-DIR=/users/h2/clseitz/MyCMS/RU/CMSSW_5_3_2_patch4/src
+DIR=/users/h2/clseitz/MyCMS/RU/CMSSW_5_3_6/src
 cd $DIR
 eval `scramv1 runtime -sh`
 #---------------------------------------------------------------

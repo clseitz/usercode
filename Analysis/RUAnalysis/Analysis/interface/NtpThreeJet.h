@@ -184,14 +184,19 @@ class NtpThreeJet : public NtpReader
     std::vector <std::vector <std::vector <std::vector<TH2F* > > > >DeltaM_vs_AvM_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_btag_bjet_pt_njet_diag;
-    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >
-    	Mjjj_Sph4_btag_trpwt_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_btag_bjet_trpwt_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_btag_bjet_trpwt_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_1btag_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCmatch;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_bjet_pt_njet_diag_MCcomb;
 
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_bjet_pt_njet_diag_MCmatch;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Mjjj_Sph4_bjet_pt_njet_diag_MCcomb;
+
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_bjet_pt_njet_diag_MCmatch;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_bjet_pt_njet_diag_MCcomb;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_btag_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >Ntrip_Sph4_btag_bjet_pt_njet_diag;
 
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MjjjSym_bjet_pt_njet_diag_MCmatch;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MjjjSym_bjet_pt_njet_diag_MCcomb;
@@ -229,6 +234,9 @@ class NtpThreeJet : public NtpReader
 
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HT_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HT_btag_bjet_pt_njet_diag;
+    std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HT_Sph4_btag_bjet_pt_njet_diag;
+
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >P_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >MET_over_HT_bjet_pt_njet_diag;
     std::vector <std::vector <std::vector <std::vector<TH1F* > > > >HMT_bjet_pt_njet_diag;

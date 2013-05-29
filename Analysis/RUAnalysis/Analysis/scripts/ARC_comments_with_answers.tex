@@ -47,7 +47,7 @@ In case of the event shape variables we find that a cut does not significantly c
 
 \item The various optimisations are performed sequentially. Is there an argument which shows that this is reasonable? (In finding the maximum of an n-dimensional function, doing n separate 1-D maximisations will not find the global maximum if the variables are correlated). Also is S/sqrt(S+B) the best approximation to optimise for the signal significance?
 
-\textcolor{magenta}{We tried the pT optimization for the different b-tagging categories and found them independent of each other.}
+\textcolor{magenta}{We tried the pT optimization for the different b-tagging categories and found them independent of each other. Figure~\ref{fig:optimization} below shows the optimization at an early stage with only 2.4/fb of data and a subset of the masses and $p_T$ cuts for different b-tagging requierments from left to right $\geq$ 0 b, $\geq$ 1 b and $\geq$ 2 b tags in the event. The trends are very similar independent of the category.}
 \textcolor{red}{?? S/sqrt(S+B) }\\
 \end{itemize}
 
@@ -258,29 +258,60 @@ the heavy-flavor results. The text has been rephrased to clarify this point.}\\
 \begin{itemize}
 \item Table 2: Too many sig figs for the cross-section
 
+\textcolor{ForestGreen}{Fixed.}\\
+
 \item line 113: we still don't see why the mass of background triplets must scale with p\_T. The PAS actually uses what we regard as better wording for this.
 
-\item line 119: "The horizontal band ..." As has always been the case for this analysis, it is essentially impossible to see the horizontal band since it is overwhelmed by the distribution of background points. It would be good to somehow make the band more visible, e.g., by using a different color for points that represent correctly paired triplets. Same thing in Fig.1 of the PAS.
+\textcolor{ForestGreen}{Wording changed to follow the version in the PAS.}\\
 
-\item Eqn 2: Is this the Landau distribution, referred to later (e.g. Fig 7 caption)? \item Fig.1 caption: "The left graph" should be "The right graph"
+\item line 119: ``The horizontal band ...'' As has always been the case for this analysis, it is essentially impossible to see the horizontal band since it is overwhelmed by the distribution of background points. It would be good to somehow make the band more visible, e.g., by using a different color for points that represent correctly paired triplets. Same thing in Fig.1 of the PAS.
+
+\textcolor{red}{A revised plot is in progress.}\\
+
+\item Eqn 2: Is this the Landau distribution, referred to later (e.g. Fig 7 caption)?
+
+\textcolor{red}{Question for Claudia.}\\
+
+\item Fig.1 caption: ``The left graph'' should be ``The right graph''
+
+\textcolor{ForestGreen}{Fixed.}\\
 
 \item Figs.3, 4: Are these events signal events only (with the wrong-combination background) or do they include QCD background as well. It would be good to make this clear in the figure captions, similar to what is done in Fig.6. Same thing in Fig.1 of the PAS.
 
+\textcolor{ForestGreen}{These plots show signal events only. The captions have been clarified.}\\
+
 \item Fig 7, right plot: Is this fit for background and just Gaussian signal (or signal = Gauss plus combinatorics)?
+
+\textcolor{ForestGreen}{The signal shape is only the Gaussian signal peak, while the background
+fit comes only from data. The caption has been rephrased for clarity.}\\
+
 
 \item Fig 8: The significances are quoted to too many sig figs. (e.g. 282.356) In caption, line 3: '....The bottom PAIR OF TABLES represent.....
 
-\item line 175 "...signal Gaussian and background are combined..." Does "background" mean the QCD background? What about the background from the signal-event wrong combinations? Same thing in Fig.12. Shouldn't the signal-event wrong combinations be included?
+\textcolor{magenta}{The tables will be revised. The caption has been fixed.}\\
+
+\item line 175 ``...signal Gaussian and background are combined...'' Does ``background'' mean the QCD background? What about the background from the signal-event wrong combinations? Same thing in Fig.12. Shouldn't the signal-event wrong combinations be included?
+
+\textcolor{red}{Question for Claudia.}\\
 
 \item line 196: Here it refers to QCD MC giving the same optimisation. What was used before?
 
+\textcolor{red}{Question for Claudia.}\\
+
 \item Section 6.6: could you explain the Madgraph-Pythia matching issue in one sentence (also in the PAS).
+
+\textcolor{red}{Question for Claudia.}\\
 
 \item line 417: Are the correlations between the uncertainties in the fit parameters also used?
 
-\item line 544: '.... Section 4.2 and 4.2....' ! -- line 568: '.... the the .......' -- line 569: Change first '(right)' to '(left)' -- line 590: '.....The MIDDLE row of...'
+\textcolor{red}{Question for Claudia.}\\
+
+\item line 544: '.... Section 4.2 and 4.2....' 
+line 568: '.... the the .......' 
+line 569: Change first '(right)' to '(left)' 
+line 590: '.....The MIDDLE row of...'
+
+\textcolor{ForestGreen}{All fixed.}\\
+
 \end{itemize}
-
-
-
 \end{document}
