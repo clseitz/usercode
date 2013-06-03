@@ -332,7 +332,7 @@ void make_ANplots()
 	TCanvas * cGluino_vs_Mass= new TCanvas((fitplots[k]+"_"+pt).c_str(), (fitplots[k]+"_"+pt).c_str(), 800, 600);
 	TLegend *leg;
 	if(k==1) {
-	  leg = new TLegend(0.5188442,0.701049,0.8994975,0.9003497,NULL,"brNDC");
+	  leg = new TLegend(0.6,0.2,0.8994975,0.5,NULL,"brNDC");
 	  cGluino_vs_Mass->SetLogy();
 	}
 	else leg = new TLegend(0.1,0.7,0.48,0.9);

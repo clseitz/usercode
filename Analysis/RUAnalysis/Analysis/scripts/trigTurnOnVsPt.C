@@ -15,12 +15,13 @@
 #include "TF1.h"
 #include "TLine.h"
 #include "TLatex.h"
+#include "TStyle.h"
 
 void trigTurnOnVsPt()
 {
+ gStyle->SetOptStat(kFALSE);
 
 	int whichFile=0;
-
 	vector <string > plotlistBase;
 	vector <string > plotlistBaseSel;
 	vector <string > plotlistRun;
@@ -51,12 +52,20 @@ void trigTurnOnVsPt()
 	 	TFile fnew1("TriggerPlots_BSix35_SSix45.root", "recreate");
 	*/
 		
-	filelist.push_back(TFile::Open("trigstudy/run2012Cv1_24Aug.root"));
+	filelist.push_back(TFile::Open("trigstudy/nobjetreq/jetht2base/runBCD.root"));
 	// filelist.push_back(TFile::Open("trigstudy/runsABCD.root"));
 	// filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
-	// filenames.push_back("BMu40_SQuad60_Di20_2012D");
-	filenames.push_back("BMu40_SQuad60_Di20_2012Cv1_24Aug");
-	titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
+	// filenames.push_back("BMu40_SQuad60_Di20_2012ABCD");
+	// filenames.push_back("BMu40_SQuad60_Di20_2012Dfulljethtnojec");
+	// filenames.push_back("BHT200_SQuad60_Di20_2012Cjetht");
+	// titlename.push_back("Quad60_Di20 (base HT200) efficiency");
+	// filenames.push_back("BQuad4550_SQuad60_Di20_2012D");
+	//titlename.push_back("Quad60_Di20 (base Quadjet45_50) efficiency");
+	// filenames.push_back("BEle27_WP80_SQuad60_Di20_Electron2012Cv2");
+	// titlename.push_back("Quad60_Di20 (base Ele27_WP80) efficiency");
+	filenames.push_back("BMu40HT200_SQuad60_Di20_2012BCD");
+	titlename.push_back("Quad60_Di20 (base Mu40HT200) efficiency");
+	// titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
 	ymaxlist.push_back(1.1);
 	TFile fnew1("TriggerPlots_BMu40_SQuad60_Di20.root", "recreate");
 	
@@ -297,7 +306,7 @@ T_Empty->GetXaxis()->SetTitleOffset(1.29);
  T_Empty->GetXaxis()->SetTitleFont(42);
  T_Empty->GetYaxis()->SetTitleFont(42);
 	char hNAME[99];	
-	sprintf(hNAME, "%i. Jet P_{T} (GeV)", i+1);	
+	sprintf(hNAME, "%ith Jet P_{T} (GeV)", i+1);	
 			if (i==6) sprintf(hNAME, "HT");
 			T_Empty->GetXaxis()->SetTitle(hNAME);	
 

@@ -29,8 +29,9 @@ def plotMttbar():
     data =  TFile.Open("samples/mc2012_QCD_HT250-Inf_Summer12_8TeV_4pt80_6pt60_geqB_RelXsec_2p4fb_k1p16_Aug15_GeneralDist.root");
     ttbar =  TFile.Open("samples/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
     stsusy300 =  TFile.Open("samples/stsusy300.root");
-    # rpv200 =  TFile.Open("samples/rpv200.root");
-    rpv200 =  TFile.Open("samples/rpv400_v13.root");
+    # rpv200 =  TFile.Open("samples/rpv200_v13.root");
+    rpv200 =  TFile.Open("samples/stsusy400_v13.root");
+    # rpv200 =  TFile.Open("samples/rpv400_v13.root");
     # rpv250 =  TFile.Open("samples/rpv250.root");
     rpv250 =  TFile.Open("samples/rpv200_53x_v2a.root");
     # ttbar =  TFile.Open("TT_Tune_4000pb_PFElectron_PF2PATJets_PFMET.root");
@@ -156,8 +157,9 @@ def plotMttbar():
           # hist_ttbar.Scale(scale);
           scale = 1.1 * lumi / 98600.0;
           # hist_stsusy300.Scale(scale);
-          # scale = 495.0 * lumi / 101250.0; # Actuall rpv200
-          scale = 7.94 * lumi / 98250.0;
+          # scale = 495.0 * lumi / 101250.0; # Actually rpv200
+          # scale = 7.94 * lumi / 98250.0; # RPV 400
+          scale = 0.18 * lumi / 124700.0; # StSUSY 400
           hist_rpv200.Scale(scale);
           scale = 140.0 * lumi / 93500.0;
           # hist_rpv250.Scale(scale);
@@ -265,7 +267,7 @@ def plotMttbar():
             hist_data.SetXTitle("Triplet mass [GeV]");
             hist_data.SetYTitle("Events");
             # rebin = 2;
-            Urange = (0, 900)
+            Urange = (0, 800)
         elif ("tPrimepT" in histname):
             hist_data.SetXTitle("T' pT [GeV]");
             hist_data.SetYTitle("Events/(8 GeV)");
@@ -729,7 +731,8 @@ def plotMttbar():
 #        qcdUncert.SetFillColor(kGray + 3);
 #        qcdUncert.SetFillStyle(3003);
 
-        leg = TLegend(0.696, 0.55, 0.95, 0.85);
+        # leg = TLegend(0.696, 0.55, 0.95, 0.85, "RPV 400 GeV");
+        leg = TLegend(0.696, 0.55, 0.95, 0.85, "Stealth SUSY 400 GeV");
         leg.SetBorderSize(0);
         leg.SetLineStyle(0);
         leg.SetTextFont(42);
@@ -739,9 +742,9 @@ def plotMttbar():
         #        leg.AddEntry(hist_data2, "data(no HLT)", "P");
         # leg.AddEntry(hist_ttbar, "t#bar{t}", "L");
         if ("Mjjj_1btag" in histname):
-          leg.AddEntry(hist_nobtags, "No b tag req.", "L");
+          leg.AddEntry(hist_nobtags, ">= 0 b tags", "L");
           leg.AddEntry(hist_anybtags, ">=1 b tags", "L");
-          leg.AddEntry(hist_rpv200, "Exactly 1 b tag", "L");
+          leg.AddEntry(hist_rpv200, "== 1 b tag", "L");
         else:
           leg.AddEntry(hist_rpv200, "RPV 200", "L");
         # leg.AddEntry(hist_rpv250, "RPV 250", "L");

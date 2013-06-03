@@ -947,7 +947,8 @@ def plotMttbar():
         if (false and 'iso' in histname):
           canvases[-1].SaveAs('plots/' + histname + '.root')
         else:
-            canvases[-1].SaveAs('plots/' + histname + '.png')
+            canvases[-1].SaveAs('plots/' + histname + '.pdf')
+            # canvases[-1].SaveAs('plots/' + histname + '.png')
         
 
 

@@ -28,14 +28,14 @@ def plotMttbar():
 
     # data =  TFile.Open("samples/mc2012_QCD_HT250-Inf_Summer12_8TeV_4pt80_6pt60_geqB_RelXsec_2p4fb_k1p16_Aug15_GeneralDist.root");
     # data = TFile.Open("samples/data2012_MultiJet_Quad50_Quad60_Di20_Json0601_2400pb_4pt80_6pt60_geqB_Aug15.root");
-    data =  TFile.Open("samples/rpv500officialpu.root");
-    ttbar =  TFile.Open("samples/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
-    stsusy300 =  TFile.Open("samples/stsusy300.root");
-    stsusy300_v2 =  TFile.Open("samples/stsusy300_53x_v2a.root");
-    jecnone =  TFile.Open("samples/rpvhf400official_v13.root");
-    jecup =  TFile.Open("samples/rpv400official_pu.root");
-    jecdown =  TFile.Open("samples/rpvhf400officialdown.root");
-    jecdownpriv =  TFile.Open("samples/rpv400_53x_v2a.root");
+    data =  TFile.Open("samples/oldjecnonofficial/rpv500officialpu.root");
+    ttbar =  TFile.Open("samples/oldjecnonofficial/mc2012_TTJets_Summer12_8TeV_TLBSM52xv3_4pt80_6pt60_geqB_Aug15.root");
+    # stsusy300 =  TFile.Open("samples/stsusy300.root");
+    # stsusy300_v2 =  TFile.Open("samples/stsusy300_53x_v2a.root");
+    jecnone =  TFile.Open("samples/RUOfficial/mc_RPV_M400_112_BtagMap_Officialpu206940.root");
+    jecup =  TFile.Open("samples/RUOfficial/jecdec/mc_RPV_M400_112_BtagMap_Officialpu206940.root");
+    jecdown =  TFile.Open("samples/oldjecnonofficial/rpvhf400officialdown.root");
+    jecdownpriv =  TFile.Open("samples/oldjecnonofficial/rpv400_53x_v2a.root");
     # ttbar =  TFile.Open("TT_Tune_4000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WJetsToLNu_5000pb_PFElectron_PF2PATJets_PFMET.root");
     # wjets =  TFile.Open("WToENu_4000pb_PFElectron_PF2PATJets_PFMET.root");
@@ -114,8 +114,8 @@ def plotMttbar():
 #        hist_data.Sumw2();
 #        hist_data2.Sumw2();
         hist_ttbar =  ttbar.Get(histname);
-        hist_stsusy300 =  stsusy300.Get(histname);
-        hist_stsusy300_v2 =  stsusy300_v2.Get(histname);
+        # hist_stsusy300 =  stsusy300.Get(histname);
+        # hist_stsusy300_v2 =  stsusy300_v2.Get(histname);
         hist_jecnone =  jecnone.Get(histname);
         hist_jecup =  jecup.Get(histname);
         hist_jecdown =  jecdown.Get(histname);
@@ -152,14 +152,16 @@ def plotMttbar():
         # hist_ttbar.Sumw2(); # No good, must be done before filling
 
         # if ('iso' in histname or 'jetmultip' in histname or 'DeltaR' in histname or ('num' in histname and 'Top' in histname)):
+        print 'JEC std num evts ', hist_jecnone.Integral();
+        print 'JEC Dec num evts ', hist_jecup.Integral();
         if (false and logscale == 0):
           numevts = hist_ttbar.Integral();
           if (numevts > 0):
             hist_ttbar.Scale(1.0/numevts);
-            numevts = hist_stsusy300.Integral();
-            hist_stsusy300.Scale(1.0/numevts);
-            numevts = hist_stsusy300_v2.Integral();
-            hist_stsusy300_v2.Scale(1.0/numevts);
+            # numevts = hist_stsusy300.Integral();
+            # hist_stsusy300.Scale(1.0/numevts);
+            #numevts = hist_stsusy300_v2.Integral();
+            # hist_stsusy300_v2.Scale(1.0/numevts);
             numevts = hist_data.Integral();
             hist_data.Scale(1.0/numevts);
             numevts = hist_jecnone.Integral();
@@ -179,8 +181,8 @@ def plotMttbar():
           # num evts = 1203373;
           hist_ttbar.Scale(scale);
           scale = 1.1 * lumi / 98600.0;
-          hist_stsusy300.Scale(scale);
-          hist_stsusy300_v2.Scale(scale);
+          # hist_stsusy300.Scale(scale);
+          # hist_stsusy300_v2.Scale(scale);
           scale = 0.045 * lumi / 107800.0;
           # hist_jecnone.Scale(scale);
           # scale = 140.0 * lumi / 93500.0;
@@ -635,8 +637,8 @@ def plotMttbar():
         else:
                   hist_data.Rebin(rebin);
                   hist_ttbar.Rebin(rebin);
-                  hist_stsusy300.Rebin(rebin);
-                  hist_stsusy300_v2.Rebin(rebin);
+                  #hist_stsusy300.Rebin(rebin);
+                  # hist_stsusy300_v2.Rebin(rebin);
                   hist_jecnone.Rebin(rebin);
                   hist_jecup.Rebin(rebin);
                   hist_jecdown.Rebin(rebin);
@@ -660,8 +662,8 @@ def plotMttbar():
 
                   hist_data.SetAxisRange(Urange[0], Urange[1]);
                   hist_ttbar.SetAxisRange(Urange[0], Urange[1]);
-                  hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
-                  hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
+                  # hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
+                  # hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
                   # print "high range ", Urange[1];
                   hist_jecnone.SetAxisRange(Urange[0], Urange[1]);
                   hist_jecup.SetAxisRange(Urange[0], Urange[1]);
@@ -759,10 +761,10 @@ def plotMttbar():
 
         hist_ttbar.SetLineColor(kRed);
         hist_ttbar.SetLineWidth(linewidth);
-        hist_stsusy300.SetLineColor(kGreen + 1);
-        hist_stsusy300.SetLineWidth(linewidth);
-        hist_stsusy300_v2.SetLineColor(kOrange + 1);
-        hist_stsusy300_v2.SetLineWidth(linewidth);
+        # hist_stsusy300.SetLineColor(kGreen + 1);
+        # hist_stsusy300.SetLineWidth(linewidth);
+        # hist_stsusy300_v2.SetLineColor(kOrange + 1);
+        # hist_stsusy300_v2.SetLineWidth(linewidth);
         hist_jecnone.SetMarkerColor(kBlack);
         hist_jecnone.SetLineColor(kBlack);
         hist_jecnone.SetLineWidth(linewidth);
@@ -809,8 +811,8 @@ def plotMttbar():
         # leg.AddEntry(hist_jecnone, "StSUSY 500", "P");
         # leg.AddEntry(hist_jecup, "StSUSY 500 up", "L");
         # leg.AddEntry(hist_jecdown, "StSUSY 500 down", "L");
-        leg.AddEntry(hist_jecnone, "RPV HF 400", "P");
-        leg.AddEntry(hist_jecup, "RPV HF 400 PU", "L");
+        leg.AddEntry(hist_jecnone, "RPV LF 400", "P");
+        leg.AddEntry(hist_jecup, "RPV LF 400 JEC Dec", "L");
         # leg.AddEntry(hist_jecdown, "RPV HF 400 down", "L");
         # leg.AddEntry(hist_jecdownpriv, "RPV 400 Private", "P");
         # leg.AddEntry(hist_stsusy300, "StealthSUSY 300 v1", "L");
@@ -899,7 +901,7 @@ def plotMttbar():
           # hist_stsusy300_v2.Draw("hist same");
           hist_jecup.Draw("hist error same");
           # hist_jecdown.Draw("hist error same");
-          # hist_jecnone.Draw("hist error same");
+          hist_jecnone.Draw("hist error same");
           # hist_jecdownpriv.Draw("hist error same");
         # hist_Zprime500.Draw("same");
         # hist_Zprime750.Draw("same");
@@ -957,8 +959,8 @@ def plotMttbar():
 
         cu_hist_data = getCumulativePlot(hist_data, "data");
         cu_hist_ttbar = getCumulativePlot(hist_ttbar, "ttbar");
-        cu_hist_stsusy300 = getCumulativePlot(hist_stsusy300, "stsusy300");
-        cu_hist_stsusy300_v2 = getCumulativePlot(hist_stsusy300_v2, "stsusy300");
+        # cu_hist_stsusy300 = getCumulativePlot(hist_stsusy300, "stsusy300");
+        # cu_hist_stsusy300_v2 = getCumulativePlot(hist_stsusy300_v2, "stsusy300");
         cu_hist_jecnone = getCumulativePlot(hist_jecnone, "rvp200");
         cu_hist_jecup = getCumulativePlot(hist_jecup, "rvp200");
         cu_hist_jecdown = getCumulativePlot(hist_jecdown, "rvp400");
@@ -989,8 +991,8 @@ def plotMttbar():
 #
         cu_hist_data.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_ttbar.SetAxisRange(Urange[0], Urange[1]);
-        cu_hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
-        cu_hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
+        # cu_hist_stsusy300.SetAxisRange(Urange[0], Urange[1]);
+        # cu_hist_stsusy300_v2.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_jecnone.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_jecup.SetAxisRange(Urange[0], Urange[1]);
         cu_hist_jecdown.SetAxisRange(Urange[0], Urange[1]);
@@ -1005,8 +1007,8 @@ def plotMttbar():
         if (Yrange[1] > 0):
             cu_hist_data.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_ttbar.SetAxisRange(Yrange[0], Yrange[1], "Y");
-            cu_hist_stsusy300.SetAxisRange(Yrange[0], Yrange[1], "Y");
-            cu_hist_stsusy300_v2.SetAxisRange(Yrange[0], Yrange[1], "Y");
+            # cu_hist_stsusy300.SetAxisRange(Yrange[0], Yrange[1], "Y");
+            # cu_hist_stsusy300_v2.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_jecnone.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_jecup.SetAxisRange(Yrange[0], Yrange[1], "Y");
             cu_hist_jecdown.SetAxisRange(Yrange[0], Yrange[1], "Y");

@@ -51,10 +51,17 @@ titlename.push_back("Quad80 (base Quad70) efficiency");
 
 		// filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SQuad60_Di20_TriggerMap_6jets20GeV_jun29.root"));
 	// filelist.push_back(TFile::Open("trigstudy/runsABCD.root"));
-	filelist.push_back(TFile::Open("trigstudy/run2012D.root"));
+	filelist.push_back(TFile::Open("trigstudy/nobjetreq/jetht2base/runBCD.root"));
 	// filenames.push_back("BMu40_SQuad60_Di20_2012ABCD.pdf");
-	filenames.push_back("BMu40_SQuad60_Di20_2012D.pdf");
-	titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
+	// filenames.push_back("BHT200_SQuad60_Di20_2012BCD.pdf");
+	// titlename.push_back("Quad60_Di20 (base HT200) efficiency");
+	// titlename.push_back("Quad60_Di20 (base Mu40) efficiency");
+	//filenames.push_back("BQdjt4550_SQuad60_Di20_2012D.pdf");
+	//titlename.push_back("Quad60_Di20 (base Quadjet45_50) efficiency");
+	filenames.push_back("BMu40HT200_SQuad60_Di20_2012BCD_2D.pdf");
+	titlename.push_back("Quad60_Di20 (base Mu40HT200) efficiency");
+	// filenames.push_back("BEle27_WP80_SQuad60_Di20_Electron2012Cv2TwoD.pdf");
+	// titlename.push_back("Quad60_Di20 (base Ele27_WP80) efficiency");
 
 /*	filelist.push_back(TFile::Open("data2012_MultiJet_BMu40_SSix45_TriggerMap_6jets20GeV_jul3.root"));
 	filenames.push_back("BMu40_SSix45.png");
@@ -72,11 +79,11 @@ titlename.push_back("Quad80 (base Quad70) efficiency");
 	*/
 		for(int file=0; file<filelist.size(); file++){
 		 TCanvas* can= new TCanvas((filenames[file]).c_str(),(filenames[file]).c_str(),900,700);
-			TH2F* hTriggerMap = new TH2F((filenames[file]).c_str(), (titlename[file]).c_str(),16,20,100,16,20,100);  
-		for(int i=0; i<15; i++){
-			for (int j=i; j<15; j++){
-				int iPt=20+i*5;
-				int jPt=20+j*5;
+			TH2F* hTriggerMap = new TH2F((filenames[file]).c_str(), (titlename[file]).c_str(),14,40,110,14,40,110);  
+		for(int i=0; i<14; i++){
+			for (int j=i; j<14; j++){
+				int iPt=40+i*5;
+				int jPt=40+j*5;
 				
 				sprintf(hNAME, "h_Jet0_BaseSel_FourPt%i_SixPt%i", jPt, iPt);
 				TH1F* htop_data =(TH1F*) filelist[file]->Get(hNAME)->Clone();
@@ -104,6 +111,8 @@ titlename.push_back("Quad80 (base Quad70) efficiency");
 		}
 				can->cd();
 		
+		hTriggerMap->SetMinimum(0.82);
+		hTriggerMap->SetMaximum(1.0);
 		hTriggerMap->Draw("colzTEXT");
 		hTriggerMap->GetYaxis()->SetTitle("4th P_{T} [GeV]");
 		hTriggerMap->GetXaxis()->SetTitle("6th P_{T} [GeV]");

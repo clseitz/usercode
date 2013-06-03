@@ -74,6 +74,9 @@ def plotMttbar():
     hists.append("Triplets/nJet35_EvtSel");
     hists.append("Triplets/Jet0_EvtSel");
     hists.append("Triplets/Jet3_EvtSel");
+    # hists.append("Triplets/bjet_0/jetpt_60/Mjjj_bjet0_pt60_diag110_GE6jet");
+    # hists.append("Triplets/bjet_0/jetpt_60/Mjjj_btag_bjet0_pt60_diag110_GE6jet");
+    # hists.append("Triplets/bjet_0/jetpt_60/Mjjj_1btag_bjet0_pt60_diag110_GE6jet");
     print hists
     
     gcd = gROOT.cd
