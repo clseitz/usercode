@@ -39,11 +39,11 @@ void mk_sigaccanplots(string flavor = "112")
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
 	gStyle->SetStatY(0.4);
-	TLatex *tex = new TLatex(0.2,0.78,"CMS Simulation Preliminary");
+	TLatex *tex = new TLatex(0.9,0.97,"CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
-	float textsiz = 0.045;
+	float textsiz = 0.04;
 	tex->SetTextSize(textsiz);
 	tex->SetLineWidth(2);
   // for(int k=0; k<3; k++){	
@@ -99,7 +99,7 @@ void mk_sigaccanplots(string flavor = "112")
   string postfix;
   string folder;
   string ptcut;
-  folder="plots_massdev/";
+  folder="plots_pas_uncert/";
   postfix=".pdf";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
@@ -160,7 +160,7 @@ void mk_sigaccanplots(string flavor = "112")
 						}
 						*/
       h_GluinoHist_Fit->SetTitle(title.c_str());
-      float titpos = 0.2;
+      float titpos = 0.2, headpos = 0.64;
 			TLatex *tex2 = new TLatex(titpos, 0.89, title.c_str());
 			tex2->SetNDC();
 			tex2->SetTextAlign(12); // Left-adjusted
@@ -195,32 +195,56 @@ void mk_sigaccanplots(string flavor = "112")
 
 
 			// leg->AddEntry(h_GluinoHist_Fit, "#splitline{Acceptance as function}{of gluino mass}","l");	
-      h_GluinoHist_Fit->SetMarkerStyle(1);
-      h_GluinoHist_Fit->SetMarkerColor(kWhite);
-      // h_GluinoHist_Fit->SetTitleSize(0.01);
-      float labsiz = 0.045;
+      h_GluinoHist_Fit->SetMarkerStyle(8);
+      // h_GluinoHist_Fit->SetMarkerColor(kWhite);
+      h_GluinoHist_Fit->SetMarkerColor(kBlack);
+      // h_GluinoHist_Fit->SetMarkerSize(0.04);
+     // h_GluinoHist_Fit->SetTitleSize(0.01);
+      TF1 *fitfunc = h_GluinoHist_Fit->GetFunction("GausWidth");
+      TF1* fitfunccopy = (TF1 *) fitfunc->Clone("fitcopy");
+      if (fitfunc == NULL)
+     	 cout << "Can't get fit func\n";
+      else {
+      	fitfunc->Delete();
+      	fitfunccopy->SetLineWidth(8);
+      	fitfunccopy->SetLineColor(kGreen + 2);
+		// fitfunc->SetLineStyle(3); // Dotted
+      }
+	float labsiz = 0.045;
       h_GluinoHist_Fit->GetYaxis()->SetTitle("Width [GeV]");
-      h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.3);
+      h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.2);
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
       // h_GluinoHist_Fit->Draw("AL");	
-      // h_GluinoHist_Fit->Draw("A*");	
-      h_GluinoHist_Fit->Draw("APX");	
-			// leg->Draw();
-      tex->SetX(titpos);
+      h_GluinoHist_Fit->Draw("AP");	
+      fitfunccopy->Draw("C same");
+      h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
+		// leg->Draw();
+      tex->SetX(headpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
       cGluinoFitsOpti->Write();
       cGluinoFitsOpti->SaveAs((folder + "RPVwidth" +flavor + ptcut+uncert+postfix).c_str());
       TCanvas * cGluinoFitsOpt2 = new TCanvas(("RPVacc_"+ptcut+"_"+cuts).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
-			title="Acceptance for " + titlepart;
+			title="Acc. x Eff. for " + titlepart;
 			tex2->SetText(titpos, 0.89, title.c_str());
-      h_GluinoHist_MCcomb->SetMarkerStyle(1);
-      h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
+      TF1 *fitfuncA = h_GluinoHist_MCcomb->GetFunction("total");
+      TF1* fitfunccopyA = (TF1 *) fitfuncA->Clone("fitcopyA");
+      if (fitfuncA == NULL)
+     	 cout << "Can't get fit func\n";
+      else {
+      	fitfuncA->Delete();
+      	fitfunccopyA->SetLineWidth(8);
+      	fitfunccopyA->SetLineColor(kGreen + 2);
+		// fitfunc->SetLineStyle(3); // Dotted
+      }
+      h_GluinoHist_MCcomb->SetMarkerStyle(8);
+      h_GluinoHist_MCcomb->SetMarkerColor(kBlack);
+      // h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
-      h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance");
+      h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
@@ -231,9 +255,11 @@ void mk_sigaccanplots(string flavor = "112")
 			}
 
       // h_GluinoHist_MCcomb->Draw("AL");	
-      h_GluinoHist_MCcomb->Draw("APX");
-      // h_GluinoHist_MCcomb->Draw("A*");
-      tex->SetX(titpos);
+      // h_GluinoHist_MCcomb->Draw("APX");
+      h_GluinoHist_MCcomb->Draw("AP");
+      fitfunccopyA->Draw("C same");
+      h_GluinoHist_MCcomb->Draw("P");	// Draw points over fit line
+      tex->SetX(headpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
