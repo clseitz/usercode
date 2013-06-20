@@ -260,21 +260,31 @@ a) It seems there are separate fits of eqn 3 to the QCD and the combinatorial
 backgrounds. Are these used in the limit setting, or is it another 4 
 parameter fit to the data? Or are the parameters for QCD and for 
 combinatorics taken as identical. 
+
+\textcolor{ForestGreen}{We have clarified these phrases in the text as they
+were confusing. The function from Eqn3 is fit to the data distribution directly,
+and this important point is now clearer in the current version of the PAS.}\\
+
 b) We found the description of the anti-btag confusing. This sounds as if it 
 is to kill off the t-pairs. But it then says that the t-pair contribution is 
 extracted. Is this because some of the b-pairs from t-pair production turn 
 out not to be b-tagged? Please clarify in PAS. 
+
+\textcolor{ForestGreen}{The use of a b-tag veto is to acquire a statistically
+independent sample from data that models the QCD background well. The ttbar
+and QCD contributions in the b-tagged analysis are treated separately, so an
+accurate description of both background shapes is required. This section has
+been revised to more accurately reflect our approach.}\\
+
 c) Line 156: Is 'this background' t-pairs? And is it free floating (line 156) 
 in the same fit as when QCD is free floating (line 159) {Or is the bgd in 
 line 156 QCD?} 
 {we think that part of the problem is that it is not clear whether t-pairs 
 are considered as part of the bgd.} 
 
-\textcolor{Red}{Claudia: In the new version in SVN, I have extensively revised this section.
-Could you please read through it and check that I haven't introduced
-inaccuracies or any confusion?\\
-Note from Dan: I modified this section to improve the flow and (hopefully)
-clarify some points - could you both check it to ensure it's to your liking?}\\
+\textcolor{ForestGreen}{The phrase 'this background' has been removed as it
+was ambiguous (it did refer to the QCD background). Overall, the revisions
+to this section should clarify the entire procedure.}\\
 
 \item L161: 
 .. 10\% uncertainty the r = 1 value that … ==\textgreater ??? 
@@ -305,12 +315,10 @@ uncertainty that you consider in the analysis and summarize them in a table
 (which will contain the uncertainty on the source, not its impact on the 
 limit). 
 
-\textcolor{Red}{I'm currently working on this (Dan), but I've had to stop
-for meetings this afternoon. I'll continue later today. The big change is
-that this now is moved to the previous section, and the data plots are in
-results. Btw, it also makes the data plots, discussion of limits, etc.,
-flow a little better imho. So pardon my progress, and I'll have a better
-draft version once it's my turn again to modify the PAS.}\\
+\textcolor{ForestGreen}{We have added much more detail concerning the method
+we use to define each systematic uncertainty, as well as providing a summary
+table.}\\
+
 
 
 \item L185:... (which also... scale), ==\textgreater this is not a part of ISR/FSR 
@@ -341,7 +349,12 @@ a) What data statistic is used? Is it the profile likelihood ratio?
 b) What would the limits have been without systematics? 
 c) Mention that (and how?) the theory error is taken into account. 
 
-\textcolor{Red}{Claudia, could you tackle this section?}\\
+\textcolor{ForestGreen}{Following your suggestions we have expanded the limit setting
+section including information about  the profile likelihood ratio, which is used in
+the analysis. Additionally, the use of the theoretical uncertainties has been described
+in more detail. We follow the SUSY groups convention of placing the theory uncertainties
+as bands around the nominal value and quoting the limit where the -1 sigma theory line
+intersects with the expected and observed curves.}\\
 
 \item L195: 
 pile-up ==\textgreater PU 
@@ -465,21 +478,23 @@ bit (see Fig.2)
 a) add in the PAS the fit residuals on all 3 plots (currently shown only at 
 the AN note) 
 
-\textcolor{Blue}{These can be added to the current plots for additional clarity.}\\
+\textcolor{ForestGreen}{Residuals have been added to the current plots for additional clarity.}\\
 
 
 b) Fig 4 and right part of fig 5 have chi2/ndf. It is better to have them 
 separately rather than just a ratio. Left part of fig 5 has neither. 
 
-\textcolor{Blue}{The main reason for the chi2/ndf is simply to give an
-indication of goodness of the fit, thus we do not feel it is needed to
-have them listed separately. For fig. 5, we can add information to quantify
-the background's description of the data.}\\
+\textcolor{ForestGreen}{The main reason for the chi2/ndf is simply to give an
+indication of goodness of the fit, thus we prefer not to have them listed separately.
+The left part of fig 5 is simply for illustration, with a scaling of the QCD background
+(b-tag control region) set to a value determined from the actual fit, which
+is not shown here. Instead, we have added a residual distribution to provide
+a more quantified level of agreement.}\\
 
 
 c) why is the "chi" uppercase? 
 
-\textcolor{Blue}{This is a simple textual change and can be done.}\\
+\textcolor{ForestGreen}{It is now lowercase.}\\
 
 
 d) caption: x axis ==\textgreater x-axis 
@@ -542,23 +557,18 @@ b) caption: needs to be improved
 
 c) comment in the text the behavior of acceptance x efficiency at high masses 
 
-\textcolor{ForestGreen}{We have added a phrase to address this behavior.}
-%%Personally, I think it will be better to show both Fig. 6 plots with the acceptance x efficiency uncertainties
-%%associated to them. This dip should be evaluated within that context, and it's hard to judge the importance
-%%of this effect without it. For the moment, we can remain vague in the text.
+\textcolor{ForestGreen}{We have added a phrase to describe this behavior, as well
+as adding the measured points with their statistical uncertainties.}\\
 
 
 \item Fig.7 
 a) Last legends in the box (e.g. RPV XYZ)==\textgreater replace those by reader friendly way. 
 
-\textcolor{Blue}{We can replace these legends with the word 'light-flavor gluinos' and 'heavy-flavor
-gluinos'.}\\
-
+\textcolor{ForestGreen}{We have changed these labels to more accurately reflect the model and remove jargon.}\\
 
 b) why do you need the grid lines? 
 
-\textcolor{ForestGreen}{We have kept the grid lines here to help guide the eye for the limits; however,
-if the ARC feels that they are more of a distraction than a help, we can remove them.}\\
+\textcolor{ForestGreen}{These have been removed.}\\
 
 
 \end{itemize}
