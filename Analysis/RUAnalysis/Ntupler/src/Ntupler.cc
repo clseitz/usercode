@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.25 2013/03/15 11:19:52 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.26 2013/03/29 15:32:19 cvuosalo Exp $
 //
 //
 
@@ -276,9 +276,9 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ////CLEAN UP VARIABLES
     ////////////////////////////////////////////////////
      HasSelTrigger = HasTrigger;
+     DataIs=_isData;
      HasBaseTrigger = HasTrigger2 || HasTriggerBase2;
      if (HasTrigger || HasTrigger2 || HasTriggerBase2){
-
        fGoodJets.clear(); fCleanJets.clear(); 
        nGoodJets=0; nCleanJets=0;
        fGoodElectrons.clear(); fCleanElectrons.clear();
@@ -317,21 +317,20 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        nTriplets=0; q=0; //basically just triplet counting
        IsVtxGood = 0; 
        ///////////////////////////////////////////////////////
-       /////DO OBJECT ID
-       ///////////////////////////////////////////////////////
+       /////DO OBJECT ID       ///////////////////////////////////////////////////////
        //Select all the objects int the event (vertex function makes some plots)
-
-			JetCorrectionUncertainty *jecUnc = 0;
-		  if (! _isData) {
-				edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
-				// get the jet corrector parameters collection from the global tag
-				iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PFchs"), JetCorParColl);
-				// get the uncertainty parameters from the collection
-				JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
-				// instantiate the jec uncertainty object
-				jecUnc = new JetCorrectionUncertainty(JetCorPar);
-			}
-
+       
+       JetCorrectionUncertainty *jecUnc = 0;
+       if (! _isData) {
+	 edm::ESHandle < JetCorrectorParametersCollection > JetCorParColl;
+	 // get the jet corrector parameters collection from the global tag
+	 iSetup.get<JetCorrectionsRecord>().get(std::string("AK5PFchs"), JetCorParColl);
+	 // get the uncertainty parameters from the collection
+	 JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+	 // instantiate the jec uncertainty object
+	 jecUnc = new JetCorrectionUncertainty(JetCorPar);
+       }
+       
        //JETS already have loose JetID applied
        //	 edm::Handle<edm::View<pat::Jet> > fGoodPFJets;
        // edm::Handle< std::vector<pat::Jet> > fGoodPFJets;
@@ -345,10 +344,10 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        edm::Handle< std::vector<pat::Jet> > fCleanCA8PrunedPFJets;
        iEvent.getByLabel(_patJetType[2], fCleanCA8PrunedPFJets);
        
-
-	 ////////////////////
+       
+       ////////////////////
        if(!_isData) GetTruePileUp(iEvent);
-
+       
        DoVertexID(iEvent);
        DoElectronID(iEvent);
        DoMuonID(iEvent);
@@ -369,16 +368,16 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        fCleanMuons = fGoodMuons;
        fCleanElectrons = fGoodElectrons;
        fCleanPhotons= fGoodPhotons;
-	nCleanMuons = nGoodMuons; 
-	nCleanElectrons = nGoodElectrons;
-	nCleanPhotons= nGoodPhotons;
-
-	nCleanPFJets= fCleanPFJets->size();
-	nCleanCA8PFJets= fCleanCA8PFJets->size();
-	nCleanCA8PrunedPFJets= fCleanCA8PrunedPFJets->size();
+       nCleanMuons = nGoodMuons; 
+       nCleanElectrons = nGoodElectrons;
+       nCleanPhotons= nGoodPhotons;
+       
+       nCleanPFJets= fCleanPFJets->size();
+       nCleanCA8PFJets= fCleanCA8PFJets->size();
+       nCleanCA8PrunedPFJets= fCleanCA8PrunedPFJets->size();
        ///////////////////////////////////////////////
        //make plots after the clean up
-
+       
        h_nCleanElectrons->Fill(nCleanElectrons);
        h_nCleanMuons->Fill(nCleanMuons);
        h_nCleanPhotons->Fill(nCleanPhotons);
@@ -392,62 +391,96 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        
        nPFJets=nCleanPFJets;
        std::auto_ptr<reco::GenParticleCollection> parents(new reco::GenParticleCollection());
+       
+       //       cout<<"NJets: "<<nPFJets<<endl;
+       int counter60=0;
        // cout<<"NJets: "<<nPFJets<<endl;
-			 const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
-      int i=0;
-			std::list<jetElem> adjJetList;
-			for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
-				 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
-				 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
-				 if (jec > 0.0)
-					 correctedJet.scaleEnergy(jec);                        // apply the correction
-				 else cout << "Bad jec " << jec << endl;
-				 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
-					 cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
-					 cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
-					 cout << " eta " << correctedJet.eta() << endl;
-				 }
-				 bool goodJecUnc = false;
-				 if (! _isData) {
-					// Apply sanity check to avoid exception for bad values
-					if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
-						jecUnc->setJetEta(Jet->eta());
-						jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
-						goodJecUnc = true;
-					} else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
-				}
-				jetElem tmpjet;
-				tmpjet.origJet = &(*Jet);
-				tmpjet.adjJet = correctedJet.p4();
-				double corrFactor = 1.0;
-				tmpjet.jecUnc = 0;
-				if (! _isData && goodJecUnc)
-					tmpjet.jecUnc = jecUnc->getUncertainty(true);
-				if (! _isData && (_jecAdj.compare("jerup") == 0 || _jecAdj.compare("jerdown") == 0)) {
-					bool jerdown = (_jecAdj.compare("jerdown") == 0);
-					corrFactor = getJERAdj(correctedJet.pt(), *Jet, jerdown);
-				} else if (_jecAdj.compare("up") == 0)
-					corrFactor += tmpjet.jecUnc;
-				else if (_jecAdj.compare("down") == 0)
-					corrFactor -= tmpjet.jecUnc;
-				if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
-					tmpjet.adjJet *= corrFactor;
-				tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
-				adjJetList.push_back(tmpjet);
-      }
-			if (jecUnc != 0)
-				delete jecUnc;
-			adjJetList.sort(cmpJets);
+       const JetCorrector* corrector = JetCorrector::getJetCorrector(_jetCorrectionService, iSetup);   //Get the jet corrector from the event setup
+       int i=0;
+       std::list<jetElem> adjJetList;
+       for (std::vector<pat::Jet>::const_iterator Jet = fCleanPFJets->begin(); Jet != fCleanPFJets->end(); ++Jet) {
+	 double jec = corrector->correction(Jet->correctedJet("Uncorrected"), iEvent, iSetup); 
+	 pat::Jet correctedJet = Jet->correctedJet("Uncorrected");  //copy original jet
+	 if (jec > 0.0)
+	   correctedJet.scaleEnergy(jec);                        // apply the correction
+	 else cout << "Bad jec " << jec << endl;
+	 if (jec < 0.1 && Jet->pt() > 30 && fabs(correctedJet.eta()) < 2.5) {
+	   cout << "Warning: Invalid(?) JEC " << jec << " uncorrected pt ";
+	   cout << Jet->correctedJet("Uncorrected").pt() << " corrected pt " << correctedJet.pt();
+	   cout << " eta " << correctedJet.eta() << endl;
+	 }
+	 bool goodJecUnc = false;
+	 if (! _isData) {
+	   // Apply sanity check to avoid exception for bad values
+	   if (fabs(Jet->eta()) < 5.2 && correctedJet.pt() > 0.0 && correctedJet.pt() < 20000.0) {
+	     jecUnc->setJetEta(Jet->eta());
+	     jecUnc->setJetPt(correctedJet.pt()); // the uncertainty is a function of the corrected pt
+	     goodJecUnc = true;
+	   } else cout << "Bad jet with out-of-range eta/pt. Can't get JEC unc. Eta " << Jet->eta() << " pt " << correctedJet.pt() << endl;
+	 }
+	 jetElem tmpjet;
+	 tmpjet.origJet = &(*Jet);
+	 tmpjet.adjJet = correctedJet.p4();
+	 double corrFactor = 1.0;
+	 tmpjet.jecUnc = 0;
+	 if (! _isData && goodJecUnc)
+	   tmpjet.jecUnc = jecUnc->getUncertainty(true);
+	 if (! _isData && (_jecAdj.compare("jerup") == 0 || _jecAdj.compare("jerdown") == 0)) {
+	   bool jerdown = (_jecAdj.compare("jerdown") == 0);
+	   corrFactor = getJERAdj(correctedJet.pt(), *Jet, jerdown);
+	 } else if (_jecAdj.compare("up") == 0)
+	   
+	   corrFactor += tmpjet.jecUnc;
 
+
+	 else if (_jecAdj.compare("down") == 0)
+	   corrFactor -= tmpjet.jecUnc;
+	 if (corrFactor != 1.0 && corrFactor > 0 && corrFactor < 5.0) // Apply factor only for reasonable values
+	   tmpjet.adjJet *= corrFactor;
+	 tmpjet.diffVec = correctedJet.p4() - tmpjet.adjJet;
+	 adjJetList.push_back(tmpjet);
+
+	 if(correctedJet.pt()>60.0 && fabs(correctedJet.eta())<2.5){
+	   counter60++;
+	     }
+       }
+       if (jecUnc != 0)
+	 delete jecUnc;
+       adjJetList.sort(cmpJets);
+       
        for (std::list<jetElem>::const_iterator chngJet = adjJetList.begin(); chngJet != adjJetList.end(); ++chngJet) {
-				const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
-			 	const pat::Jet *Jet = chngJet->origJet;
-				
-	 if(i<6){
-	   v_PFjet_pt[i]->Fill(Jet->pt()); 
-	   v_PFjet_eta[i]->Fill(Jet->eta()); 
-	   v_PFjet_phi[i]->Fill(Jet->phi()); 
-	   v_PFjet_m[i]->Fill(Jet->mass()); 
+
+	 const reco::Candidate::LorentzVector *adjJet = &(chngJet->adjJet); 
+	 const pat::Jet *Jet = chngJet->origJet;
+	 
+	 if(counter60 >=6){
+	   if(i<4 && adjJet->pt()>80.0 && fabs(adjJet->eta())<2.5){
+	   v_PFjet_pt[i]->Fill(adjJet->pt()); 
+	   v_PFjet_eta[i]->Fill(adjJet->eta()); 
+	   v_PFjet_phi[i]->Fill(adjJet->phi()); 
+	   v_PFjet_m[i]->Fill(adjJet->mass()); 
+	   h_chargedHadronEnergyFraction->Fill(Jet->correctedJet("Uncorrected").chargedHadronEnergyFraction());
+	   h_neutralHadronEnergyFraction->Fill(Jet->correctedJet("Uncorrected").neutralHadronEnergyFraction());
+	   h_neutralEmEnergyFraction->Fill(Jet->correctedJet("Uncorrected").neutralEmEnergyFraction());
+	   h_chargedEmEnergyFraction->Fill(Jet->correctedJet("Uncorrected").chargedEmEnergyFraction());
+	   h_numberOfDaughters->Fill(Jet->correctedJet("Uncorrected").numberOfDaughters());
+	   h_chargedMultiplicity->Fill(Jet->correctedJet("Uncorrected").chargedMultiplicity());
+
+
+	 }
+	   if(i>=4 &&i<6 && adjJet->pt()>60.0  && fabs(adjJet->eta())<2.5){
+	   v_PFjet_pt[i]->Fill(adjJet->pt()); 
+	   v_PFjet_eta[i]->Fill(adjJet->eta()); 
+	   v_PFjet_phi[i]->Fill(adjJet->phi()); 
+	   v_PFjet_m[i]->Fill(adjJet->mass()); 
+	   h_chargedHadronEnergyFraction->Fill(Jet->correctedJet("Uncorrected").chargedHadronEnergyFraction());
+	   h_neutralHadronEnergyFraction->Fill(Jet->correctedJet("Uncorrected").neutralHadronEnergyFraction());
+	   h_neutralEmEnergyFraction->Fill(Jet->correctedJet("Uncorrected").neutralEmEnergyFraction());
+	   h_chargedEmEnergyFraction->Fill(Jet->correctedJet("Uncorrected").chargedEmEnergyFraction());
+	   h_numberOfDaughters->Fill(Jet->correctedJet("Uncorrected").numberOfDaughters());
+	   h_chargedMultiplicity->Fill(Jet->correctedJet("Uncorrected").chargedMultiplicity());
+	 }
+
 	 }
 
 
@@ -474,28 +507,39 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscCSV_PF[i]=Jet->bDiscriminator("combinedSecondaryVertexBJetTags");
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
-	   int jetMom = -1; 
-		const reco::GenParticle * part = Jet->genParton();
-	   if (part){
-	     
-	     // cout<<"GenParton: "<<part->pdgId()<<endl;
-	         const reco::GenParticle * mom = (const reco::GenParticle*) (*part).mother();
-	     // cout<<mom->pdgId()<<endl;
-	     for (int y = 0; y < int(parents->size()); ++y)
-	       if (fabs((*parents)[y].p() - (*part).mother()->p()) < 0.001) jetMom = y;
-	     if (jetMom == -1){
-	       jetMom = int(parents->size());
-	       reco::GenParticle cand(*mom);
-	       parents->push_back(cand);
-	       // std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+	   if(1==1){
+	     int jetMom = -1; 
+	     const reco::GenParticle * part = Jet->genParton();
+	     if (part){
+	       //cout<<"GenParton: "<<part->pdgId()<<" mother:"<<(*part).mother()->pdgId()<<endl;
+	       const reco::GenParticle * mom;
+	       //cout<<"Aftere "<<part->mother()<<endl;
+	       if ((*part).mother()->pdgId() == 3000002){
+		 const reco::GenParticle * teenmom = (const reco::GenParticle*) (*part).mother();
+		 const reco::GenParticle * grammy = (const reco::GenParticle*) (*teenmom).mother();
+		 mom = (const reco::GenParticle*) (*grammy).mother();
 	       }
+	       else{mom = (const reco::GenParticle*) (*part).mother();}
+	       //cout<<part<<endl;
+	       //cout<<mom->mass()<<endl;
+	       for (int y = 0; y < int(parents->size()); ++y)
+		 if (fabs((*parents)[y].p() - mom->p()) < 0.001) jetMom = y;
+	       if (jetMom == -1){
+		 jetMom = int(parents->size());
+		 reco::GenParticle cand(*mom);
+		 parents->push_back(cand);
+		 //std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+		 
+	       }
+	       
+	     }
+	     jet_PF_JetMom[i]=jetMom;	     
+	     //	     cout<<"jetmomL: "<<jetMom<<endl;
+	   }
+	 }
+	 i++;
 	 
-	       }
-	   jet_PF_JetMom[i]=jetMom;	     
-		 // cout<<"jetmomL: "<<jetMom<<endl;
-}
-     i++;
-   }
+       }
    // cout<<"================"<<endl;
   nCA8PFJets=nCleanCA8PFJets;
 
@@ -760,10 +804,24 @@ Ntupler::beginJob()
   
   sprintf(hTITLE, "Number of clean Photons with Pt>%i and Eta<%i", (int) _phpt,(int) _pheta);
   h_nCleanPhotons = new TH1F("nPhotonsClean", hTITLE,10,0,10);
-  
-    
+
+  h_chargedHadronEnergyFraction = new TH1F("chargedHadronEnergyFraction", "chargedHadronEnergyFraction",200,0,1);  
+  h_neutralHadronEnergyFraction = new TH1F("neutralHadronEnergyFraction", "neutralHadronEnergyFraction",200,0,1);  
+  h_neutralEmEnergyFraction = new TH1F("neutralEmEnergyFraction", "neutralEmEnergyFraction",200,0,1);  
+  h_chargedEmEnergyFraction = new TH1F("chargedEmEnergyFraction", "chargedEmEnergyFraction",200,0,1);  
+  h_numberOfDaughters = new TH1F("numberOfDaughters", "numberOfDaughters",200,0,200);  
+  h_chargedMultiplicity = new TH1F("chargedMultiplicity", "chargedMultiplicity",200,0,200);  
+
   for(int i=0; i<6; i++)
     {
+      if(i<=3){
+	_jetptcut=80.0;
+	_etacut=2.5;
+      }
+      else{
+	_jetptcut=60.0;
+	_etacut=2.5;
+      }
       sprintf(hNAME, "PFjet_%i_pt", i);
       sprintf(hTITLE, "PFJetPt of the %i st Jet with Pt>%i and Eta<%i", i,(int) _jetptcut,(int) _etacut);
       v_PFjet_pt.push_back(new TH1F(hNAME,hTITLE,200,0,1000));
@@ -867,6 +925,12 @@ Ntupler::endJob()
   h_nCleanCA8PFJets->Write();
   h_nGoodCA8PrunedPFJets->Write();
   h_nCleanCA8PrunedPFJets->Write();
+  h_chargedHadronEnergyFraction->Write();
+  h_neutralHadronEnergyFraction->Write();
+  h_neutralEmEnergyFraction->Write();
+  h_chargedEmEnergyFraction->Write();
+  h_numberOfDaughters->Write();
+  h_chargedMultiplicity->Write();
   for(int i=0; i<6; i++)
     { v_PFjet_m[i]->Write();
       v_PFjet_pt[i]->Write();
@@ -1536,7 +1600,7 @@ void
 Ntupler::GetMCTruth(const edm::Event& iEvent){
   if(!_isData){
 
-	   edm::Handle< std::vector<reco::GenParticle> > GenParticles; 
+    edm::Handle< std::vector<reco::GenParticle> > GenParticles; 
     iEvent.getByLabel("prunedGenParticles", GenParticles);  
        nGenPart=(*GenParticles).size();
     for (unsigned int p=0; p<(*GenParticles).size(); p++) { 

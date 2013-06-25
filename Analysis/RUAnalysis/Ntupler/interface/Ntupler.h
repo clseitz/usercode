@@ -155,7 +155,12 @@ class Ntupler : public edm::EDAnalyzer, public NtpReader {
   Int_t nCleanPhotons;
   
   Int_t IsVtxGood;
-
+  TH1F* h_chargedHadronEnergyFraction;
+  TH1F* h_neutralHadronEnergyFraction;
+  TH1F* h_neutralEmEnergyFraction;
+  TH1F* h_chargedEmEnergyFraction;
+  TH1F* h_numberOfDaughters;
+  TH1F* h_chargedMultiplicity;
   TH1F* h_nGoodVtx;
   TH1F* h_zPosGoodVtx;
   TH1F* h_NumEvtCut;
