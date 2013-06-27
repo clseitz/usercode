@@ -99,7 +99,7 @@ void mk_sigaccanplots(string flavor = "112")
   string postfix;
   string folder;
   string ptcut;
-  folder="plots_pas_uncert/";
+  folder="plots_band/";
   postfix=".pdf";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
@@ -129,7 +129,7 @@ void mk_sigaccanplots(string flavor = "112")
       cout<< histname << endl;
       TGraph *h_MeanOffset = (TGraph*) filelist_kin[0]->Get(histname.c_str())->Clone();
      
-      TCanvas * cGluinoFitsOpti = new TCanvas(("RPV_"+ptcut+"_"+cuts).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
+      TCanvas * cGluinoFitsOpti = new TCanvas(("RPV_"+flavor +ptcut).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
       //h_GluinoHist_Fit->SetFillColor(kOrange-2);
       // h_GluinoHist_Fit->SetLineColor(kBlack);
 		string title;
@@ -195,19 +195,20 @@ void mk_sigaccanplots(string flavor = "112")
 
 
 			// leg->AddEntry(h_GluinoHist_Fit, "#splitline{Acceptance as function}{of gluino mass}","l");	
-      h_GluinoHist_Fit->SetMarkerStyle(8);
+      h_GluinoHist_Fit->SetMarkerStyle(1);
       // h_GluinoHist_Fit->SetMarkerColor(kWhite);
-      h_GluinoHist_Fit->SetMarkerColor(kBlack);
+      h_GluinoHist_Fit->SetMarkerColor(kGreen + 3);
       // h_GluinoHist_Fit->SetMarkerSize(0.04);
      // h_GluinoHist_Fit->SetTitleSize(0.01);
       TF1 *fitfunc = h_GluinoHist_Fit->GetFunction("GausWidth");
-      TF1* fitfunccopy = (TF1 *) fitfunc->Clone("fitcopy");
+      string fitnamew = "fitcopy" + ptcut;
+      TF1* fitfunccopy = (TF1 *) fitfunc->Clone(fitnamew.c_str());
       if (fitfunc == NULL)
      	 cout << "Can't get fit func\n";
       else {
       	fitfunc->Delete();
-      	fitfunccopy->SetLineWidth(8);
-      	fitfunccopy->SetLineColor(kGreen + 2);
+      	fitfunccopy->SetLineWidth(3);
+      	fitfunccopy->SetLineColor(kGreen + 3);
 		// fitfunc->SetLineStyle(3); // Dotted
       }
 	float labsiz = 0.045;
@@ -216,10 +217,32 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
-      // h_GluinoHist_Fit->Draw("AL");	
-      h_GluinoHist_Fit->Draw("AP");	
-      fitfunccopy->Draw("C same");
-      h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
+       h_GluinoHist_Fit->Draw("APX");	// X eliminates error bars
+       // h_GluinoHist_Fit->Draw("AP");	
+      // TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone(fitnamew.c_str());
+      TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone();
+      int fillcolor = 8;
+      if (fithist != NULL) {
+      	int numBins = fithist->GetNbinsX();
+      	for (int cnt = 1; cnt <= numBins; ++cnt) {
+      		double mass = fithist->GetBinCenter(cnt);
+      		double width =  fithist->GetBinContent(cnt);
+      		double wuncert = 0.1281;
+      		if (mass < 700)
+      			wuncert = 0.1562;
+      		else if (mass < 950)
+      			wuncert = 0.1414;
+      		else if (mass < 1000)
+      			wuncert = 0.1345;
+      		double err = width * wuncert;
+      		fithist->SetBinError(cnt, err);
+      	}
+      	fithist->SetFillColor(fillcolor);
+      	fithist->SetFillStyle(1001);
+      	fithist->Draw("CE3SAME");
+      }
+      fitfunccopy->Draw("CSAME");
+      // h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
 		// leg->Draw();
       tex->SetX(headpos);
       tex->Draw();
@@ -227,22 +250,23 @@ void mk_sigaccanplots(string flavor = "112")
       tex3->Draw();
       cGluinoFitsOpti->Write();
       cGluinoFitsOpti->SaveAs((folder + "RPVwidth" +flavor + ptcut+uncert+postfix).c_str());
-      TCanvas * cGluinoFitsOpt2 = new TCanvas(("RPVacc_"+ptcut+"_"+cuts).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
+      TCanvas * cGluinoFitsOpt2 = new TCanvas(("RPVacc_"+flavor +ptcut).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
 			title="Acc. x Eff. for " + titlepart;
 			tex2->SetText(titpos, 0.89, title.c_str());
       TF1 *fitfuncA = h_GluinoHist_MCcomb->GetFunction("total");
-      TF1* fitfunccopyA = (TF1 *) fitfuncA->Clone("fitcopyA");
+      string fitname = "fitcopyA" + ptcut;
+      TF1* fitfunccopyA = (TF1 *) fitfuncA->Clone(fitname.c_str());
       if (fitfuncA == NULL)
      	 cout << "Can't get fit func\n";
       else {
       	fitfuncA->Delete();
-      	fitfunccopyA->SetLineWidth(8);
-      	fitfunccopyA->SetLineColor(kGreen + 2);
+      	fitfunccopyA->SetLineWidth(3);
+      	fitfunccopyA->SetLineColor(kGreen + 3);
 		// fitfunc->SetLineStyle(3); // Dotted
       }
-      h_GluinoHist_MCcomb->SetMarkerStyle(8);
-      h_GluinoHist_MCcomb->SetMarkerColor(kBlack);
-      // h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
+      h_GluinoHist_MCcomb->SetMarkerStyle(1);
+      // h_GluinoHist_MCcomb->SetMarkerColor(kBlack);
+      h_GluinoHist_MCcomb->SetMarkerColor(kRed);
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
@@ -255,10 +279,49 @@ void mk_sigaccanplots(string flavor = "112")
 			}
 
       // h_GluinoHist_MCcomb->Draw("AL");	
-      // h_GluinoHist_MCcomb->Draw("APX");
-      h_GluinoHist_MCcomb->Draw("AP");
-      fitfunccopyA->Draw("C same");
-      h_GluinoHist_MCcomb->Draw("P");	// Draw points over fit line
+      h_GluinoHist_MCcomb->Draw("APX");
+      // fitfunccopyA->Draw("C same");
+      // TH1 *fithistA = (TH1 *) fitfunccopyA->GetHistogram()->Clone(fitname.c_str());
+      TH1 *fithistA = (TH1 *) fitfunccopyA->GetHistogram()->Clone();
+      if (fithistA != NULL) {
+      	int numBins = fithistA->GetNbinsX();
+      	for (int cnt = 1; cnt <= numBins; ++cnt) {
+      		double mass = fithistA->GetBinCenter(cnt);
+      		double accpt =  fithistA->GetBinContent(cnt);
+      		double wuncert = 0.0917;
+      		if (mass < 400)
+      			wuncert = 0.1261;
+      		else if (mass < 450)
+      			wuncert = 0.1208;
+      		else if (mass < 500)
+      			wuncert = 0.1269;
+      		else if (mass < 525)
+      			wuncert = 0.1192;
+      		else if (mass < 600)
+      			wuncert = 0.1145;
+      		else if (mass < 650)
+      			wuncert = 0.1114;
+      		else if (mass < 700)
+      			wuncert = 0.1034;
+       		else if (mass < 750)
+      			wuncert = 0.0933;
+      		else if (mass < 950)
+      			wuncert = 0.086;
+      		else if (mass < 1350)
+      			wuncert = 0.0889;
+      		else if (mass < 1400)
+      			wuncert = 0.086;
+      		else if (mass < 1450)
+      			wuncert = 0.0933;
+     		double err = accpt * wuncert;
+      		fithistA->SetBinError(cnt, err);
+      	}
+      	fithistA->SetFillColor(fillcolor);
+      	fithistA->SetFillStyle(1001);
+      	fithistA->Draw("CE3SAME");
+      }
+      fitfunccopyA->Draw("CSAME");
+      // h_GluinoHist_MCcomb->Draw("P");	// Draw points over fit line
       tex->SetX(headpos);
       tex->Draw();
       tex2->Draw();
@@ -269,7 +332,7 @@ void mk_sigaccanplots(string flavor = "112")
       cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
 
       gStyle->SetStatY(0.4);
-      TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+ptcut+"_"+cuts).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
+      TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+flavor +ptcut).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
       float axsize = 0.035;
 			title="Gaussian Mean for " + titlepart;
 			tex2->SetText(titpos, 0.89, title.c_str());
@@ -307,7 +370,7 @@ void mk_sigaccanplots(string flavor = "112")
       cGluinoFitsOpt3->SaveAs((folder + "RPVmean" +flavor + ptcut+uncert+postfix).c_str());
 
       gStyle->SetStatY(0.4);
-      TCanvas *cMeanOffset = new TCanvas(("RPVMeanOffset_"+ptcut+"_"+cuts).c_str(),
+      TCanvas *cMeanOffset = new TCanvas(("RPVMeanOffset_"+flavor +ptcut).c_str(),
       	("RPVMeanOffset_" + ptcut + "_" + cuts).c_str(), 800, 600);
       axsize = 0.035;
 			title="Mass Deviation for " + titlepart;
@@ -337,7 +400,7 @@ void mk_sigaccanplots(string flavor = "112")
       f1.cd();
       cMeanOffset->Write();
       cMeanOffset->SaveAs((folder + "RPVmassdev" +flavor + ptcut+uncert+postfix).c_str());
-  }
+      }
   	
   }
 	
