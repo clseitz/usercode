@@ -138,11 +138,12 @@ void mk_sigaccanplots(string flavor = "112")
 		string tag = "Heavy", sphericity = " Sphericity > 0.4";
 		if (flavor.compare("112") == 0)
 			tag = "Light";
-		else if (ptcut == "60")
+		else if (ptcut.compare("60") == 0)
 			sphericity = "";
 		string titlepart = tag + "-flavor RPV Gluino";
-		string titleln2 = "p_{T} > " + ptcut + " GeV " + sphericity;
-		title = "Width for " + titlepart;
+		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} > " + ptcut + " GeV";
+		title = titlepart;
+		// title = "Width for " + titlepart;
 		/*
 		if(k==0){
 		title="RPV gluino #bf{" + systematic + " up} m="+to_string(masses[i])+", ptcut = "+ptcut+", #Delta = 110 GeV, #bf{6^{th} Jet p_{T} = 60 GeV}";
@@ -173,32 +174,31 @@ void mk_sigaccanplots(string flavor = "112")
 			tex3->SetTextFont(42);
 			tex3->SetTextSize(textsiz);
 			tex3->SetLineWidth(2);
-			TLegend *leg;
-			if (flavor.compare("113_223") == 0 && ptcut == "110")
-				leg = new TLegend(0.592392,0.15,0.9518012,0.5,NULL,"brNDC");
-			else leg = new TLegend(0.192392,0.6847589,0.48018012,0.83553,NULL,"brNDC");
+			TLatex *tex4 = NULL;
+			if (sphericity.size() > 0) {
+				tex4 = new TLatex(titpos - 0.01, 0.79, sphericity.c_str());
+				tex4->SetNDC();
+				tex4->SetTextAlign(12);
+				tex4->SetTextFont(42);
+				tex4->SetTextSize(textsiz);
+				tex4->SetLineWidth(2);
+			}
+			TLegend *leg = new TLegend(0.65, 0.2, 0.95, 0.4);
 			leg->SetBorderSize(1);
 			leg->SetTextFont(62);
-			leg->SetLineColor(0);
+			leg->SetLineColor(kBlack);
 			leg->SetLineStyle(1);
 			leg->SetLineWidth(1);
 			leg->SetFillColor(0);
 			leg->SetFillStyle(1001);
-			string titlepart2 = "#splitline{#splitline{#Delta = 110 GeV, 6^{th}-jet p_{T} = "
-			+ ptcut + " GeV}{";
-			// leg->SetHeader("#splitline{#splitline{#Delta = 110 GeV, 6^{th} Jet p_{T} = 110 GeV}{No b-tagging requirement}}{Sphericity > 0.4}");
-			if (flavor.compare("112") == 0)
-				titlepart2 += "No b-tag requirement";
-			else titlepart2 += ">= 1 b tag in triplet";
-			titlepart2 += "}}{" + sphericity + "}";
-			leg->SetHeader(titlepart2.c_str());
+			//leg->SetHeader();
 
 
 			// leg->AddEntry(h_GluinoHist_Fit, "#splitline{Acceptance as function}{of gluino mass}","l");	
       h_GluinoHist_Fit->SetMarkerStyle(1);
-      // h_GluinoHist_Fit->SetMarkerColor(kWhite);
-      h_GluinoHist_Fit->SetMarkerColor(kGreen + 3);
-      // h_GluinoHist_Fit->SetMarkerSize(0.04);
+      h_GluinoHist_Fit->SetMarkerColor(kWhite);
+      // h_GluinoHist_Fit->SetMarkerColor(kGreen + 3);
+      h_GluinoHist_Fit->SetMarkerSize(0.004);
      // h_GluinoHist_Fit->SetTitleSize(0.01);
       TF1 *fitfunc = h_GluinoHist_Fit->GetFunction("GausWidth");
       string fitnamew = "fitcopy" + ptcut;
@@ -212,7 +212,7 @@ void mk_sigaccanplots(string flavor = "112")
 		// fitfunc->SetLineStyle(3); // Dotted
       }
 	float labsiz = 0.045;
-      h_GluinoHist_Fit->GetYaxis()->SetTitle("Width [GeV]");
+      h_GluinoHist_Fit->GetYaxis()->SetTitle("Gaussian Width [GeV]");
       h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.2);
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
@@ -221,7 +221,8 @@ void mk_sigaccanplots(string flavor = "112")
        // h_GluinoHist_Fit->Draw("AP");	
       // TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone(fitnamew.c_str());
       TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone();
-      int fillcolor = 8;
+      int fillcolor = kGreen + 2;
+      int fillstyle = 3013;
       if (fithist != NULL) {
       	int numBins = fithist->GetNbinsX();
       	for (int cnt = 1; cnt <= numBins; ++cnt) {
@@ -238,21 +239,37 @@ void mk_sigaccanplots(string flavor = "112")
       		fithist->SetBinError(cnt, err);
       	}
       	fithist->SetFillColor(fillcolor);
-      	fithist->SetFillStyle(1001);
+      	fithist->SetFillStyle(fillstyle);
       	fithist->Draw("CE3SAME");
       }
       fitfunccopy->Draw("CSAME");
       // h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
-		// leg->Draw();
+      leg->AddEntry(fitfunccopy, "Gaussian Width", "L");
+      leg->AddEntry(fithist, "Uncertainty", "F");
+	 leg->Draw();
       tex->SetX(headpos);
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      if (tex4 != NULL)
+		tex4->Draw();
       cGluinoFitsOpti->Write();
       cGluinoFitsOpti->SaveAs((folder + "RPVwidth" +flavor + ptcut+uncert+postfix).c_str());
+
       TCanvas * cGluinoFitsOpt2 = new TCanvas(("RPVacc_"+flavor +ptcut).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
-			title="Acc. x Eff. for " + titlepart;
-			tex2->SetText(titpos, 0.89, title.c_str());
+	 // title="Acc. x Eff. for " + titlepart;
+	 title= titlepart;
+	 tex2->SetText(titpos, 0.89, title.c_str());
+	 TLegend *leg2 = new TLegend(0.65, 0.2, 0.95, 0.4);
+	 leg2->SetBorderSize(1);
+	 leg2->SetTextFont(62);
+	 leg2->SetTextSize(0.04);
+	 leg2->SetLineColor(kBlack);
+	 leg2->SetLineStyle(1);
+	 leg2->SetLineWidth(1);
+	 leg2->SetFillColor(0);
+	 leg2->SetFillStyle(1001);
+
       TF1 *fitfuncA = h_GluinoHist_MCcomb->GetFunction("total");
       string fitname = "fitcopyA" + ptcut;
       TF1* fitfunccopyA = (TF1 *) fitfuncA->Clone(fitname.c_str());
@@ -266,7 +283,7 @@ void mk_sigaccanplots(string flavor = "112")
       }
       h_GluinoHist_MCcomb->SetMarkerStyle(1);
       // h_GluinoHist_MCcomb->SetMarkerColor(kBlack);
-      h_GluinoHist_MCcomb->SetMarkerColor(kRed);
+      h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
@@ -317,7 +334,7 @@ void mk_sigaccanplots(string flavor = "112")
       		fithistA->SetBinError(cnt, err);
       	}
       	fithistA->SetFillColor(fillcolor);
-      	fithistA->SetFillStyle(1001);
+      	fithistA->SetFillStyle(fillstyle);
       	fithistA->Draw("CE3SAME");
       }
       fitfunccopyA->Draw("CSAME");
@@ -326,8 +343,12 @@ void mk_sigaccanplots(string flavor = "112")
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
-			// leg->Draw();
-      
+      leg2->AddEntry(fitfunccopyA, "Acc. x Eff.", "L");
+      leg2->AddEntry(fithistA, "Uncertainty", "F");
+	 leg2->Draw();
+       if (tex4 != NULL)
+		tex4->Draw();
+ 
       cGluinoFitsOpt2->Write();
       cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
 
@@ -365,6 +386,8 @@ void mk_sigaccanplots(string flavor = "112")
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      if (tex4 != NULL)
+		tex4->Draw();
       f1.cd();
       cGluinoFitsOpt3->Write();
       cGluinoFitsOpt3->SaveAs((folder + "RPVmean" +flavor + ptcut+uncert+postfix).c_str());
@@ -397,6 +420,10 @@ void mk_sigaccanplots(string flavor = "112")
       tex2->Draw();
       tex3->SetX(titpos);
       tex3->Draw();
+      if (tex4 != NULL) {
+      	tex4->SetX(titpos);
+		tex4->Draw();
+	 }
       f1.cd();
       cMeanOffset->Write();
       cMeanOffset->SaveAs((folder + "RPVmassdev" +flavor + ptcut+uncert+postfix).c_str());
