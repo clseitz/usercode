@@ -55,7 +55,7 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 		else if (ptcut == "60")
 			sphericity = "";
 		string titlepart = tag + "-flavor RPV Gluino";
-		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} > " + ptcut + " GeV";
+		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} = " + ptcut + " GeV";
 		title = axisLabel.substr(0, 2) + " for " + titlepart;
       h_GluinoHist_Fit->SetTitle(title.c_str());
       float titpos = 0.2, headpos = 0.64;

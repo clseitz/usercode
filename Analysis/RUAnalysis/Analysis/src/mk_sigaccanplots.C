@@ -208,7 +208,7 @@ void mk_sigaccanplots(string flavor = "112")
 		else if (ptcut.compare("60") == 0)
 			sphericity = "";
 		string titlepart = tag + "-flavor RPV Gluino";
-		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} > " + ptcut + " GeV";
+		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} = " + ptcut + " GeV";
 		title = titlepart;
 		// title = "Width for " + titlepart;
 		/*
