@@ -31,6 +31,96 @@ inline std::string to_string (const T& t)
 	return ss.str();
 }
 
+void setErr(TH1 *const fithist, int cnt, const string &flavor, const string &param)
+{
+	double mass = fithist->GetBinCenter(cnt);
+	double width =  fithist->GetBinContent(cnt);
+	double wuncert = 0.1281;
+	if (param.compare("width") == 0) { // width
+		if (flavor.compare("112") == 0) {
+			if (mass < 700)
+				wuncert = 0.1562;
+			else if (mass < 950)
+				wuncert = 0.1414;
+			else if (mass < 1000)
+				wuncert = 0.1345;
+		} else { // 113_223
+			wuncert = 0.1562;
+			if (mass < 250)
+				wuncert = 0.1487;
+			else if (mass < 300)
+				wuncert = 0.1281;
+			else if (mass < 350)
+				wuncert = 0.1166;
+			else if (mass < 400)
+				wuncert = 0.1221;
+			else if (mass < 450)
+				wuncert = 0.1166;
+			else if (mass < 500)
+				wuncert = 0.1118;
+			else if (mass < 650)
+				wuncert = 0.1166;
+			else if (mass < 850)
+				wuncert = 0.1221;
+			else if (mass < 900)
+				wuncert = 0.1281;
+			else if (mass < 950)
+				wuncert = 0.1345;
+			else if (mass < 1000)
+				wuncert = 0.1414;
+			else if (mass < 1150)
+				wuncert = 0.1487;
+			else if (mass < 1400)
+				wuncert = 0.1414;
+			else if (mass < 1450)
+				wuncert = 0.1487;
+		} 
+	} else { // acc.
+		if (flavor.compare("112") == 0) {
+			if (mass < 700)
+				wuncert = 0.1562;
+			else if (mass < 950)
+				wuncert = 0.1414;
+			else if (mass < 1000)
+				wuncert = 0.1345;
+		} else {
+			wuncert = 0.1463;
+			if (mass < 250)
+				wuncert = 0.2276;
+			else if (mass < 300)
+				wuncert = 0.1536;
+			else if (mass < 350)
+				wuncert = 0.133;
+			else if (mass < 400)
+				wuncert = 0.1005;
+			else if (mass < 450)
+				wuncert = 0.1063;
+			else if (mass < 550)
+				wuncert = 0.1044;
+			else if (mass < 650)
+				wuncert = 0.0922;
+			else if (mass < 750)
+				wuncert = 0.098;
+			else if (mass < 900)
+				wuncert = 0.1058;
+			else if (mass < 950)
+				wuncert = 0.11;
+			else if (mass < 1000)
+				wuncert = 0.1217;
+			else if (mass < 1400)
+				wuncert = 0.1253;
+			else if (mass < 1550)
+				wuncert = 0.1319;
+			else if (mass < 1650)
+				wuncert = 0.1345;
+			else if (mass < 1750)
+				wuncert = 0.1378;
+		}
+	}
+	double err = width * wuncert;
+	fithist->SetBinError(cnt, err);
+}
+
 void mk_sigaccanplots(string flavor = "112")
 {
 	setTDRStyle();
@@ -51,29 +141,7 @@ void mk_sigaccanplots(string flavor = "112")
   for(int k=2; k<3; k++){	
   //Which plots to make
   //define input variables
-  vector <string > namelist;
-  vector <string > VarList;
-  vector <TFile* > data;
-  vector <TFile* > filelist;
-  vector <TFile* > filelist_btag;
-	vector <TFile* > filelist_2D;
   vector <TFile* > filelist_kin;
-  vector <TFile* > filelist_param;
-	  vector <TFile* > filelist_diag;
-	vector <TFile* > filelist_stealth;
-  vector <TFile* > filelist0b;
-  vector <float > EvtGen;
-  vector <float > Xsec;
-  vector <float > GlunioMass;
-  
-  vector<float> nEvtTot;
-  vector<float> McXsec;
-  vector<float> lumis;
-  vector<float> DataLumi;
-  vector<float> LeftEdge;
-  vector<float> RightEdge;
-  vector<vector<float  > > MassBins;
-  vector <TH1F* > v_Asym;
 
   // string uncert="btagup";
   // if(k==1) uncert="btagdown";
@@ -81,7 +149,6 @@ void mk_sigaccanplots(string flavor = "112")
   if(k==1) uncert="down";
   if(k==2) uncert="";
   
-  namelist.push_back("KinematicOptimization");
   // filelist_kin.push_back(TFile::Open(("Acc_Gluino_NoLumi_pt110_8TeVxsec_BtagMap_2500GeV"+uncert+".root").c_str()));
   // filelist_kin.push_back(TFile::Open("Acc_Gluino_NoLumi_pt60_pt110_8TeVxsec_BtagMap.root"));
   // filelist_kin.push_back(TFile::Open(("Acc_RPV112" + uncert + ".root").c_str()));
@@ -217,6 +284,8 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
+      if (flavor.compare("113_223") == 0 && ptcut == "60")
+		h_GluinoHist_Fit->GetYaxis()->SetRangeUser(14.0,  50.0);
        h_GluinoHist_Fit->Draw("APX");	// X eliminates error bars
        // h_GluinoHist_Fit->Draw("AP");	
       // TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone(fitnamew.c_str());
@@ -226,17 +295,7 @@ void mk_sigaccanplots(string flavor = "112")
       if (fithist != NULL) {
       	int numBins = fithist->GetNbinsX();
       	for (int cnt = 1; cnt <= numBins; ++cnt) {
-      		double mass = fithist->GetBinCenter(cnt);
-      		double width =  fithist->GetBinContent(cnt);
-      		double wuncert = 0.1281;
-      		if (mass < 700)
-      			wuncert = 0.1562;
-      		else if (mass < 950)
-      			wuncert = 0.1414;
-      		else if (mass < 1000)
-      			wuncert = 0.1345;
-      		double err = width * wuncert;
-      		fithist->SetBinError(cnt, err);
+      		setErr(fithist, cnt, flavor, "width");
       	}
       	fithist->SetFillColor(fillcolor);
       	fithist->SetFillStyle(fillstyle);
@@ -290,10 +349,13 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
-      if (false && flavor.compare("113_223") == 0 && ptcut == "110") {
-      	gStyle->SetStatY(0.8);
-				h_GluinoHist_MCcomb->GetYaxis()->SetRangeUser(0.0, 0.035);
-			}
+      if (flavor.compare("113_223") == 0) {
+		float ylimit = 0.05;
+		if ( ptcut == "110")
+			ylimit = 0.022;
+		// gStyle->SetStatY(0.8);
+		h_GluinoHist_MCcomb->GetYaxis()->SetRangeUser(0.0, ylimit);
+	}
 
       // h_GluinoHist_MCcomb->Draw("AL");	
       h_GluinoHist_MCcomb->Draw("APX");
@@ -303,35 +365,7 @@ void mk_sigaccanplots(string flavor = "112")
       if (fithistA != NULL) {
       	int numBins = fithistA->GetNbinsX();
       	for (int cnt = 1; cnt <= numBins; ++cnt) {
-      		double mass = fithistA->GetBinCenter(cnt);
-      		double accpt =  fithistA->GetBinContent(cnt);
-      		double wuncert = 0.0917;
-      		if (mass < 400)
-      			wuncert = 0.1261;
-      		else if (mass < 450)
-      			wuncert = 0.1208;
-      		else if (mass < 500)
-      			wuncert = 0.1269;
-      		else if (mass < 525)
-      			wuncert = 0.1192;
-      		else if (mass < 600)
-      			wuncert = 0.1145;
-      		else if (mass < 650)
-      			wuncert = 0.1114;
-      		else if (mass < 700)
-      			wuncert = 0.1034;
-       		else if (mass < 750)
-      			wuncert = 0.0933;
-      		else if (mass < 950)
-      			wuncert = 0.086;
-      		else if (mass < 1350)
-      			wuncert = 0.0889;
-      		else if (mass < 1400)
-      			wuncert = 0.086;
-      		else if (mass < 1450)
-      			wuncert = 0.0933;
-     		double err = accpt * wuncert;
-      		fithistA->SetBinError(cnt, err);
+      		setErr(fithistA, cnt, flavor, "acceptance");
       	}
       	fithistA->SetFillColor(fillcolor);
       	fithistA->SetFillStyle(fillstyle);
