@@ -83,8 +83,8 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 				tex4->SetLineWidth(2);
 			}
       h_GluinoHist_Fit->SetMarkerStyle(1);
-      // h_GluinoHist_Fit->SetMarkerColor(kWhite);
-      h_GluinoHist_Fit->SetMarkerColor(kGreen + 3);
+      h_GluinoHist_Fit->SetMarkerColor(kWhite);
+      // h_GluinoHist_Fit->SetMarkerColor(kGreen + 3);
       // h_GluinoHist_Fit->SetMarkerSize(0.04);
      // h_GluinoHist_Fit->SetTitleSize(0.01);
       TF1 *fitfunc = h_GluinoHist_Fit->GetFunction("p3");
@@ -169,10 +169,13 @@ void sigfiteffplots(string flavor = "112")
 			if(p==1) ptcut="110";
 				// string histname = string("GausWidth_vs_Mass_112") + ptcut;
 				
-			string outfilenam = folder + "RPVwidth" +flavor + ptcut+uncert+postfix;
-			mkplot("f1_vs_Mass", "f1 (Event Selection Efficiency)", ptcut, flavor, outfilenam, filelist_kin, tex);
-			mkplot("f2_vs_Mass", "f2 (Number of Triplets per Event)", ptcut, flavor, outfilenam, filelist_kin, tex);
-			mkplot("f3_vs_Mass", "f3 (Proportion of Gaussian Triplets)", ptcut, flavor, outfilenam, filelist_kin, tex);
+			string outfilenam = folder + "RPVeffic" +flavor + ptcut+uncert;
+			string finalnam = outfilenam + "f1" +postfix;
+			mkplot("f1_vs_Mass", "f1 (Event Selection Efficiency)", ptcut, flavor, finalnam, filelist_kin, tex);
+			finalnam = outfilenam + "f2" +postfix;
+			mkplot("f2_vs_Mass", "f2 (Number of Triplets per Event)", ptcut, flavor, finalnam, filelist_kin, tex);
+			finalnam = outfilenam + "f3" +postfix;
+			mkplot("f3_vs_Mass", "f3 (Proportion of Gaussian Triplets)", ptcut, flavor, finalnam, filelist_kin, tex);
 		}
 		
 	}
