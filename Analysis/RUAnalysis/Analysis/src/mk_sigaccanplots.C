@@ -133,8 +133,8 @@ void mk_sigaccanplots(string flavor = "112")
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
-	float textsiz = 0.04;
-	tex->SetTextSize(textsiz);
+	float textsiz = 0.06;
+	tex->SetTextSize(0.04);
 	tex->SetLineWidth(2);
   // for(int k=0; k<3; k++){	
   // for(int k=0; k<2; k++){	
@@ -167,7 +167,7 @@ void mk_sigaccanplots(string flavor = "112")
   string folder;
   string ptcut;
   folder="plots_band/";
-  postfix=".pdf";
+  postfix=".png";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
   
@@ -208,7 +208,8 @@ void mk_sigaccanplots(string flavor = "112")
 		else if (ptcut.compare("60") == 0)
 			sphericity = "";
 		string titlepart = tag + "-flavor RPV Gluino";
-		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} = " + ptcut + " GeV";
+		string titleln2 = "\\Delta = 110 GeV";
+		string titleln3 = "6^{th} Jet p_{T} = " + ptcut + " GeV";
 		title = titlepart;
 		// title = "Width for " + titlepart;
 		/*
@@ -235,15 +236,21 @@ void mk_sigaccanplots(string flavor = "112")
 			tex2->SetTextFont(42);
 			tex2->SetTextSize(textsiz);
 			tex2->SetLineWidth(2);
-			TLatex *tex3 = new TLatex(titpos, 0.84, titleln2.c_str());
+			TLatex *tex3 = new TLatex(titpos, 0.82, titleln2.c_str());
 			tex3->SetNDC();
 			tex3->SetTextAlign(12);
 			tex3->SetTextFont(42);
 			tex3->SetTextSize(textsiz);
 			tex3->SetLineWidth(2);
+			TLatex *tex3a = new TLatex(titpos, 0.75, titleln3.c_str());
+			tex3a->SetNDC();
+			tex3a->SetTextAlign(12);
+			tex3a->SetTextFont(42);
+			tex3a->SetTextSize(textsiz);
+			tex3a->SetLineWidth(2);
 			TLatex *tex4 = NULL;
 			if (sphericity.size() > 0) {
-				tex4 = new TLatex(titpos - 0.01, 0.79, sphericity.c_str());
+				tex4 = new TLatex(titpos - 0.01, 0.68, sphericity.c_str());
 				tex4->SetNDC();
 				tex4->SetTextAlign(12);
 				tex4->SetTextFont(42);
@@ -278,13 +285,16 @@ void mk_sigaccanplots(string flavor = "112")
       	fitfunccopy->SetLineColor(kGreen + 3);
 		// fitfunc->SetLineStyle(3); // Dotted
       }
-	float labsiz = 0.045;
+	 float labsiz = 0.055;
+      float axsize = 0.035; // Not necessary -- this is default size
       h_GluinoHist_Fit->GetYaxis()->SetTitle("Gaussian Width [GeV]");
-      h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.2);
+      // h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.1);
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
-      if (flavor.compare("113_223") == 0 && ptcut == "60")
+      //  h_GluinoHist_Fit->GetXaxis()->SetLabelSize(axsize);
+      // h_GluinoHist_Fit->GetYaxis()->SetLabelSize(axsize);
+     if (flavor.compare("113_223") == 0 && ptcut == "60")
 		h_GluinoHist_Fit->GetYaxis()->SetRangeUser(14.0,  50.0);
        h_GluinoHist_Fit->Draw("APX");	// X eliminates error bars
        // h_GluinoHist_Fit->Draw("AP");	
@@ -310,6 +320,7 @@ void mk_sigaccanplots(string flavor = "112")
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      tex3a->Draw();
       if (tex4 != NULL)
 		tex4->Draw();
       cGluinoFitsOpti->Write();
@@ -345,7 +356,7 @@ void mk_sigaccanplots(string flavor = "112")
       h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
-      h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
+      // h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
@@ -377,6 +388,7 @@ void mk_sigaccanplots(string flavor = "112")
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      tex3a->Draw();
       leg2->AddEntry(fitfunccopyA, "Acc. x Eff.", "L");
       leg2->AddEntry(fithistA, "Uncertainty", "F");
 	 leg2->Draw();
@@ -388,7 +400,6 @@ void mk_sigaccanplots(string flavor = "112")
 
       gStyle->SetStatY(0.4);
       TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+flavor +ptcut).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
-      float axsize = 0.035;
 			title="Gaussian Mean for " + titlepart;
 			tex2->SetText(titpos, 0.89, title.c_str());
 			// title="Full Acceptance for " + titlepart;
@@ -420,6 +431,7 @@ void mk_sigaccanplots(string flavor = "112")
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      tex3a->Draw();
       if (tex4 != NULL)
 		tex4->Draw();
       f1.cd();
@@ -454,6 +466,8 @@ void mk_sigaccanplots(string flavor = "112")
       tex2->Draw();
       tex3->SetX(titpos);
       tex3->Draw();
+      tex3a->SetX(titpos);
+      tex3a->Draw();
       if (tex4 != NULL) {
       	tex4->SetX(titpos);
 		tex4->Draw();

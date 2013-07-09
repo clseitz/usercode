@@ -23,7 +23,7 @@
 
 #include <sstream>
 
-static const float textsiz = 0.04;
+static const float textsiz = 0.06;
 
 template <class T>
 inline std::string to_string (const T& t)
@@ -55,27 +55,34 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 		else if (ptcut == "60")
 			sphericity = "";
 		string titlepart = tag + "-flavor RPV Gluino";
-		string titleln2 = "\\Delta = 110 GeV, 6^{th}-Jet p_{T} = " + ptcut + " GeV";
+		string titleln2 = "\\Delta = 110 GeV";
+		string titleln3 = "6^{th} Jet p_{T} = " + ptcut + " GeV";
 		title = axisLabel.substr(0, 2) + " for " + titlepart;
       h_GluinoHist_Fit->SetTitle(title.c_str());
       float titpos = 0.2, headpos = 0.64;
       if (graphNam[1] == '3')
-      	titpos = 0.5;
+      	titpos = 0.35;
 			TLatex *tex2 = new TLatex(titpos, 0.89, title.c_str());
 			tex2->SetNDC();
 			tex2->SetTextAlign(12); // Left-adjusted
 			tex2->SetTextFont(42);
 			tex2->SetTextSize(textsiz);
 			tex2->SetLineWidth(2);
-			TLatex *tex3 = new TLatex(titpos, 0.84, titleln2.c_str());
+			TLatex *tex3 = new TLatex(titpos, 0.82, titleln2.c_str());
 			tex3->SetNDC();
 			tex3->SetTextAlign(12);
 			tex3->SetTextFont(42);
 			tex3->SetTextSize(textsiz);
 			tex3->SetLineWidth(2);
+			TLatex *tex3a = new TLatex(titpos, 0.75, titleln3.c_str());
+			tex3a->SetNDC();
+			tex3a->SetTextAlign(12);
+			tex3a->SetTextFont(42);
+			tex3a->SetTextSize(textsiz);
+			tex3a->SetLineWidth(2);
 			TLatex *tex4 = NULL;
 			if (sphericity.size() > 0) {
-				tex4 = new TLatex(titpos - 0.01, 0.79, sphericity.c_str());
+				tex4 = new TLatex(titpos - 0.01, 0.68, sphericity.c_str());
 				tex4->SetNDC();
 				tex4->SetTextAlign(12);
 				tex4->SetTextFont(42);
@@ -98,7 +105,7 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
       	fitfunccopy->SetLineColor(kGreen + 3);
 		// fitfunc->SetLineStyle(3); // Dotted
       }
-	float labsiz = 0.045;
+	float labsiz = 0.047;
 	string axisTitle = axisLabel + " [GeV]";
       h_GluinoHist_Fit->GetYaxis()->SetTitle(axisTitle.c_str());
       h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.2);
@@ -116,6 +123,7 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
       tex->Draw();
       tex2->Draw();
       tex3->Draw();
+      tex3a->Draw();
       if (tex4 != NULL)
 		tex4->Draw();
       cGluinoFitsOpti->Write();
@@ -136,7 +144,7 @@ void sigfiteffplots(string flavor = "112")
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
-	tex->SetTextSize(textsiz);
+	tex->SetTextSize(0.04);
 	tex->SetLineWidth(2);
   // for(int k=0; k<3; k++){	
   // for(int k=0; k<2; k++){	
@@ -158,7 +166,7 @@ void sigfiteffplots(string flavor = "112")
 		string folder;
 		string ptcut;
 		folder="plots_effic/";
-		postfix=".pdf";
+		postfix=".png";
 		/////////////Plots for each Mass separatly//////////////
 		/////////////----------------------------------------/////////////
 		
