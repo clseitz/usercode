@@ -131,14 +131,14 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 	gStyle->SetStatY(0.4);
 	float unused = 0.9, simtxt_y = 0.97;
 	if (tdrstyle == false) {
-		simtxt_y = 0.92;
+		simtxt_y = 0.93;
 	}
 	TLatex *tex = new TLatex(unused, simtxt_y, "CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
 	float textsiz = 0.06;
-	tex->SetTextSize(0.04);
+	tex->SetTextSize(0.05);
 	tex->SetLineWidth(2);
   // for(int k=0; k<3; k++){	
   // for(int k=0; k<2; k++){	
@@ -171,7 +171,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
   string folder;
   string ptcut;
   folder="plots_band/";
-  postfix=".png";
+  postfix=".pdf";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
   
@@ -237,7 +237,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 	  if (tdrstyle == false) {
 	  	titpos -= 0.05;
 	  	titly -= 0.05;
-	  	headpos = 0.57;
+	  	headpos = 0.47;
 	  }
 			TLatex *tex2 = new TLatex(titpos, titly, title.c_str());
 			tex2->SetNDC();
@@ -391,7 +391,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
 	  if (tdrstyle == false)
-	  	labsiz -= 0.1;
+	  	labsiz -= 0.01;
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
 	  if (tdrstyle == false) {
 		float axsize = 0.04;
