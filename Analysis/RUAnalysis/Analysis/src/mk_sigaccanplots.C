@@ -19,7 +19,7 @@
 #include "TGraphErrors.h"
 #include "TGraphAsymmErrors.h"
 #include "TStyle.h"
-#include "tdrstyle.C"
+#include "carlstyle.C"
 
 #include <sstream>
 
@@ -121,15 +121,19 @@ void setErr(TH1 *const fithist, int cnt, const string &flavor, const string &par
 	fithist->SetBinError(cnt, err);
 }
 
-void mk_sigaccanplots(string flavor = "112")
+void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 {
-	setTDRStyle();
+	setTDRStyle(tdrstyle);
 	// gStyle->SetOptFit(1100); // chi2 and prob, not parameters
 	gStyle->SetOptFit(0); // chi2 and prob, not parameters
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
 	gStyle->SetStatY(0.4);
-	TLatex *tex = new TLatex(0.9,0.97,"CMS Simulation Preliminary");
+	float unused = 0.9, simtxt_y = 0.97;
+	if (tdrstyle == false) {
+		simtxt_y = 0.92;
+	}
+	TLatex *tex = new TLatex(unused, simtxt_y, "CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
@@ -229,20 +233,25 @@ void mk_sigaccanplots(string flavor = "112")
 						}
 						*/
       h_GluinoHist_Fit->SetTitle(title.c_str());
-      float titpos = 0.2, headpos = 0.64;
-			TLatex *tex2 = new TLatex(titpos, 0.89, title.c_str());
+      float titpos = 0.2, titly = 0.89, headpos = 0.64;
+	  if (tdrstyle == false) {
+	  	titpos -= 0.05;
+	  	titly -= 0.05;
+	  	headpos = 0.57;
+	  }
+			TLatex *tex2 = new TLatex(titpos, titly, title.c_str());
 			tex2->SetNDC();
 			tex2->SetTextAlign(12); // Left-adjusted
 			tex2->SetTextFont(42);
 			tex2->SetTextSize(textsiz);
 			tex2->SetLineWidth(2);
-			TLatex *tex3 = new TLatex(titpos, 0.82, titleln2.c_str());
+			TLatex *tex3 = new TLatex(titpos, titly - 0.07, titleln2.c_str());
 			tex3->SetNDC();
 			tex3->SetTextAlign(12);
 			tex3->SetTextFont(42);
 			tex3->SetTextSize(textsiz);
 			tex3->SetLineWidth(2);
-			TLatex *tex3a = new TLatex(titpos, 0.75, titleln3.c_str());
+			TLatex *tex3a = new TLatex(titpos, titly - 0.14, titleln3.c_str());
 			tex3a->SetNDC();
 			tex3a->SetTextAlign(12);
 			tex3a->SetTextFont(42);
@@ -250,14 +259,18 @@ void mk_sigaccanplots(string flavor = "112")
 			tex3a->SetLineWidth(2);
 			TLatex *tex4 = NULL;
 			if (sphericity.size() > 0) {
-				tex4 = new TLatex(titpos - 0.01, 0.68, sphericity.c_str());
+				tex4 = new TLatex(titpos - 0.01, titly - 0.22, sphericity.c_str());
 				tex4->SetNDC();
 				tex4->SetTextAlign(12);
 				tex4->SetTextFont(42);
 				tex4->SetTextSize(textsiz);
 				tex4->SetLineWidth(2);
 			}
-			TLegend *leg = new TLegend(0.65, 0.2, 0.95, 0.4);
+			float legx = 0.65;
+			 if (tdrstyle == false) {
+			 	 legx = 0.56;
+			 }
+			TLegend *leg = new TLegend(legx, 0.2, legx + 0.3, 0.4);
 			leg->SetBorderSize(1);
 			leg->SetTextFont(62);
 			leg->SetLineColor(kBlack);
@@ -286,14 +299,24 @@ void mk_sigaccanplots(string flavor = "112")
 		// fitfunc->SetLineStyle(3); // Dotted
       }
 	 float labsiz = 0.055;
-      float axsize = 0.035; // Not necessary -- this is default size
+      h_GluinoHist_Fit->GetXaxis()->SetLabelFont(62);
+      h_GluinoHist_Fit->GetXaxis()->SetTitleFont(62);
+      h_GluinoHist_Fit->GetYaxis()->SetLabelFont(62);
+      h_GluinoHist_Fit->GetYaxis()->SetTitleFont(62);
       h_GluinoHist_Fit->GetYaxis()->SetTitle("Gaussian Width [GeV]");
-      // h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.1);
+      float offset = 0.8;
+	  if (tdrstyle == false) {
+		h_GluinoHist_Fit->GetXaxis()->SetTitleOffset(offset);
+		h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(offset);
+	 }
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
-      //  h_GluinoHist_Fit->GetXaxis()->SetLabelSize(axsize);
-      // h_GluinoHist_Fit->GetYaxis()->SetLabelSize(axsize);
+	  if (tdrstyle == false) {
+		float axsize = 0.04;
+		h_GluinoHist_Fit->GetXaxis()->SetLabelSize(axsize);
+		h_GluinoHist_Fit->GetYaxis()->SetLabelSize(axsize);
+     }
      if (flavor.compare("113_223") == 0 && ptcut == "60")
 		h_GluinoHist_Fit->GetYaxis()->SetRangeUser(14.0,  50.0);
        h_GluinoHist_Fit->Draw("APX");	// X eliminates error bars
@@ -329,8 +352,8 @@ void mk_sigaccanplots(string flavor = "112")
       TCanvas * cGluinoFitsOpt2 = new TCanvas(("RPVacc_"+flavor +ptcut).c_str(), ("RPV_" + ptcut+"_"+cuts).c_str(), 800, 600);
 	 // title="Acc. x Eff. for " + titlepart;
 	 title= titlepart;
-	 tex2->SetText(titpos, 0.89, title.c_str());
-	 TLegend *leg2 = new TLegend(0.65, 0.2, 0.95, 0.4);
+	 tex2->SetText(titpos,titly, title.c_str());
+	 TLegend *leg2 = new TLegend(legx, 0.2, legx + 0.3, 0.4);
 	 leg2->SetBorderSize(1);
 	 leg2->SetTextFont(62);
 	 leg2->SetTextSize(0.04);
@@ -355,11 +378,26 @@ void mk_sigaccanplots(string flavor = "112")
       // h_GluinoHist_MCcomb->SetMarkerColor(kBlack);
       h_GluinoHist_MCcomb->SetMarkerColor(kWhite);
       h_GluinoHist_MCcomb->SetTitle(title.c_str());
+      h_GluinoHist_MCcomb->GetXaxis()->SetLabelFont(62);
+      h_GluinoHist_MCcomb->GetXaxis()->SetTitleFont(62);
+      h_GluinoHist_MCcomb->GetYaxis()->SetLabelFont(62);
+      h_GluinoHist_MCcomb->GetYaxis()->SetTitleFont(62);
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
+	  if (tdrstyle == false) {
+		h_GluinoHist_MCcomb->GetXaxis()->SetTitleOffset(offset);
+		h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(offset + 0.35);
+	  }
       // h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
+	  if (tdrstyle == false)
+	  	labsiz -= 0.1;
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
+	  if (tdrstyle == false) {
+		float axsize = 0.04;
+		h_GluinoHist_MCcomb->GetXaxis()->SetLabelSize(axsize);
+		h_GluinoHist_MCcomb->GetYaxis()->SetLabelSize(axsize);
+     }
       if (flavor.compare("113_223") == 0) {
 		float ylimit = 0.05;
 		if ( ptcut == "110")
@@ -398,6 +436,7 @@ void mk_sigaccanplots(string flavor = "112")
       cGluinoFitsOpt2->Write();
       cGluinoFitsOpt2->SaveAs((folder + "RPVacc" +flavor + ptcut+uncert+postfix).c_str());
 
+			/*
       gStyle->SetStatY(0.4);
       TCanvas * cGluinoFitsOpt3 = new TCanvas(("RPVfullacc_"+flavor +ptcut).c_str(), ("RPVfull_" + ptcut+"_"+cuts).c_str(), 800, 600);
 			title="Gaussian Mean for " + titlepart;
@@ -470,16 +509,14 @@ void mk_sigaccanplots(string flavor = "112")
       tex3a->Draw();
       if (tex4 != NULL) {
       	tex4->SetX(titpos);
-		tex4->Draw();
-	 }
+				tex4->Draw();
+			 }
       f1.cd();
       cMeanOffset->Write();
       cMeanOffset->SaveAs((folder + "RPVmassdev" +flavor + ptcut+uncert+postfix).c_str());
+			*/
       }
-  	
   }
-	
-	
 }
 
 

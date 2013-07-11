@@ -19,7 +19,7 @@
 #include "TGraphErrors.h"
 #include "TGraphAsymmErrors.h"
 #include "TStyle.h"
-#include "tdrstyle.C"
+#include "carlstyle.C"
 
 #include <sstream>
 
@@ -36,7 +36,7 @@ inline std::string to_string (const T& t)
 
 void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut,
 	const string &flavor, const string &outfilenam, const vector <TFile* > &filelist_kin,
-	TLatex *const tex)
+	TLatex *const tex, bool tdrstyle = false)
 {
       string histname = graphNam + "_" + flavor + "_" + ptcut;
       cout<< histname << endl;
@@ -59,22 +59,27 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 		string titleln3 = "6^{th} Jet p_{T} = " + ptcut + " GeV";
 		title = axisLabel.substr(0, 2) + " for " + titlepart;
       h_GluinoHist_Fit->SetTitle(title.c_str());
-      float titpos = 0.2, headpos = 0.64;
+      float titpos = 0.2, titly = 0.89, headpos = 0.64;
       if (graphNam[1] == '3')
       	titpos = 0.35;
-			TLatex *tex2 = new TLatex(titpos, 0.89, title.c_str());
+	  if (tdrstyle == false) {
+	  	titpos -= 0.05;
+	  	titly -= 0.05;
+	  	headpos = 0.57;
+	  }
+			TLatex *tex2 = new TLatex(titpos, titly, title.c_str());
 			tex2->SetNDC();
 			tex2->SetTextAlign(12); // Left-adjusted
 			tex2->SetTextFont(42);
 			tex2->SetTextSize(textsiz);
 			tex2->SetLineWidth(2);
-			TLatex *tex3 = new TLatex(titpos, 0.82, titleln2.c_str());
+			TLatex *tex3 = new TLatex(titpos, titly - 0.07, titleln2.c_str());
 			tex3->SetNDC();
 			tex3->SetTextAlign(12);
 			tex3->SetTextFont(42);
 			tex3->SetTextSize(textsiz);
 			tex3->SetLineWidth(2);
-			TLatex *tex3a = new TLatex(titpos, 0.75, titleln3.c_str());
+			TLatex *tex3a = new TLatex(titpos, titly - 0.14, titleln3.c_str());
 			tex3a->SetNDC();
 			tex3a->SetTextAlign(12);
 			tex3a->SetTextFont(42);
@@ -82,7 +87,7 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 			tex3a->SetLineWidth(2);
 			TLatex *tex4 = NULL;
 			if (sphericity.size() > 0) {
-				tex4 = new TLatex(titpos - 0.01, 0.68, sphericity.c_str());
+				tex4 = new TLatex(titpos - 0.01, titly - 0.22, sphericity.c_str());
 				tex4->SetNDC();
 				tex4->SetTextAlign(12);
 				tex4->SetTextFont(42);
@@ -105,17 +110,28 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
       	fitfunccopy->SetLineColor(kGreen + 3);
 		// fitfunc->SetLineStyle(3); // Dotted
       }
-	float labsiz = 0.047;
+	float titlsiz = 0.043, labsiz = 0.04;
 	string axisTitle = axisLabel + " [GeV]";
+      h_GluinoHist_Fit->GetXaxis()->SetLabelFont(62);
+      h_GluinoHist_Fit->GetXaxis()->SetTitleFont(62);
+      h_GluinoHist_Fit->GetYaxis()->SetLabelFont(62);
+      h_GluinoHist_Fit->GetYaxis()->SetTitleFont(62);
       h_GluinoHist_Fit->GetYaxis()->SetTitle(axisTitle.c_str());
-      h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(1.2);
+      float offset = 1.2;
+	  if (tdrstyle == false)
+		offset =1.1;
+      h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(offset);
       h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
-      h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
-      h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
+      h_GluinoHist_Fit->GetXaxis()->SetTitleSize(titlsiz);
+      h_GluinoHist_Fit->GetYaxis()->SetTitleSize(titlsiz);
+	  if (tdrstyle == false) {
+		h_GluinoHist_Fit->GetXaxis()->SetLabelSize(labsiz);
+		h_GluinoHist_Fit->GetYaxis()->SetLabelSize(labsiz);
+     }
        h_GluinoHist_Fit->Draw("APX");	// X eliminates error bars
        // h_GluinoHist_Fit->Draw("AP");	
       // TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone(fitnamew.c_str());
-      TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone();
+      // TH1 *fithist = (TH1 *) fitfunccopy->GetHistogram()->Clone();
       fitfunccopy->Draw("CSAME");
       // h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
 		// leg->Draw();
@@ -132,15 +148,19 @@ void mkplot(const string &graphNam, const string &axisLabel, const string &ptcut
 }
       
 
-void sigfiteffplots(string flavor = "112")
+void sigfiteffplots(string flavor = "112", bool tdrstyle = false)
 {
-	setTDRStyle();
+	setTDRStyle(tdrstyle);
 	// gStyle->SetOptFit(1100); // chi2 and prob, not parameters
 	gStyle->SetOptFit(0); // chi2 and prob, not parameters
 	// gStyle->SetOptStat("irme"); // integral, RMS, mean, # of entries
 	gStyle->SetStatFontSize(0.005);
 	gStyle->SetStatY(0.4);
-	TLatex *tex = new TLatex(0.9,0.97,"CMS Simulation Preliminary");
+	float unused = 0.9, simtxt_y = 0.97;
+	if (tdrstyle == false) {
+		simtxt_y = 0.92;
+	}
+	TLatex *tex = new TLatex(unused, simtxt_y, "CMS Simulation Preliminary");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
@@ -166,7 +186,7 @@ void sigfiteffplots(string flavor = "112")
 		string folder;
 		string ptcut;
 		folder="plots_effic/";
-		postfix=".png";
+		postfix=".pdf";
 		/////////////Plots for each Mass separatly//////////////
 		/////////////----------------------------------------/////////////
 		
@@ -179,11 +199,11 @@ void sigfiteffplots(string flavor = "112")
 				
 			string outfilenam = folder + "RPVeffic" +flavor + ptcut+uncert;
 			string finalnam = outfilenam + "f1" +postfix;
-			mkplot("f1_vs_Mass", "f1 (Event Selection Efficiency)", ptcut, flavor, finalnam, filelist_kin, tex);
+			mkplot("f1_vs_Mass", "f1 (Event Selection Efficiency)", ptcut, flavor, finalnam, filelist_kin, tex, tdrstyle);
 			finalnam = outfilenam + "f2" +postfix;
-			mkplot("f2_vs_Mass", "f2 (Number of Triplets per Event)", ptcut, flavor, finalnam, filelist_kin, tex);
+			mkplot("f2_vs_Mass", "f2 (Number of Triplets per Event)", ptcut, flavor, finalnam, filelist_kin, tex, tdrstyle);
 			finalnam = outfilenam + "f3" +postfix;
-			mkplot("f3_vs_Mass", "f3 (Proportion of Gaussian Triplets)", ptcut, flavor, finalnam, filelist_kin, tex);
+			mkplot("f3_vs_Mass", "f3 (Proportion of Gaussian Triplets)", ptcut, flavor, finalnam, filelist_kin, tex, tdrstyle);
 		}
 		
 	}
