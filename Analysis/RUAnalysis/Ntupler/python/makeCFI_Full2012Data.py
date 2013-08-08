@@ -18,7 +18,7 @@ nfiles_list = os.popen("cat AllData.list | awk '{print $3}'").readlines()
 nDataSet=len(name_list)
 k=0
 for k in range(0,nDataSet):
-    file_list = os.popen("ls -1 /cms/dan/clseitz/ThreeJet/TLBSM53xv2/MultiJet/SoftLinks/"+name_list[k][0:-1]+"*/*root").readlines()
+    file_list = os.popen("ls -1 /cms/clseitz/ThreeJet/SoftLinks/"+name_list[k][0:-1]+"*/*root").readlines()
     nFiles = len(file_list)
     ncfg=int(nfiles_list[k][0:-1])
     fileCounter=0

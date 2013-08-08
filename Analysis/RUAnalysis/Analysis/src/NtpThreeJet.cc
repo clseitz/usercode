@@ -420,7 +420,7 @@ HT_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ())
       for(int j=0; j<25; j++){
 	
 	int iDiag=j*10+40;
-	bool ResBin=false;
+	bool ResBin=true;
 	Mjjj_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
 	sprintf(hNAME, "Mjjj_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag,iNjet);
 	if(!ResBin)Mjjj_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,250,0,2500));
@@ -614,52 +614,52 @@ HT_Sph4_btag_bjet_pt_njet_diag[b].push_back(std::vector<std::vector<TH1F*> > ())
 
 	Jet0_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet0_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet0_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet0_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet0_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
 	Jet1_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet1_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet1_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet1_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet1_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
 	Jet2_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet2_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet2_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet2_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet2_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
 	Jet3_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet3_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet3_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet3_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet3_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 	
 	Jet4_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet4_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet4_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet4_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet4_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	Jet5_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet5_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet5_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet5_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet5_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	Jet6_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "Jet6_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        Jet6_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        Jet6_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         Jet6_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	BJet1_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "BJet1_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        BJet1_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        BJet1_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         BJet1_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	BJet2_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "BJet2_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        BJet2_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        BJet2_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         BJet2_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 	BJet3_bjet_pt_njet_diag[b][i].push_back(std::vector<TH1F*> ());
         sprintf(hNAME, "BJet3_bjet%i_pt%i_diag%i_GE%ijet", b,iPt,iDiag, iNjet);
-	        BJet3_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1500,0,2000));
+	        BJet3_bjet_pt_njet_diag[b][i][k].push_back(new TH1F(hNAME,hNAME,1000,0,2000));
         BJet3_bjet_pt_njet_diag[b][i][k][j]->Sumw2();
 
 
@@ -1278,7 +1278,13 @@ void NtpThreeJet::Loop ()
 				   countT++;
 				   float JetMassSym=fabs(massTriplet[q]-massTripletComp[q])/(massTriplet[q]+massTripletComp[q])/2;
 				   Mjjj_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
-				   if(sphericity_ >= 0.4) Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				   if(sphericity_ >= 0.4) {
+				     Mjjj_Sph4_bjet_pt_njet_diag[b][i][k][j]->Fill(massTriplet[q],weight);
+				     /*if (iDiag==110 && Triplet[q][2]->Pt()>60.0){
+				       cout<<"Diag: "<<iDiag<<" iPt: "<<Triplet[q][2]->Pt()<<" run: "<<run<<" evt: "<<event<<"lumi :"<<lumis<<endl; 
+
+				       }*/
+				   }
 				   MjjjSym_bjet_pt_njet_diag[b][i][k][j]->Fill(JetMassSym,weight);
 				   P_bjet_pt_njet_diag[b][i][k][j]->Fill(PTriplet[q], weight);	
 				   if(b==0){
@@ -1337,6 +1343,7 @@ void NtpThreeJet::Loop ()
 			      if(sphericity_ >= 0.4) {
 				HT_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(SumptAllJet, weight);
 				Ntrip_Sph4_btag_bjet_pt_njet_diag[b][i][k][j]->Fill(mtpbsiz);
+				
 			      }
 
 			      MET_bjet_pt_njet_diag[b][i][k][j]->Fill(pfMET, weight);
@@ -1351,7 +1358,7 @@ void NtpThreeJet::Loop ()
 			      if(nJet35>=4)Jet3_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[3]->Pt(), weight);
 			      if(nJet35>=5)Jet4_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[4]->Pt(), weight);
 			      if(nJet35>=6)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
-			      if(nJet35>=7)Jet5_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[5]->Pt(), weight);
+			      if(nJet35>=7)Jet6_bjet_pt_njet_diag[b][i][k][j]->Fill(fCleanJets[6]->Pt(), weight);
 			      if(nBJet35>2){
 				BJet1_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[0]->Pt(), weight);
 				BJet2_bjet_pt_njet_diag[b][i][k][j]->Fill(fBJets[1]->Pt(), weight);

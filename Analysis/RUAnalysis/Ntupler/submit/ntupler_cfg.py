@@ -19,7 +19,7 @@ suffix_list = os.popen('ls -1 ptpl_link/*root').readlines()
 
 # newInd=index % 8
 # this_fin_nocfi  = "file:"+suffix_list[newInd]
-this_fin_nocfi  = "file:"+suffix_list[index]
+this_fin_nocfi  = "file:/cms/clseitz/ThreeJet/TLBSM/TLBSM53xv2/PAT/RPV/RPV_M350_112/RPV_M350_112__FullSimSummer12_TLBSM53xv2_0__mc.root"
 # this_fout0 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_plots.root"
 # this_fout1 = "/cms/clseitz/ThreeJet/RUNtuple/Nov6ReRun_JES/Stealth/StealthSbottomTo3b_MSb_"+str(mass)+"/tealthSbottomTo3b_MSb_"+str(mass)+"_FullSimSummer12_TLBSM53xv5_"+str(newInd)+"_JESnone_tree.root"
 
@@ -90,10 +90,10 @@ this_fin_nocfi  = "file:"+suffix_list[index]
 
 #this_fout0 = "test_QCD_"+str(index)+"_plots.root"
 #this_fout1 = "test_QCD_"+str(index)+"_tree.root"
-#this_fout0 = "TEST"+str(index)+"_Allplots.root"
-#this_fout1 = "TEST"+str(index)+"_Alltree.root"
-this_fout0 = "ntuples/ntpl_"+str(index)+"_Allplots.root"
-this_fout1 = "ntuples/ntpl_"+str(index)+"_Alltree.root"
+this_fout0 = "TEST"+str(index)+"_Allplots.root"
+this_fout1 = "TEST"+str(index)+"_Alltree.root"
+#this_fout0 = "ntuples/ntpl_"+str(index)+"_Allplots.root"
+#this_fout1 = "ntuples/ntpl_"+str(index)+"_Alltree.root"
 
 
 print this_fin_nocfi

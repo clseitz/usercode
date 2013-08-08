@@ -13,7 +13,7 @@
 //
 // Original Author:  Claudia Seitz
 //         Created:  Mon Apr  9 12:14:40 EDT 2012
-// $Id: Ntupler.cc,v 1.26 2013/03/29 15:32:19 cvuosalo Exp $
+// $Id: Ntupler.cc,v 1.27 2013/06/25 09:11:55 clseitz Exp $
 //
 //
 
@@ -507,7 +507,7 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 bdiscCSV_PF[i]=Jet->bDiscriminator("combinedSecondaryVertexBJetTags");
 	 bdiscJP_PF[i]=Jet->bDiscriminator("jetProbabilityBJetTags");
 	 if (!_isData) {
-	   if(1==1){
+	   if(1!=1){
 	     int jetMom = -1; 
 	     const reco::GenParticle * part = Jet->genParton();
 	     if (part){
@@ -528,8 +528,8 @@ Ntupler::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		 jetMom = int(parents->size());
 		 reco::GenParticle cand(*mom);
 		 parents->push_back(cand);
-		 //std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
-		 
+		 std::cout << "Found Mom with number of daughters: " << parents->size() << std::endl;
+
 	       }
 	       
 	     }

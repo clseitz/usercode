@@ -7,7 +7,7 @@ globaltag_list = os.popen("cat ../python/AllData.list | awk '{print $2}'").readl
 nfiles_list = os.popen("cat ../python/AllData.list | awk '{print $3}'").readlines()
 nDataSet=len(name_list)
 k=0
-OutDir='/cms/clseitz/ThreeJet/RUNtuple/DataTest'
+OutDir='/cms/clseitz/ThreeJet/RUNtuple/Jan29ReRun_53xJES/MultiJet53xv2_BaseMu40_SelQuad60Di20_plots'
 cmd = 'mkdir -p '+OutDir+'/Log'
 os.popen(cmd)
 for k in range(0,nDataSet):

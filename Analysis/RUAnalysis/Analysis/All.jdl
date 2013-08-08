@@ -1,10 +1,145 @@
-OutDir =/cms/clseitz/ThreeJet/Analysis/Feb26_AllJets
+OutDir =/cms/clseitz-2/ThreeJet/Analysis/Jun27
 InDir=/cms/clseitz/ThreeJet/RUNtuple/Jan29ReRun_53xJES
 universe = vanilla
 Requirements = (Arch == "X86_64")
 Executable = run_ThreeJet.sh
 should_transfer_files = NO
-SpecParam=BtagMap_4th80_CSVM_AllJets
+SpecParam=BtagMap_4th80_CSVM_1GeVBin_Jun27
+part=0
+Output =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT250-500/Part_$(part)  $(OutDir) mc2012_QCD_HT250-500_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=1
+Output =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT250-500/Part_$(part)  $(OutDir) mc2012_QCD_HT250-500_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=2
+Output =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT250-500/Part_$(part)  $(OutDir) mc2012_QCD_HT250-500_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=3
+Output =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD250_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT250-500/Part_$(part)  $(OutDir) mc2012_QCD_HT250-500_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=0
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=1
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=2
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=3
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=4
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=5
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=6
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+
+part=7
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=8
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+
+part=9
+Output =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD500_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT500-1000/Part_$(part)  $(OutDir) mc2012_QCD_HT500-1000_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+
+part=0
+Output =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT1000-Inf/Part_$(part)  $(OutDir) mc2012_QCD_HT1000-Inf_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=1
+Output =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT1000-Inf/Part_$(part)  $(OutDir) mc2012_QCD_HT1000-Inf_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=2
+Output =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT1000-Inf/Part_$(part)  $(OutDir) mc2012_QCD_HT1000-Inf_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=3
+Output =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT1000-Inf/Part_$(part)  $(OutDir) mc2012_QCD_HT1000-Inf_Summer12_53x_$(part)_$(SpecParam)
+Queue
+
+part=4
+Output =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdout
+Error  =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stderr
+Log    =  $(OutDir)/Log/Ntupler_QCD1000_$(part)_$(Process).stdlog
+Arguments = $(InDir)/HT1000-Inf/Part_$(part)  $(OutDir) mc2012_QCD_HT1000-Inf_Summer12_53x_$(part)_$(SpecParam)
+Queue
 
 
 part = 0
@@ -322,3 +457,47 @@ Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
 Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
 Arguments = $(InDir)/RPV_Decoup/RPV_M$(Mass)_$(Flavor)/  $(OutDir) mc_RPV_M$(Mass)_$(Flavor)_Decoup_$(SpecParam)
 Queue
+
+
+Flavor = Stealth
+Mass = 175
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 
+
+Mass = 200
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 
+
+Mass = 300
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 
+
+Mass = 400
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 
+
+Mass = 500
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 
+
+Mass = 600
+Output =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdout
+Error  =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stderr
+Log    =  $(OutDir)/Log/RPV_M$(Mass)_$(Flavor).stdlog
+Arguments = $(InDir)/Stealth/StealthSbottomTo3b_MSb_$(Mass)/  $(OutDir) mc_StealthSbottomTo3b_MSb_$(Mass)_$(SpecParam)
+Queue 

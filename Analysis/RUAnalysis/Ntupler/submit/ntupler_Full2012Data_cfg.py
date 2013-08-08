@@ -94,12 +94,11 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                jetptcut       = cms.untracked.double(20),
                                etacut         = cms.untracked.double(3.),
                                jecAdj = cms.untracked.string('none'), # Can also be "up" or "down
-															 jetCorrectionService = cms.untracked.string(jetcorrserv),
+                               jetCorrectionService = cms.untracked.string(jetcorrserv),
                                #selection trigger
                                #Qua60_Di20
-                               TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4',
-                                                                       'HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6','HLT_QuadJet60_DiJet20_v7',
-                                                                       'HLT_QuadJet60_DiJet20_v8','HLT_QuadJet60_DiJet20_v9','HLT_QuadJet60_DiJet20_v10'),
+                               TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v' ),
+                               #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet60_DiJet20_v1','HLT_QuadJet60_DiJet20_v2','HLT_QuadJet60_DiJet20_v3','HLT_QuadJet60_DiJet20_v4','HLT_QuadJet60_DiJet20_v5','HLT_QuadJet60_DiJet20_v6','HLT_QuadJet60_DiJet20_v7','HLT_QuadJet60_DiJet20_v8','HLT_QuadJet60_DiJet20_v9','HLT_QuadJet60_DiJet20_v10'),
                                #Quad70
                                #TriggerNamesSel = cms.untracked.vstring('HLT_QuadJet80_v1','HLT_QuadJet80_v2','HLT_QuadJet80_v3','HLT_QuadJet80_v4',
                                #'HLT_QuadJet80_v5','HLT_QuadJet80_v6','HLT_QuadJet80_v7'),
@@ -112,14 +111,18 @@ process.data2 = cms.EDAnalyzer('Ntupler',
                                #                                      'HLT_QuadJet50_v5','HLT_QuadJet50_v6','HLT_QuadJet50_v7'),
                                #TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet70_v1','HLT_QuadJet70_v2','HLT_QuadJet70_v3','HLT_QuadJet70_v4',
                                #                                   'HLT_QuadJet70_v5','HLT_QuadJet70_v6','HLT_QuadJet70_v7'),
-                               TriggerNamesBase = cms.untracked.vstring('HLT_SixJet35_v1','HLT_SixJet35_v2','HLT_SixJet35_v3','HLT_SixJet35_v4'),
+
+                               #TriggerNamesBase = cms.untracked.vstring('HLT_QuadJet50_v','HLT_QuadJet45_v'),
+                               TriggerNamesBase = cms.untracked.vstring('HLT_Mu40_v', 'HLT_Mu40_eta2p1_v'),
+                               #TriggerNamesBase = cms.untracked.vstring('HLT_SixJet35_v'),
+
                                #JSON file 900/pb May18
 #                               JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-194076_8TeV_PromptReco_Collisions12_JSON.txt'),
 
                                #JSON File 2.42/fb Jun01
                                #JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_2_2/src/RUAnalysis/Ntupler/submit/Cert_190456-195016_8TeV_PromptReco_Collisions12_JSON.txt'),
                                #JSON File 2.42/fb Jun01
-                               JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_3_6/src/RUAnalysis/Ntupler/JSON/Run2012_18.957_missingPartCv1.json'),
+                               JSONFilename = cms.untracked.string('/home/clseitz/MyCMS/RU/CMSSW_5_3_6/src/RUAnalysis/Ntupler/JSON/Run2012_19.448_Full2012Data.json'),
                                )
 
 
