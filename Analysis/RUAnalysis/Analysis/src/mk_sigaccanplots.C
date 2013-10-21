@@ -133,7 +133,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 	if (tdrstyle == false) {
 		simtxt_y = 0.93;
 	}
-	TLatex *tex = new TLatex(unused, simtxt_y, "CMS Simulation Preliminary");
+	TLatex *tex = new TLatex(unused, simtxt_y, "CMS simulation at #sqrt{s} = 8 TeV");
 	tex->SetNDC();
 	tex->SetTextAlign(12); // Left-adjusted
 	tex->SetTextFont(42);
@@ -170,7 +170,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
   string postfix;
   string folder;
   string ptcut;
-  folder="plots_band/";
+  folder="plots_paper/";
   postfix=".pdf";
   /////////////Plots for each Mass separatly//////////////
   /////////////----------------------------------------/////////////
@@ -179,8 +179,11 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
     // ptcut="112";
     // if(p==1) ptcut="" + flavor;
      ptcut="60";
-    if(p==1) ptcut="110";
-      // string histname = string("GausWidth_vs_Mass_112") + ptcut;
+    if (p==1) {
+		ptcut="110";
+		textsiz = 0.045;
+    }
+    // string histname = string("GausWidth_vs_Mass_112") + ptcut;
       string histname = string("GausWidth_vs_Mass_" + flavor) + "_" + ptcut;
       cout<< histname << endl;
       TGraphErrors *h_GluinoHist_Fit = (TGraphErrors*) filelist_kin[0]->Get(histname.c_str())->Clone();
@@ -206,14 +209,14 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 		string title;
 		string systematic = "pile-up";
 		// title="Gaussian Width vs. Mass for Light-ptcut RPV";
-		string tag = "Heavy", sphericity = " Sphericity > 0.4";
+		string tag = "qqb", sphericity = " Sphericity #geq 0.4";
 		if (flavor.compare("112") == 0)
-			tag = "Light";
+			tag = "qqq";
 		else if (ptcut.compare("60") == 0)
 			sphericity = "";
-		string titlepart = tag + "-flavor RPV Gluino";
+		string titlepart = "Hadronic RPV #tilde{g} #rightarrow " + tag;
 		string titleln2 = "\\Delta = 110 GeV";
-		string titleln3 = "6^{th} Jet p_{T} = " + ptcut + " GeV";
+		string titleln3 = "6^{th}-jet p_{T} #geq " + ptcut + " GeV";
 		title = titlepart;
 		// title = "Width for " + titlepart;
 		/*
@@ -237,7 +240,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
 	  if (tdrstyle == false) {
 	  	titpos -= 0.05;
 	  	titly -= 0.05;
-	  	headpos = 0.47;
+	  	headpos = 0.45;
 	  }
 			TLatex *tex2 = new TLatex(titpos, titly, title.c_str());
 			tex2->SetNDC();
@@ -303,13 +306,13 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
       h_GluinoHist_Fit->GetXaxis()->SetTitleFont(62);
       h_GluinoHist_Fit->GetYaxis()->SetLabelFont(62);
       h_GluinoHist_Fit->GetYaxis()->SetTitleFont(62);
-      h_GluinoHist_Fit->GetYaxis()->SetTitle("Gaussian Width [GeV]");
+      h_GluinoHist_Fit->GetYaxis()->SetTitle("Gaussian width [GeV]");
       float offset = 0.8;
 	  if (tdrstyle == false) {
 		h_GluinoHist_Fit->GetXaxis()->SetTitleOffset(offset);
 		h_GluinoHist_Fit->GetYaxis()->SetTitleOffset(offset);
 	 }
-      h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino Mass [GeV]");
+      h_GluinoHist_Fit->GetXaxis()->SetTitle("Gluino mass [GeV]");
       h_GluinoHist_Fit->GetXaxis()->SetTitleSize(labsiz);
       h_GluinoHist_Fit->GetYaxis()->SetTitleSize(labsiz);
 	  if (tdrstyle == false) {
@@ -336,7 +339,7 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
       }
       fitfunccopy->Draw("CSAME");
       // h_GluinoHist_Fit->Draw("P");	// Draw points over fit line
-      leg->AddEntry(fitfunccopy, "Gaussian Width", "L");
+      leg->AddEntry(fitfunccopy, "Gaussian width", "L");
       leg->AddEntry(fithist, "Uncertainty", "F");
 	 leg->Draw();
       tex->SetX(headpos);
@@ -381,23 +384,24 @@ void mk_sigaccanplots(string flavor = "112", bool tdrstyle = false)
       h_GluinoHist_MCcomb->GetXaxis()->SetLabelFont(62);
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleFont(62);
       h_GluinoHist_MCcomb->GetYaxis()->SetLabelFont(62);
-      h_GluinoHist_MCcomb->GetYaxis()->SetTitleFont(62);
+      // h_GluinoHist_MCcomb->GetYaxis()->SetLabelSize(62);
+h_GluinoHist_MCcomb->GetYaxis()->SetTitleFont(62);
       h_GluinoHist_MCcomb->GetYaxis()->SetTitle("Acceptance x Efficiency");
 	  if (tdrstyle == false) {
 		h_GluinoHist_MCcomb->GetXaxis()->SetTitleOffset(offset);
 		h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(offset + 0.35);
 	  }
       // h_GluinoHist_MCcomb->GetYaxis()->SetTitleOffset(1.4);
-      h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino Mass [GeV]");
+      h_GluinoHist_MCcomb->GetXaxis()->SetTitle("Gluino mass [GeV]");
       h_GluinoHist_MCcomb->GetXaxis()->SetTitleSize(labsiz);
 	  if (tdrstyle == false)
 	  	labsiz -= 0.01;
       h_GluinoHist_MCcomb->GetYaxis()->SetTitleSize(labsiz);
 	  if (tdrstyle == false) {
-		float axsize = 0.04;
-		h_GluinoHist_MCcomb->GetXaxis()->SetLabelSize(axsize);
-		h_GluinoHist_MCcomb->GetYaxis()->SetLabelSize(axsize);
-     }
+		float axsize = 0.035;
+		 h_GluinoHist_MCcomb->GetXaxis()->SetLabelSize(axsize);
+		 h_GluinoHist_MCcomb->GetYaxis()->SetLabelSize(axsize);
+	  }
       if (flavor.compare("113_223") == 0) {
 		float ylimit = 0.05;
 		if ( ptcut == "110")
